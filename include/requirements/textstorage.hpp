@@ -1,0 +1,44 @@
+#pragma once
+
+#include <exception>
+
+#include "requirements/istorage.hpp"
+
+namespace requirements {
+  
+  class TextStorage final : public IStorage {
+  private:
+    // Root-Path for the requirements
+    std::string folder;
+    std::string requirementsFolder; // Requirement-Folder, usually <folder>/requirements
+    std::shared_ptr<Node> rootNode; // Root-Node always exists
+
+    void construct_readFolder();
+    void construct_ensureFolder();
+  public:
+    class ConstructException : public std::exception {
+    public:
+      enum class Reason {
+        NotAFolder,
+        CannotCreateFolder,
+        FailedToReadFolder,
+        FolderNameEmpty,
+        CannotCreateRequirementsFolder,
+        IncompatibleRequirementId
+      };
+    private:
+      const Reason reason;
+    public:
+      ConstructException(Reason a_reason);
+      const char* what() const noexcept override;
+    };
+    std::shared_ptr<Node> createNode() override;
+    std::shared_ptr<Node> getRootNode() noexcept override { return rootNode; }
+    
+    void save() override;
+    
+    // Throws ConstructException on failure
+    explicit TextStorage(const std::string& a_folder);
+  };
+  
+}
