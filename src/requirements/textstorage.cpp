@@ -6,14 +6,15 @@
 #include "util/path.hpp"
 
 #include "requirements/node.hpp"
+#include "requirements/icontent.hpp"
 
 namespace requirements {
   
   void TextStorage::save() {
   }
   
-  std::shared_ptr<Node> TextStorage::createNode() {
-    std::shared_ptr<Node> newNode(new Node(generateRandomId()));
+  NodePtr TextStorage::createNode(std::unique_ptr<IContent>&& content) {
+    NodePtr newNode(new Node(generateRandomId(), std::move(content)));
     return newNode;
   }
   
@@ -55,7 +56,7 @@ namespace requirements {
   TextStorage::TextStorage(const std::string& a_folder)
     : folder(util::ensureTrailingSlash(a_folder))
     , requirementsFolder(folder+"requirements/")
-    , rootNode(new Node(generateRandomId())) {
+    , rootNode(new Node(generateRandomId(), nullptr)) {
     if(folder.empty()) {
       throw ConstructException(ConstructException::Reason::FolderNameEmpty);
     }

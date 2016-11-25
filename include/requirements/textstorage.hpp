@@ -3,6 +3,7 @@
 #include <exception>
 
 #include "requirements/istorage.hpp"
+#include "requirements/node.hpp"
 
 namespace requirements {
   
@@ -11,7 +12,7 @@ namespace requirements {
     // Root-Path for the requirements
     std::string folder;
     std::string requirementsFolder; // Requirement-Folder, usually <folder>/requirements
-    std::shared_ptr<Node> rootNode; // Root-Node always exists
+    NodePtr rootNode; // Root-Node always exists
 
     void construct_readFolder();
     void construct_ensureFolder();
@@ -32,8 +33,8 @@ namespace requirements {
       ConstructException(Reason a_reason);
       const char* what() const noexcept override;
     };
-    std::shared_ptr<Node> createNode() override;
-    std::shared_ptr<Node> getRootNode() noexcept override { return rootNode; }
+    NodePtr createNode(std::unique_ptr<IContent>&& content) override;
+    NodePtr getRootNode() noexcept override { return rootNode; }
     
     void save() override;
     
