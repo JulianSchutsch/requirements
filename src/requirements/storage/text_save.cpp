@@ -59,7 +59,7 @@ namespace requirements {
       for(auto& entry: children) {
         ids.emplace_back(id_to_string(entry->getId()));
       }
-      stream<<boost::algorithm::join(ids, " ")<<"\n";      
+      stream<<boost::algorithm::join(ids, " ")<<"\n";
     }
     
     static void saveRelationships(NodeCollection& collection, const std::string& folder) {

@@ -1,6 +1,5 @@
 #include "requirements/storage/text_load.hpp"
 
-#include <iostream>
 #include <fstream>
 
 #include <boost/filesystem.hpp>
