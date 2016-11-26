@@ -28,6 +28,7 @@ namespace requirements {
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
   public:
+    IContent& getContent() const { return *content; }
     const ChildList getChildren() const noexcept { return children; }
     const Id getId() const noexcept { return id; }
     void setParent(NodePtr node);

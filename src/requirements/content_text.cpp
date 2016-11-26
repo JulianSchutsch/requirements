@@ -8,6 +8,10 @@
 
 namespace requirements {
 
+std::string Content_Text::getDescription() const noexcept {
+  return "Text based requirement";
+}
+
 bool Content_Text::isModified() {
   return modified;
 }

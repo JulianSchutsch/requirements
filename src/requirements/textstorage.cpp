@@ -1,6 +1,7 @@
 #include "requirements/textstorage.hpp"
 
 #include <iostream>
+#include <fstream>
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -9,22 +10,43 @@
 
 #include "requirements/node.hpp"
 #include "requirements/icontent.hpp"
+#include "requirements/icontentvisitor.hpp"
+#include "requirements/contentfactory.hpp"
 
 namespace requirements {
   
-  void TextStorage::saveNode(Node* node) {
-    for(auto& entry: node->getChildren()) {
-      // Any content?
-      saveNode(entry.get());
+  class ExtractContentSuffix : public IContentVisitor {
+  private:
+    std::string& suffix;
+  public:
+    void handleContent(Content_Text& text) override {
+      (void)text;
+      suffix = ".txt";
+    }
+    ExtractContentSuffix(std::string& a_suffix)
+      : suffix(a_suffix) {}
+  };
+
+  void TextStorage::saveNode(Node& node) {
+    std::string suffix;
+    for(auto& entry: node.getChildren()) {
+      auto& content = entry->getContent();
+      if(content.isModified()) {
+        content.visit(ExtractContentSuffix(suffix));
+        std::fstream file(requirementsFolder+id_to_string(entry->getId())+suffix, std::fstream::out);
+        content.serialize(file);
+      }
+      saveNode(*entry);
     }
   }
   
   void TextStorage::save() {
-    saveNode(rootNode.get());
+    saveNode(*rootNode);
   }
   
   NodePtr TextStorage::createNode(std::unique_ptr<IContent>&& content) {
     NodePtr newNode(new Node(*this, generateRandomId(), std::move(content)));
+    newNode->setParent(rootNode);
     return newNode;
   }
   
@@ -55,7 +77,19 @@ namespace requirements {
   void TextStorage::construct_readFolder() {
     try {
       for(auto it=boost::filesystem::directory_iterator(requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
-        std::cout<<*it<<std::endl;
+        boost::filesystem::path path(*it);
+        Id id;
+        if(!string_to_id(path.stem().string(), id)) {
+          throw ConstructException(ConstructException::Reason::InvalidId);
+        }
+        const std::string& extensionString = path.extension().string();
+        const std::string suffix(extensionString, 1, extensionString.size()-1);
+        auto content = contentFactory(suffix);
+        if(!content) {
+          throw ConstructException(ConstructException::Reason::InvalidSuffix);
+        }
+        auto node = new Node(*this, id, std::move(content));
+        node->setParent(rootNode);
       }
     }
     catch(boost::filesystem::filesystem_error& e) {
@@ -91,6 +125,10 @@ namespace requirements {
         return "Incompatible Requirement id";
       case Reason::CannotCreateRequirementsFolder:
         return "Cannot create requirements folder at chosen path";
+      case Reason::InvalidId:
+        return "Invalid id";
+      case Reason::InvalidSuffix:
+        return "Invalid file suffix";
     }
     return "Unknown ContextException issue";
   }

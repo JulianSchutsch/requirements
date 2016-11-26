@@ -17,7 +17,7 @@ namespace requirements {
     void construct_readFolder();
     void construct_ensureFolder();
     
-    void saveNode(Node* node);
+    void saveNode(Node& node);
   public:
     class ConstructException : public std::exception {
     public:
@@ -27,10 +27,13 @@ namespace requirements {
         FailedToReadFolder,
         FolderNameEmpty,
         CannotCreateRequirementsFolder,
-        IncompatibleRequirementId
+        IncompatibleRequirementId,
+        InvalidId,
+        InvalidSuffix
       };
     private:
       const Reason reason;
+      
     public:
       ConstructException(Reason a_reason);
       const char* what() const noexcept override;

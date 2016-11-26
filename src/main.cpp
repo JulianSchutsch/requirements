@@ -13,7 +13,8 @@ int main(int argc, char** args) {
   auto node1 = storage.createNode(std::make_unique<requirements::Content_Text>());
   auto node2 = storage.createNode(std::make_unique<requirements::Content_Text>());
   for(auto node: storage.getRootNode()->getChildren()) {
-    std::cout<<requirements::id_to_string(node->getId())<<std::endl;
+    std::cout<<requirements::id_to_string(node->getId())<<" "<<node->getContent().getDescription()<<std::endl;
   }
+  storage.save();
   return 0;
 }
