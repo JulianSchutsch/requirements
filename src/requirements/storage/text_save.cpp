@@ -18,18 +18,19 @@
 
 namespace requirements {
   namespace storage {
-
-    class ExtractContentSuffix : public IContentVisitor {
-    private:
-      std::string& suffix;
-    public:
-      void handleContent(Content_Text& text) override {
-        (void)text;
-        suffix = ".txt";
-      }
-      ExtractContentSuffix(std::string& a_suffix)
-        : suffix(a_suffix) {}
-    };
+    namespace {
+      class ExtractContentSuffix : public IContentVisitor {
+      private:
+        std::string& suffix;
+      public:
+        void handleContent(Content_Text& text) override {
+          (void)text;
+          suffix = ".txt";
+        }
+        ExtractContentSuffix(std::string& a_suffix)
+          : suffix(a_suffix) {}
+      };
+    }
     
     static void saveNode(Node& node, const std::string& requirementsFolder) {
       auto& content = node.getContent();
