@@ -12,7 +12,7 @@ namespace requirements {
   class IContent;
   
   class Node;
-  class IStorage;
+  class NodeCollection;
 
   using NodePtr = boost::intrusive_ptr<Node>;
   
@@ -24,7 +24,7 @@ namespace requirements {
     ChildList children;
     std::unique_ptr<IContent> content;
     ptrdiff_t referenceCount;
-    IStorage& storage;
+    NodeCollection& collection;
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
   public:
@@ -32,7 +32,7 @@ namespace requirements {
     const ChildList getChildren() const noexcept { return children; }
     const Id getId() const noexcept { return id; }
     void setParent(NodePtr node);
-    explicit Node(IStorage& a_storage, Id a_id, std::unique_ptr<IContent>&& a_content);
+    explicit Node(NodeCollection& a_collection, Id a_id, std::unique_ptr<IContent>&& a_content);
   };
   
   inline void intrusive_ptr_add_ref(Node* node) {

@@ -6,7 +6,7 @@
 
 namespace requirements {
   
-  class Content_Text : public IContent {
+  class Content_Text final : public IContent {
   private:
     bool modified = true;
     std::string content;

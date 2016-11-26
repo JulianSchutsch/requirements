@@ -12,9 +12,9 @@ namespace requirements {
     parent->children.emplace_back(NodePtr(this));
   }
   
-  Node::Node(IStorage& a_storage, Id a_id, std::unique_ptr<IContent>&& a_content)
+  Node::Node(NodeCollection& a_collection, Id a_id, std::unique_ptr<IContent>&& a_content)
     : id(a_id)
     , content(std::move(a_content))
-    , storage(a_storage) {}
+    , collection(a_collection) {}
   
 }
