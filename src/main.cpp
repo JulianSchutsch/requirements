@@ -7,16 +7,7 @@
 #include "requirements/storage/text_save.hpp"
 #include "requirements/content_text.hpp"
 
-const char chars[] = {
-   "\xe2\x94\x80"
-   "\xe2\x94\x82"
-   "\xe2\x94\x9c"
-   "\xe2\x94\x94"
-   "\xe2\x94\x8c"
-   "\xe2\x94\xBC"
-   "\xe2\x94\x80"
-   "\0"
-};
+#include "req/console/printtree.hpp"
 
 int main(int argc, char** args) {
   (void)argc;
@@ -29,11 +20,15 @@ int main(int argc, char** args) {
   auto parent = collection.getRootNode();
   auto node1 = collection.createNode(std::make_unique<requirements::Content_Text>());
   auto node2 = collection.createNode(std::make_unique<requirements::Content_Text>());
+  auto node3 = collection.createNode(std::make_unique<requirements::Content_Text>());
   node2->setParent(node1);
+  node3->setParent(node1);
   for(auto node: collection.getRootNode()->getChildren()) {
     std::cout<<requirements::id_to_string(node->getId())<<" "<<node->getContent().getDescription()<<std::endl;
   }
   requirements::storage::text_save(collection, folder);
-  std::cout<<chars<<std::endl;
+  
+  req::console::printTree(std::cout, *collection.getRootNode());
+  
   return 0;
 }
