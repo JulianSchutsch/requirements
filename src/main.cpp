@@ -6,6 +6,8 @@
 #include "requirements/content_text.hpp"
 
 int main(int argc, char** args) {
+  (void)argc;
+  (void)args;
   requirements::TextStorage storage("/home/alexandrus/testFolder");
   auto parent = storage.getRootNode();
   auto node1 = storage.createNode(std::make_unique<requirements::Content_Text>());

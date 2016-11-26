@@ -8,6 +8,7 @@ namespace requirements {
     if(typeId=="txt") {
       return std::make_unique<Content_Text>();
     }
+    return nullptr;
   }
   
 }

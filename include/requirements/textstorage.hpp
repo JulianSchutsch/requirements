@@ -16,6 +16,8 @@ namespace requirements {
 
     void construct_readFolder();
     void construct_ensureFolder();
+    
+    void saveNode(Node* node);
   public:
     class ConstructException : public std::exception {
     public:

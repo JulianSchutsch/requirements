@@ -12,11 +12,19 @@
 
 namespace requirements {
   
+  void TextStorage::saveNode(Node* node) {
+    for(auto& entry: node->getChildren()) {
+      // Any content?
+      saveNode(entry.get());
+    }
+  }
+  
   void TextStorage::save() {
+    saveNode(rootNode.get());
   }
   
   NodePtr TextStorage::createNode(std::unique_ptr<IContent>&& content) {
-    NodePtr newNode(new Node(generateRandomId(), std::move(content)));
+    NodePtr newNode(new Node(*this, generateRandomId(), std::move(content)));
     return newNode;
   }
   
@@ -42,7 +50,7 @@ namespace requirements {
         throw ConstructException(ConstructException::Reason::NotAFolder);
       }
     }
-  };
+  }
 
   void TextStorage::construct_readFolder() {
     try {
@@ -58,7 +66,7 @@ namespace requirements {
   TextStorage::TextStorage(const std::string& a_folder)
     : folder(util::ensureTrailingSlash(a_folder))
     , requirementsFolder(folder+"requirements/")
-    , rootNode(new Node(generateRandomId(), nullptr)) {
+    , rootNode(new Node(*this, generateRandomId(), nullptr)) {
     if(folder.empty()) {
       throw ConstructException(ConstructException::Reason::FolderNameEmpty);
     }
@@ -81,7 +89,10 @@ namespace requirements {
         return "No folder given, empty";
       case Reason::IncompatibleRequirementId:
         return "Incompatible Requirement id";
+      case Reason::CannotCreateRequirementsFolder:
+        return "Cannot create requirements folder at chosen path";
     }
+    return "Unknown ContextException issue";
   }
 
 }
