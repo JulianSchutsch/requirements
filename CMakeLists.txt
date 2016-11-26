@@ -5,11 +5,16 @@ add_definitions("--std=c++14 -Wextra -pedantic -Wall -O3 -g")
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
 
-FILE(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+FILE(GLOB_RECURSE REQUIREMENTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/requirements/*.cpp")
+FILE(GLOB_RECURSE UTIL_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/util/*.cpp")
 
 FIND_LIBRARY(LIB_BOOST_FILESYSTEM "boost_filesystem")
 FIND_LIBRARY(LIB_BOOST_SYSTEM "boost_system")
 
-add_executable(main ${SOURCES})
+add_library(requirements SHARED ${REQUIREMENTS_SOURCES} ${UTIL_SOURCES})
 
-target_link_libraries(main ${LIB_BOOST_FILESYSTEM} ${LIB_BOOST_SYSTEM})
+target_link_libraries(requirements ${LIB_BOOST_FILESYSTEM} ${LIB_BOOST_SYSTEM})
+
+add_executable(main "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp")
+
+target_link_libraries(main "requirements")
