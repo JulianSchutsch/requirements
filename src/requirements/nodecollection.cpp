@@ -2,6 +2,14 @@
 
 namespace requirements {
   
+  NodePtr NodeCollection::getNodeById(Id id) {
+    auto it = nodes.find(id);
+    if(it==nodes.end()) {
+      return nullptr;
+    }
+    return it->second;
+  }
+  
   NodeCollection::NodeCollection()
     : rootNode(new Node(*this, generateRandomId(), nullptr)) {
   }

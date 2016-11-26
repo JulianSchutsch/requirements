@@ -27,6 +27,8 @@ namespace requirements {
           return "Invalid Relationships file";
         case Reason::InvalidTagsFile:
           return "Invalid Tags file";
+        case Reason::ReferenceToUnknownId:
+          return "Reference to unknown id";
       }
       return "Unknown ContextException issue";
     }

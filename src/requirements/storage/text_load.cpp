@@ -4,6 +4,8 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "util/path.hpp"
 
@@ -40,7 +42,7 @@ namespace requirements {
       }
     }
     
-    static void readRelationships(const std::string& folder) {
+    static void readRelationships(NodeCollection& collection, const std::string& folder) {
       std::string filename = folder+"relationships";
       if(!boost::filesystem::exists(filename)) {
         return;
@@ -48,6 +50,35 @@ namespace requirements {
       if(boost::filesystem::is_directory(filename)) {
         throw Exception(Exception::Reason::InvalidRelationshipsFile);
       }
+      std::fstream file(filename, std::fstream::in);
+      std::string line;
+      while(std::getline(file, line)) {
+        std::vector<std::string> parts;
+        boost::algorithm::split(parts, line, boost::is_any_of(" "));
+        auto it = parts.begin();
+        if(it==parts.end()) {
+          throw Exception(Exception::Reason::InvalidRelationshipsFile);
+        }
+        Id id;
+        if(!string_to_id(*it, id)) {
+          throw Exception(Exception::Reason::InvalidRelationshipsFile);
+        }
+        auto parent = collection.getNodeById(id);
+        if(!parent) {
+          throw Exception(Exception::Reason::ReferenceToUnknownId);
+        }
+        for(++it;it!=parts.end();++it) {
+          if(!string_to_id(*it, id)) {
+            throw Exception(Exception::Reason::InvalidRelationshipsFile);
+          }
+          auto node = collection.getNodeById(id);
+          if(!node) {
+            throw Exception(Exception::Reason::ReferenceToUnknownId);
+          }
+          node->setParent(parent);
+        }
+      }
+      
     }
 
     void text_load(NodeCollection& collection, const std::string& a_folder) {
@@ -58,7 +89,7 @@ namespace requirements {
       }
       text_ensureFolders(folder, requirementsFolder);
       readRequirements(collection, requirementsFolder);  
-      readRelationships(folder);
+      readRelationships(collection, folder);
       
     }
 

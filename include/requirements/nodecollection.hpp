@@ -12,7 +12,7 @@ namespace requirements {
   
   class NodeCollection final {
   private:
-    using Nodes = std::map<Id, Node*>;
+    using Nodes = std::map<Id, NodePtr>;
     Nodes nodes;
     NodePtr rootNode; // Root-Node always exists
   public:
@@ -33,6 +33,7 @@ namespace requirements {
     NodePtr createNode(std::unique_ptr<IContent>&& content);
     NodePtr createNode(Id id, std::unique_ptr<IContent>&& content);
     inline NodePtr getRootNode() noexcept { return rootNode; }
+    NodePtr getNodeById(Id id);
     NodeCollection();
   };
   

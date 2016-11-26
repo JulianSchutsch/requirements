@@ -18,7 +18,8 @@ namespace requirements {
         InvalidId,
         InvalidSuffix,
         InvalidRelationshipsFile,
-        InvalidTagsFile
+        InvalidTagsFile,
+        ReferenceToUnknownId
       };
     private:
       const Reason reason;
