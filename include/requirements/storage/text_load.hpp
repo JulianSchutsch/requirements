@@ -8,7 +8,7 @@ namespace requirements {
 
   namespace storage {
 
-    void load_text(NodeCollection& collection, const std::string& folder);
+    void text_load(NodeCollection& collection, const std::string& folder);
 
   }
   

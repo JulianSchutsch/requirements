@@ -8,7 +8,7 @@ namespace requirements {
   
   namespace storage {
     
-    void save_text(NodeCollection& collection, const std::string& folder);
+    void text_save(NodeCollection& collection, const std::string& folder);
     
   }
 }
