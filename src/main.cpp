@@ -23,9 +23,6 @@ int main(int argc, char** args) {
   auto node3 = collection.createNode(std::make_unique<requirements::Content_Text>());
   node2->setParent(node1);
   node3->setParent(node1);
-  for(auto node: collection.getRootNode()->getChildren()) {
-    std::cout<<requirements::id_to_string(node->getId())<<" "<<node->getContent().getDescription()<<std::endl;
-  }
   requirements::storage::text_save(collection, folder);
   
   req::console::printTree(std::cout, *collection.getRootNode());
