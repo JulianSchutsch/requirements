@@ -6,19 +6,26 @@
 #include "requirements/storage/text_load.hpp"
 #include "requirements/storage/text_save.hpp"
 
-#include "req/console/printtree.hpp"
-
-#include "req/config.hpp"
+#include "req/status.hpp"
+#include "req/command.hpp"
 
 int main(int argc, char** args) {
   (void)argc;
   (void)args;
   
-  req::Config config;
-  config.load();
-  
-  std::cout<<"Folder:"<<config.folder<<std::endl;
-  config.save();
+  req::Status status;
+
+  status.load();
+
+  std::vector<std::string> commands;
+  commands.reserve(argc-1);
+  for(int i=1;i<argc;++i) {
+    commands.push_back(args[i]);
+  }
+
+  req::processCommand(status, commands);
+
+  status.save();
   
   return 0;
 }

@@ -8,9 +8,11 @@ class TiXmlElement;
 namespace req {
   
   
-  class Config {
+  class Status {
   private:
     void load_folder(TiXmlElement& element);
+    void load_status(TiXmlElement& root);
+    void save_folder(TiXmlElement& root);
   public:
     using Selection = std::list<std::string>;
     std::string folder;
