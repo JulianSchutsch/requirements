@@ -8,23 +8,22 @@
 
 #include "req/console/printtree.hpp"
 
+#include "req/config.hpp"
+
 int main(int argc, char** args) {
   (void)argc;
   (void)args;
   
+  req::Config config;
+  config.load();
   const std::string& folder = "/home/alexandrus/testFolder";
 
   requirements::NodeCollection collection;
   requirements::storage::text_load(collection, folder);
-  auto parent = collection.getRootNode();
-  auto node1 = collection.createNode("req 1");
-  auto node2 = collection.createNode("req 2");
-  auto node3 = collection.createNode("req 3");
-  node2->setParent(node1);
-  node3->setParent(node1);
   requirements::storage::text_save(collection, folder);
   
   req::console::printTree(std::cout, *collection.getRootNode());
+  config.save();
   
   return 0;
 }

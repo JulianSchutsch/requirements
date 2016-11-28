@@ -27,6 +27,7 @@ namespace requirements {
     friend void intrusive_ptr_release(Node* node);
   public:
     const std::string& getContent() const { return content; }
+    inline NodePtr getParent() const noexcept { return parent; }
     const ChildList getChildren() const noexcept { return children; }
     const Id getId() const noexcept { return id; }
     void setParent(NodePtr node);
