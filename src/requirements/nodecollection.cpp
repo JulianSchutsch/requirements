@@ -11,18 +11,19 @@ namespace requirements {
   }
   
   NodeCollection::NodeCollection()
-    : rootNode(new Node(*this, generateRandomId(), nullptr)) {
+    : rootNode(new Node(*this, generateRandomId(), "")) {
   }
   
-  NodePtr NodeCollection::createNode(Id id, std::unique_ptr<IContent>&& content) {
+  NodePtr NodeCollection::createNode(Id id, std::string&& content) {
     NodePtr newNode(new Node(*this, id, std::move(content)));
     nodes[id] = newNode.get();
     newNode->setParent(rootNode);
     return newNode;
   }
-
-  NodePtr NodeCollection::createNode(std::unique_ptr<IContent>&& content) {
-    return createNode(generateRandomId(), std::move(content));
+  
+  NodePtr NodeCollection::createNode(const std::string& content) {
+    std::string cp = content;
+    return createNode(generateRandomId(), std::move(cp));
   }
 
 }

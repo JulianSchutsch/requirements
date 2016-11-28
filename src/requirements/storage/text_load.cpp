@@ -11,8 +11,6 @@
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
-#include "requirements/icontent.hpp"
-#include "requirements/contentfactory.hpp"
 
 #include "requirements/storage/exception.hpp"
 #include "requirements/storage/text_common.hpp"
@@ -28,13 +26,8 @@ namespace requirements {
           if(!string_to_id(path.stem().string(), id)) {
             throw Exception(Exception::Reason::InvalidId);
           }
-          std::string extensionString = path.extension().string();
-          const std::string suffix(extensionString, 1, extensionString.size()-1);
-          auto content = contentFactory(suffix);
-          if(!content) {
-            throw Exception(Exception::Reason::InvalidSuffix);
-          }
-          collection.createNode(id, std::move(content));
+          std::fstream source(path.string(), std::fstream::in);
+          collection.createNode(id, std::string(std::istream_iterator<char>(source), {}));
         }
       }
       catch(boost::filesystem::filesystem_error& e) {

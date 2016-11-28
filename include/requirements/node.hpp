@@ -9,8 +9,6 @@
 
 namespace requirements {
   
-  class IContent;
-  
   class Node;
   class NodeCollection;
 
@@ -22,17 +20,17 @@ namespace requirements {
     using ChildList = std::list<NodePtr>;
     Node* parent=nullptr;
     ChildList children;
-    std::unique_ptr<IContent> content;
     ptrdiff_t referenceCount;
     NodeCollection& collection;
+    std::string content;
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
   public:
-    IContent& getContent() const { return *content; }
+    const std::string& getContent() const { return content; }
     const ChildList getChildren() const noexcept { return children; }
     const Id getId() const noexcept { return id; }
     void setParent(NodePtr node);
-    explicit Node(NodeCollection& a_collection, Id a_id, std::unique_ptr<IContent>&& a_content);
+    explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content);
   };
   
   inline void intrusive_ptr_add_ref(Node* node) {

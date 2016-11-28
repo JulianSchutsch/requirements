@@ -4,7 +4,6 @@
 
 #include "requirements/node.hpp"
 #include "requirements/id.hpp"
-#include "requirements/icontent.hpp"
 
 namespace requirements {
   
@@ -30,8 +29,8 @@ namespace requirements {
     
     Iterator begin() { return Iterator(nodes.begin()); }
     Iterator end() { return Iterator(nodes.end()); }
-    NodePtr createNode(std::unique_ptr<IContent>&& content);
-    NodePtr createNode(Id id, std::unique_ptr<IContent>&& content);
+    NodePtr createNode(Id id, std::string&& content);
+    NodePtr createNode(const std::string& content);
     inline NodePtr getRootNode() noexcept { return rootNode; }
     NodePtr getNodeById(Id id);
     NodeCollection();

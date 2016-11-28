@@ -2,7 +2,6 @@
 
 #include "requirements/node.hpp"
 #include "requirements/id.hpp"
-#include "requirements/icontent.hpp"
 
 namespace req {
   namespace console {
@@ -14,7 +13,7 @@ namespace req {
       auto& content = node.getContent();
       if(&content!=nullptr) {
         stream<<"["<<id_to_string(node.getId())<<"]:";
-        stream<<content.getDescription();
+        stream<<"Normal node";
       } else {
         stream<<"Root node";
       }

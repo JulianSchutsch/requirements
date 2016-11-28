@@ -6,10 +6,8 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include "requirements/icontentvisitor.hpp"
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
-#include "requirements/icontent.hpp"
 #include "requirements/id.hpp"
 
 #include "util/path.hpp"
@@ -19,28 +17,11 @@
 
 namespace requirements {
   namespace storage {
-    namespace {
-      class ExtractContentSuffix : public IContentVisitor {
-      private:
-        std::string& suffix;
-      public:
-        void handleContent(Content_Text& text) override {
-          (void)text;
-          suffix = ".txt";
-        }
-        ExtractContentSuffix(std::string& a_suffix)
-          : suffix(a_suffix) {}
-      };
-    }
     
     static void saveNode(Node& node, const std::string& requirementsFolder) {
       auto& content = node.getContent();
-      if(content.isModified()) {
-        std::string suffix;
-        content.visit(ExtractContentSuffix(suffix));
-        std::fstream file(requirementsFolder+id_to_string(node.getId())+suffix, std::fstream::out);
-        content.serialize(file);
-      }
+      std::fstream file(requirementsFolder+id_to_string(node.getId()), std::fstream::out);
+      file<<content;
     }
     
     static void saveNodes(NodeCollection& collection, const std::string& requirementsFolder) {

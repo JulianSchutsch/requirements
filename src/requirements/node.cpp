@@ -1,7 +1,5 @@
 #include "requirements/node.hpp"
 
-#include "requirements/icontent.hpp"
-
 namespace requirements {
   
   void Node::setParent(NodePtr node) {
@@ -11,10 +9,10 @@ namespace requirements {
     parent = node.get();
     parent->children.emplace_back(NodePtr(this));
   }
-  
-  Node::Node(NodeCollection& a_collection, Id a_id, std::unique_ptr<IContent>&& a_content)
+
+  Node::Node(NodeCollection& a_collection, Id a_id, std::string&& a_content)
     : id(a_id)
-    , content(std::move(a_content))
-    , collection(a_collection) {}
+    , collection(a_collection)
+    , content(std::move(a_content)) {}
   
 }
