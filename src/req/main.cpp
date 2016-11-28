@@ -16,13 +16,8 @@ int main(int argc, char** args) {
   
   req::Config config;
   config.load();
-  const std::string& folder = "/home/alexandrus/testFolder";
-
-  requirements::NodeCollection collection;
-  requirements::storage::text_load(collection, folder);
-  requirements::storage::text_save(collection, folder);
   
-  req::console::printTree(std::cout, *collection.getRootNode());
+  std::cout<<"Folder:"<<config.folder<<std::endl;
   config.save();
   
   return 0;
