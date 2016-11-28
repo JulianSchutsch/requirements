@@ -29,7 +29,6 @@ namespace requirements {
             throw Exception(Exception::Reason::InvalidId);
           }
           std::string extensionString = path.extension().string();
-          std::cout<<extensionString<<std::endl;
           const std::string suffix(extensionString, 1, extensionString.size()-1);
           auto content = contentFactory(suffix);
           if(!content) {
