@@ -1,6 +1,7 @@
 #include "requirements/storage/text_load.hpp"
 
 #include <fstream>
+#include <vector>
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
