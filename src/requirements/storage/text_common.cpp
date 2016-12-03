@@ -6,8 +6,8 @@
 
 namespace requirements {
   namespace storage {
-
-    void text_ensureFolders(const std::string& folder, const std::string& requirementsFolder) {
+    
+    void text_ensureFolder(const std::string& folder) {
       // Ensure root folder exists
       if(!boost::filesystem::exists(folder)) {
         if(!boost::filesystem::create_directory(folder)) {
@@ -18,6 +18,10 @@ namespace requirements {
           throw Exception(Exception::Reason::NotAFolder);
         }
       }
+    }
+
+    void text_ensureFolders(const std::string& folder, const std::string& requirementsFolder) {
+      text_ensureFolder(folder);
 
       // Ensure requirements subfolder exists
       if(!boost::filesystem::exists(requirementsFolder)) {

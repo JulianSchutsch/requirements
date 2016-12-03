@@ -8,12 +8,14 @@
 
 #include "req/command/folder.hpp"
 #include "req/command/showfolder.hpp"
+#include "req/command/tree.hpp"
 
 namespace req {
   
   std::map<std::string, void(*)(Status&, const std::vector<std::string>&)> commands {
     {"folder", &command::processCommand_folder},
-    {"showfolder", &command::processCommand_showFolder}
+    {"showfolder", &command::processCommand_showFolder},
+    {"tree", &command::processCommand_tree}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

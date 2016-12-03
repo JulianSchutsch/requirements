@@ -4,8 +4,7 @@
 #include "requirements/id.hpp"
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
-#include "requirements/storage/text_load.hpp"
-#include "requirements/storage/text_save.hpp"
+#include "requirements/storage/text.hpp"
 
 #include "req/status.hpp"
 #include "req/command.hpp"

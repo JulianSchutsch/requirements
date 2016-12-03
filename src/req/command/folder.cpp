@@ -6,6 +6,7 @@
 namespace req {
   namespace command {
     void processCommand_folder(Status& status, const std::vector<std::string>& parameters) {
+      
       if(parameters.size()!=2) {
         throw Exception("Requires parameter: Folder");
       }
