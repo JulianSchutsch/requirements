@@ -12,7 +12,6 @@ namespace req {
     void printTree(std::ostream& stream, ::requirements::Node& node, const std::string& indent) {
 
       using namespace ::requirements;
-      auto& content = node.getContent();
       auto& children = node.getChildren();
       if(node.getParent()) {
         stream<<"["<<id_to_string(node.getId())<<"]"<<std::endl;
