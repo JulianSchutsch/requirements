@@ -9,6 +9,7 @@
 #include "req/command/showfolder.hpp"
 #include "req/command/tree.hpp"
 #include "req/command/new.hpp"
+#include "req/command/select.hpp"
 
 namespace req {
   
@@ -16,7 +17,8 @@ namespace req {
     {"folder", &command::processCommand_folder},
     {"showfolder", &command::processCommand_showFolder},
     {"tree", &command::processCommand_tree},
-    {"new", &command::processCommand_new}
+    {"new", &command::processCommand_new},
+    {"select", &command::processCommand_select}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {
