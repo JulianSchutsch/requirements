@@ -15,7 +15,7 @@ namespace requirements {
   
   namespace storage {
     
-    class Text {
+    class Text final {
     private:
       NodeCollection& collection;
       std::string folder;

@@ -20,7 +20,7 @@ namespace requirements {
     using ChildList = std::list<NodePtr>;
     Node* parent=nullptr;
     ChildList children;
-    ptrdiff_t referenceCount;
+    ptrdiff_t referenceCount{0};
     NodeCollection& collection;
     std::string content;
     std::string annotations;

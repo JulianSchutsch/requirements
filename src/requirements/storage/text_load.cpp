@@ -28,6 +28,7 @@ namespace requirements {
       try {
         for(auto it=boost::filesystem::directory_iterator(folder+text_requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
           boost::filesystem::path path(*it);
+          std::cout<<*it<<std::endl;
           Id id;
           if(!string_to_id(path.stem().string(), id)) {
             throw Exception(Exception::Reason::InvalidId);

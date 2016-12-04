@@ -16,7 +16,7 @@ namespace req{
         throw Exception("No parameters for new expected");
       }
       requirements::NodeCollection collection;
-      requirements::storage::Text(collection, status.folder);
+      requirements::storage::Text storage(collection, status.folder);
       auto node = collection.createNode("");
       std::cout<<"Node with id="<<requirements::id_to_string(node->getId())<<" created and selected"<<std::endl;
       status.selections[0] = {requirements::id_to_string(node->getId())};
