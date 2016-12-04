@@ -4,13 +4,20 @@
 
 #include "requirements/nodecollection.hpp"
 #include "requirements/storage/text.hpp"
+#include "requirements/select.hpp"
+#include "requirements/id.hpp"
 
 namespace req {
   namespace command {
     void processCommand_select(Status& status, const std::vector<std::string>& parameters) {
       requirements::NodeCollection collection;
       requirements::storage::Text storage(collection, status.folder);
-      // Call common selection library
+      auto selection = requirements::select(collection, parameters);
+      status.selections[0].clear();
+      status.selections[0].reserve(selection.size());
+      for(auto& element: selection) {
+        status.selections[0].emplace_back(requirements::id_to_string(element->getId()));
+      }
     }
   }
 }
