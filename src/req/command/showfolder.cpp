@@ -8,7 +8,7 @@
 namespace req {
   namespace command {
     void processCommand_showFolder(Status& status, const std::vector<std::string>& parameters) {
-      if(parameters.size()!=1) {
+      if(parameters.size()!=0) {
         throw Exception("Too many parameters");
       }
       std::cout<<"Current root folder: "<<status.folder<<std::endl;
