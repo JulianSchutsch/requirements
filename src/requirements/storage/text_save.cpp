@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <vector>
-#include <iostream>
 
 #include <boost/algorithm/string/join.hpp>
 
@@ -32,9 +31,7 @@ namespace requirements {
     }
     
     static void saveNodes(NodeCollection& collection, const std::string& folder) {
-      std::cout<<"Save nodes"<<std::endl;
       for(auto& node: collection) {
-        std::cout<<id_to_string(node.getId())<<std::endl;
         saveNode(node, folder);
       }
     }
