@@ -18,11 +18,8 @@ namespace requirements {
           throw Exception(Exception::Reason::NotAFolder);
         }
       }
-    }
 
-    void text_ensureFolders(const std::string& folder, const std::string& requirementsFolder) {
-      text_ensureFolder(folder);
-
+      const std::string requirementsFolder = folder + text_requirementsFolder;
       // Ensure requirements subfolder exists
       if(!boost::filesystem::exists(requirementsFolder)) {
         if(!boost::filesystem::create_directory(requirementsFolder)) {
@@ -33,6 +30,18 @@ namespace requirements {
           throw Exception(Exception::Reason::NotAFolder);
         }
       }
+      
+      const std::string annotationsFolder = folder + text_annotationsFolder;
+      if(!boost::filesystem::exists(annotationsFolder)) {
+        if(!boost::filesystem::create_directory(annotationsFolder)) {
+          throw Exception(Exception::Reason::CannotCreateFolder);
+        }
+      } else {
+        if(!boost::filesystem::is_directory(annotationsFolder)) {
+          throw Exception(Exception::Reason::NotAFolder);
+        }
+      }
+      
     }
 
   }

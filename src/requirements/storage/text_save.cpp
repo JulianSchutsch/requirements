@@ -18,10 +18,17 @@
 namespace requirements {
   namespace storage {
     
-    static void saveNode(Node& node, const std::string& requirementsFolder) {
-      auto& content = node.getContent();
-      std::fstream file(requirementsFolder+id_to_string(node.getId()), std::fstream::out);
-      file<<content;
+    static void saveNode(Node& node, const std::string& folder) {
+      {
+        auto& content = node.getContent();
+        std::fstream file(folder + text_requirementsFolder + id_to_string(node.getId()), std::fstream::out);
+        file<<content;
+      }
+      {
+        auto& annotations = node.getAnnotations();
+        std::fstream file(folder + text_annotationsFolder + id_to_string(node.getId()), std::fstream::out);
+        file<<annotations;
+      }
     }
     
     static void saveNodes(NodeCollection& collection, const std::string& requirementsFolder) {
@@ -45,7 +52,7 @@ namespace requirements {
     }
     
     static void saveRelationships(NodeCollection& collection, const std::string& folder) {
-      std::fstream file(folder+"relationships", std::fstream::out);
+      std::fstream file(folder+text_relationshipsFile, std::fstream::out);
       for(auto& node: collection) {
         saveRelationshipsOfNode(file, node);
       }
@@ -53,12 +60,11 @@ namespace requirements {
 
     void text_save(NodeCollection& collection, const std::string& a_folder) {
       const auto& folder = util::ensureTrailingSlash(a_folder);
-      const auto& requirementsFolder = folder+"requirements/";
       if(folder.empty()) {
         throw Exception(Exception::Reason::FolderNameEmpty);
       }
-      text_ensureFolders(folder, requirementsFolder);
-      saveNodes(collection, requirementsFolder);
+      text_ensureFolder(folder);
+      saveNodes(collection, folder);
       saveRelationships(collection, folder);
     }
   }

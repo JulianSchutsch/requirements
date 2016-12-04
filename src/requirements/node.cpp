@@ -10,9 +10,10 @@ namespace requirements {
     parent->children.emplace_back(NodePtr(this));
   }
 
-  Node::Node(NodeCollection& a_collection, Id a_id, std::string&& a_content)
+  Node::Node(NodeCollection& a_collection, Id a_id, std::string&& a_content, std::string&& a_annotations)
     : id(a_id)
     , collection(a_collection)
-    , content(std::move(a_content)) {}
+    , content(std::move(a_content))
+    , annotations(std::move(a_annotations)) {}
   
 }

@@ -23,15 +23,17 @@ namespace requirements {
     ptrdiff_t referenceCount;
     NodeCollection& collection;
     std::string content;
+    std::string annotations;
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
   public:
     const std::string& getContent() const { return content; }
+    const std::string& getAnnotations() const { return annotations; }
     inline NodePtr getParent() const noexcept { return parent; }
     const ChildList getChildren() const noexcept { return children; }
     const Id getId() const noexcept { return id; }
     void setParent(NodePtr node);
-    explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content);
+    explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content, std::string&& annotations);
   };
   
   inline void intrusive_ptr_add_ref(Node* node) {

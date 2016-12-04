@@ -11,11 +11,11 @@ namespace requirements {
   }
   
   NodeCollection::NodeCollection()
-    : rootNode(new Node(*this, generateRandomId(), "")) {
+    : rootNode(new Node(*this, generateRandomId(), "", "")) {
   }
   
-  NodePtr NodeCollection::createNode(Id id, std::string&& content) {
-    NodePtr newNode(new Node(*this, id, std::move(content)));
+  NodePtr NodeCollection::createNode(Id id, std::string&& content, std::string&& annotations) {
+    NodePtr newNode(new Node(*this, id, std::move(content), std::move(annotations)));
     nodes[id] = newNode.get();
     newNode->setParent(rootNode);
     return newNode;
@@ -23,7 +23,8 @@ namespace requirements {
   
   NodePtr NodeCollection::createNode(const std::string& content) {
     std::string cp = content;
-    return createNode(generateRandomId(), std::move(cp));
+    std::string an = "";
+    return createNode(generateRandomId(), std::move(cp), std::move(an));
   }
 
 }

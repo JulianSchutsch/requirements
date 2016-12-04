@@ -18,17 +18,25 @@
 
 namespace requirements {
   namespace storage {
+    
+    static std::string readAll(const std::string& filename) {
+      std::fstream source(filename, std::fstream::in);
+      return std::string(std::istream_iterator<char>(source), {});
+    }
 
-    static void readRequirements(NodeCollection& collection, const std::string& requirementsFolder) {
+    static void readRequirements(NodeCollection& collection, const std::string& folder) {
       try {
-        for(auto it=boost::filesystem::directory_iterator(requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
+        for(auto it=boost::filesystem::directory_iterator(folder+text_requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
           boost::filesystem::path path(*it);
           Id id;
           if(!string_to_id(path.stem().string(), id)) {
             throw Exception(Exception::Reason::InvalidId);
           }
-          std::fstream source(path.string(), std::fstream::in);
-          collection.createNode(id, std::string(std::istream_iterator<char>(source), {}));
+          {
+            auto content = readAll(path.string());
+            auto annotations = readAll(folder + text_annotationsFolder + id_to_string(id));
+            auto node = collection.createNode(id, std::move(content), std::move(annotations));
+          }
         }
       }
       catch(boost::filesystem::filesystem_error& e) {
@@ -37,7 +45,7 @@ namespace requirements {
     }
     
     static void readRelationships(NodeCollection& collection, const std::string& folder) {
-      std::string filename = folder+"relationships";
+      std::string filename = folder+text_relationshipsFile;
       if(!boost::filesystem::exists(filename)) {
         return;
       }
@@ -77,12 +85,11 @@ namespace requirements {
 
     void text_load(NodeCollection& collection, const std::string& a_folder) {
       const auto& folder = util::ensureTrailingSlash(a_folder);
-      const auto& requirementsFolder = folder+"requirements/";
       if(folder.empty()) {
         throw Exception(Exception::Reason::FolderNameEmpty);
       }
-      text_ensureFolders(folder, requirementsFolder);
-      readRequirements(collection, requirementsFolder);  
+      text_ensureFolder(folder);
+      readRequirements(collection, folder);  
       readRelationships(collection, folder);
       
     }

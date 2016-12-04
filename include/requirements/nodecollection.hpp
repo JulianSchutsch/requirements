@@ -29,7 +29,7 @@ namespace requirements {
     
     Iterator begin() { return Iterator(nodes.begin()); }
     Iterator end() { return Iterator(nodes.end()); }
-    NodePtr createNode(Id id, std::string&& content);
+    NodePtr createNode(Id id, std::string&& content, std::string&& annotations);
     NodePtr createNode(const std::string& content);
     inline NodePtr getRootNode() noexcept { return rootNode; }
     NodePtr getNodeById(Id id);
