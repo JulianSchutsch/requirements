@@ -19,8 +19,8 @@ namespace requirements {
     private:
       Nodes::iterator it;
     public:
-      Node& operator * () { return *(it->second); }
-      Node* operator -> () { return &*(it->second); }
+      NodePtr& operator * () { return (it->second); }
+      NodePtr* operator -> () { return &(it->second); }
       bool operator == (const Iterator& other) { return it==other.it; }
       bool operator != (const Iterator& other) { return it!=other.it; }
       Iterator& operator ++ () { ++it; return *this; }

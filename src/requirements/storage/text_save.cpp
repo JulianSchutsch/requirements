@@ -32,7 +32,7 @@ namespace requirements {
     
     static void saveNodes(NodeCollection& collection, const std::string& folder) {
       for(auto& node: collection) {
-        saveNode(node, folder);
+        saveNode(*node, folder);
       }
     }
 
@@ -53,7 +53,7 @@ namespace requirements {
     static void saveRelationships(NodeCollection& collection, const std::string& folder) {
       std::fstream file(folder+text_relationshipsFile, std::fstream::out);
       for(auto& node: collection) {
-        saveRelationshipsOfNode(file, node);
+        saveRelationshipsOfNode(file, *node);
       }
     }
 
