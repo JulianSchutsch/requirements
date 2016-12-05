@@ -1,3 +1,4 @@
+#include <vector>
 #include "req/console/printtree.hpp"
 
 #include "boost/algorithm/string/split.hpp"
