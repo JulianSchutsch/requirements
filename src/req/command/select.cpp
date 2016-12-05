@@ -1,3 +1,4 @@
+#include <iostream>
 #include "req/command/select.hpp"
 
 #include "req/status.hpp"
