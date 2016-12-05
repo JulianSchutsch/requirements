@@ -13,10 +13,12 @@ namespace requirements {
       regexes.emplace_back(parameter);
     }
     for(auto& node: collection) {
+      const std::string idStr = "id:"+id_to_string(node->getId());
       const auto& content = node->getContent();
+      const auto& annotations = node->getAnnotations();
       bool matched = true;
       for(auto e: regexes) {
-        if(!std::regex_match(content, e)) {
+        if((!std::regex_search(content, e)) && (!std::regex_search(annotations, e)) && (!std::regex_search(idStr, e))) {
           matched = false;
           break;
         }

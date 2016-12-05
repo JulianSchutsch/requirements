@@ -15,8 +15,10 @@ namespace req {
       auto selection = requirements::select(collection, parameters);
       status.selections[0].clear();
       status.selections[0].reserve(selection.size());
+      std::cout<<"Selection:"<<std::endl;
       for(auto& element: selection) {
         status.selections[0].emplace_back(requirements::id_to_string(element->getId()));
+        std::cout<<"Selected: "<<requirements::id_to_string(element->getId())<<std::endl;
       }
     }
   }
