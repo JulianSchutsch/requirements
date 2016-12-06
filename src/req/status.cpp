@@ -15,17 +15,25 @@ namespace req {
 
   void Status::load_selections(TiXmlElement& element) {
     int nr;
-    if(!element.QueryIntAttribute("nr", &nr)) {
+    if(element.QueryIntAttribute("nr", &nr)!=TIXML_SUCCESS) {
+      std::cout<<"No Nr Attribute"<<std::endl;
       return;
     }
     auto& mapEntry = selections[nr];
     TiXmlElement* selection = element.FirstChildElement();
     while(selection) {
       auto value = selection->Value();
-      if(strcmp(value, "node")) {
-        std::string uuid;
-        if(selection->QueryStringAttribute("uuid", &uuid)) {
-          mapEntry.push_back(uuid);
+      if(strcmp(value, "node")==0) {
+        std::string uuidStr;
+        if(selection->QueryStringAttribute("uuid", &uuidStr)==TIXML_SUCCESS) {
+          requirements::Id uuid;
+          if(requirements::string_to_id(uuidStr, uuid)) {
+            mapEntry.push_back(uuid);
+          } else {
+            std::cout<<"Invalid id in status file"<<std::endl;
+          }
+        } else {
+          std::cout<<"Node without uuid attribute in status file"<<std::endl;
         }
       }
       selection = selection->NextSiblingElement();
@@ -36,10 +44,11 @@ namespace req {
     TiXmlElement* element = root.FirstChildElement();
     while(element) {
       auto value = element->Value();
+      std::cout<<"Scan"<<value<<std::endl;
       if(strcmp(value, "folder")==0) {
         load_folder(*element);
       }
-      if(strcmp(value, "selections")==0) {
+      if(strcmp(value, "selection")==0) {
         load_selections(*element);
       }
       element = element->NextSiblingElement();
@@ -78,7 +87,7 @@ namespace req {
       root.LinkEndChild(e_selection);
       for(auto& element:selection.second) {
         TiXmlElement* e_element=new TiXmlElement("node");
-        e_element->SetAttribute("uuid", element);
+        e_element->SetAttribute("uuid", requirements::id_to_string(element));
         e_selection->LinkEndChild(e_element);
       }
     }

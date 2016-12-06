@@ -19,7 +19,7 @@ namespace req{
       requirements::storage::Text storage(collection, status.folder);
       auto node = collection.createNode("");
       std::cout<<"Node with id="<<requirements::id_to_string(node->getId())<<" created and selected"<<std::endl;
-      status.selections[0] = {requirements::id_to_string(node->getId())};
+      status.selections[0] = {node->getId()};
       
     }
   }

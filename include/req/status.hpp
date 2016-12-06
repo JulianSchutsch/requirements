@@ -4,10 +4,11 @@
 #include <vector>
 #include <map>
 
+#include "requirements/id.hpp"
+
 class TiXmlElement;
 
 namespace req {
-  
   
   class Status {
   private:
@@ -17,7 +18,7 @@ namespace req {
     void save_folder(TiXmlElement& root);
     void save_selections(TiXmlElement& root);
   public:
-    using Selection = std::vector<std::string>;
+    using Selection = std::vector<requirements::Id>;
     std::string folder;
     std::map<int, Selection> selections;
     bool load();

@@ -10,6 +10,7 @@
 #include "req/command/tree.hpp"
 #include "req/command/new.hpp"
 #include "req/command/select.hpp"
+#include "req/command/setparent.hpp"
 
 namespace req {
   
@@ -18,7 +19,8 @@ namespace req {
     {"showfolder", &command::processCommand_showFolder},
     {"tree", &command::processCommand_tree},
     {"new", &command::processCommand_new},
-    {"select", &command::processCommand_select}
+    {"select", &command::processCommand_select},
+    {"setparent", &command::processCommand_setParent}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

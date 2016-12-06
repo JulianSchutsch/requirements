@@ -6,6 +6,20 @@
 
 namespace requirements {
   
+  bool selectFromIds(NodeCollection& collection, const std::vector<Id>& ids, std::vector<NodePtr>& result) {
+    result.clear();
+    result.reserve(ids.size());
+    for(auto& id: ids) {
+      NodePtr node;
+      if(!collection.findById(id, node)) {
+        result.clear();
+        return false;
+      }
+      result.emplace_back(node);
+    }
+    return true;
+  }
+  
   bool isSelected(const NodePtr& node, const std::vector<NodePtr>& selected) {
     for(auto& element:selected) {
       if(node==element) {

@@ -2,6 +2,16 @@
 
 namespace requirements {
   
+  bool NodeCollection::findById(Id id, NodePtr& node) {
+    for(auto element: *this) {
+      if(element->getId()==id) {
+        node = element;
+        return true;
+      }
+    }
+    return false;
+  }
+  
   NodePtr NodeCollection::getNodeById(Id id) {
     auto it = nodes.find(id);
     if(it==nodes.end()) {
