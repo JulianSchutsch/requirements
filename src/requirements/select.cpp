@@ -7,6 +7,9 @@
 namespace requirements {
   std::vector<NodePtr> select(NodeCollection& collection, const std::vector<std::string>& parameters) {
     std::vector<NodePtr> result;
+    if(parameters.size()==0) {
+      return result;
+    }
     std::vector<std::regex> regexes;
     regexes.reserve(parameters.size());
     for(auto& parameter: parameters) {
