@@ -29,6 +29,7 @@ namespace requirements {
   public:
     bool hasParent(const NodePtr& node) const;
     const std::string& getContent() const { return content; }
+    void updateContent(const std::string& newContent) { content = newContent; }
     const std::string& getAnnotations() const { return annotations; }
     inline NodePtr getParent() const noexcept { return parent; }
     const ChildList getChildren() const noexcept { return children; }

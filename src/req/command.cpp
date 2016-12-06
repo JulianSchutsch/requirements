@@ -11,6 +11,7 @@
 #include "req/command/new.hpp"
 #include "req/command/select.hpp"
 #include "req/command/setparent.hpp"
+#include "req/command/edit.hpp"
 
 namespace req {
   
@@ -20,7 +21,8 @@ namespace req {
     {"tree", &command::processCommand_tree},
     {"new", &command::processCommand_new},
     {"select", &command::processCommand_select},
-    {"setparent", &command::processCommand_setParent}
+    {"setparent", &command::processCommand_setParent},
+    {"edit", &command::processCommand_edit},
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

@@ -9,6 +9,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include "util/path.hpp"
+#include "util/stringfile.hpp"
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
@@ -18,11 +19,6 @@
 
 namespace requirements {
   namespace storage {
-    
-    static std::string readAll(const std::string& filename) {
-      std::fstream source(filename, std::fstream::in);
-      return std::string(std::istream_iterator<char>(source), {});
-    }
 
     static void readRequirements(NodeCollection& collection, const std::string& folder) {
       try {
@@ -33,8 +29,8 @@ namespace requirements {
             throw Exception(Exception::Reason::InvalidId);
           }
           {
-            auto content = readAll(path.string());
-            auto annotations = readAll(folder + text_annotationsFolder + id_to_string(id));
+            auto content = util::readFileToString(path.native());
+            auto annotations = util::readFileToString(folder + text_annotationsFolder + id_to_string(id));
             auto node = collection.createNode(id, std::move(content), std::move(annotations));
           }
         }
