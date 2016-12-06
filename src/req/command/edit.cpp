@@ -21,9 +21,11 @@ namespace req {
       requirements::NodeCollection collection;
       requirements::storage::Text storage(collection, status.folder);
       std::vector<requirements::NodePtr> selections;
-      if(parameters.size()==0) {
+      std::cout<<parameters.size()<<std::endl;
+      if(parameters.size()!=0) {
         selections = requirements::select(collection, parameters);
       } else {
+        std::cout<<"Select from ids"<<std::endl;
         if(!requirements::selectFromIds(collection, status.selections[0], selections)) {
           std::cout<<"Invalid selection"<<std::endl;
           return;
