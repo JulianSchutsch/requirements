@@ -31,7 +31,7 @@ namespace requirements {
   
   bool hasSelectedParent(const NodePtr& node, const std::vector<NodePtr>& selected) {
     for(auto& element: selected) {
-      if(element->hasParent(node)) {
+      if(node->hasParent(element)) {
         return true;
       }
     }

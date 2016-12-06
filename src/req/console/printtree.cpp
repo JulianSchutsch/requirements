@@ -8,6 +8,7 @@
 #include "console/console.hpp"
 
 #include "requirements/id.hpp"
+#include "requirements/select.hpp"
 
 namespace req {
   namespace console {
@@ -17,7 +18,13 @@ namespace req {
       using namespace ::requirements;
       auto& children = node->getChildren();
       if(node->getParent()) {
-        stream<<"["<<id_to_string(node->getId())<<"]"<<std::endl;
+        stream<<"[";
+        if(requirements::isSelected(node, selected)) {
+          stream<<bold()<<id_to_string(node->getId())<<reset();
+        } else {
+          stream<<id_to_string(node->getId());
+        }
+        stream<<"]"<<std::endl;
         std::vector<std::string> parts;
         boost::algorithm::split(parts, node->getContent(), boost::is_any_of("\n"));
         std::string textIndent;
