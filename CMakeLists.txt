@@ -13,6 +13,7 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/include" ${GTKMM_INCLUDE_DIRS})
 FILE(GLOB_RECURSE REQUIREMENTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/requirements/*.cpp")
 FILE(GLOB_RECURSE UTIL_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/util/*.cpp")
 FILE(GLOB_RECURSE REQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/req/*.cpp")
+FILE(GLOB_RECURSE CONSOLE_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/console/*.cpp")
 FILE(GLOB_RECURSE GREQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/greq/*.cpp")
 
 find_library(LIB_BOOST_FILESYSTEM "boost_filesystem")
@@ -23,7 +24,7 @@ add_library(requirements SHARED ${REQUIREMENTS_SOURCES} ${UTIL_SOURCES})
 
 target_link_libraries(requirements ${LIB_BOOST_FILESYSTEM} ${LIB_BOOST_SYSTEM})
 
-add_executable(req ${REQ_SOURCES} ${UTIL_SOURCES})
+add_executable(req ${REQ_SOURCES} ${UTIL_SOURCES} ${CONSOLE_SOURCES})
 
 target_link_libraries(req "requirements" ${LIB_TINYXML})
 

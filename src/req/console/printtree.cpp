@@ -1,8 +1,11 @@
-#include <vector>
 #include "req/console/printtree.hpp"
+
+#include <sstream>
 
 #include "boost/algorithm/string/split.hpp"
 #include <boost/algorithm/string.hpp>
+
+#include "console/console.hpp"
 
 #include "requirements/id.hpp"
 
@@ -16,7 +19,12 @@ namespace req {
         stream<<"["<<id_to_string(node->getId())<<"]"<<std::endl;
         std::vector<std::string> parts;
         boost::algorithm::split(parts, node->getContent(), boost::is_any_of("\n"));
-        const std::string textIndent = (children.begin()!=children.end())?" \xe2\x94\x82 ":"   ";
+        std::string textIndent;
+        {
+          std::stringstream ss;
+          ss<<' '<<((children.begin()!=children.end())?::console::line_verticalRight():" ")<<' ';
+          textIndent = ss.str();
+        }
         for(auto& part:parts) {
           stream<<indent<<textIndent<<" "<<part<<std::endl;
         }
