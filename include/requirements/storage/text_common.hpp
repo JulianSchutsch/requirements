@@ -8,6 +8,7 @@ namespace requirements {
     const std::string text_relationshipsFile = "relationships";
     const std::string text_requirementsFolder = "requirements/";
     const std::string text_annotationsFolder="annotations/";
+    const std::string text_blobFolder="blob/";
     
     void text_ensureFolder(const std::string& folder);
   }

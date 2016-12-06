@@ -31,6 +31,7 @@ namespace requirements {
         }
       }
       
+      // Ensure annotations subfolder exists
       const std::string annotationsFolder = folder + text_annotationsFolder;
       if(!boost::filesystem::exists(annotationsFolder)) {
         if(!boost::filesystem::create_directory(annotationsFolder)) {
@@ -42,6 +43,17 @@ namespace requirements {
         }
       }
       
+      // Ensure blob subfolder exists
+      const std::string blobFolder = folder + text_blobFolder;
+      if(!boost::filesystem::exists(blobFolder)) {
+        if(!boost::filesystem::create_directory(blobFolder)) {
+          throw Exception(Exception::Reason::CannotCreateFolder);
+        }
+      } else {
+        if(!boost::filesystem::is_directory(blobFolder)) {
+          throw Exception(Exception::Reason::NotAFolder);
+        }
+      }
     }
 
   }

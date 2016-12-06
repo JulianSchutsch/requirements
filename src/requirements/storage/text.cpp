@@ -13,6 +13,18 @@
 namespace requirements {
   namespace storage {
     
+    Id Text::createBlob() {
+      return generateRandomId();
+    }
+    
+    std::string Text::openBlob(Id id) {
+      return folder+text_blobFolder+id_to_string(id);
+    }
+    
+    void Text::closeBlob(Id id) {
+      (void)id;
+    }
+    
     Text::Text(NodeCollection& a_collection, const std::string& a_folder)
       : collection(a_collection)
       , folder(util::ensureTrailingSlash(a_folder)) {
