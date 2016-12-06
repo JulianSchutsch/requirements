@@ -27,6 +27,7 @@ namespace requirements {
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
   public:
+    bool hasParent(const NodePtr& node) const;
     const std::string& getContent() const { return content; }
     const std::string& getAnnotations() const { return annotations; }
     inline NodePtr getParent() const noexcept { return parent; }

@@ -2,6 +2,17 @@
 
 namespace requirements {
   
+  bool Node::hasParent(const NodePtr& node) const {
+    auto current = parent;
+    while(current) {
+      if(node==current) {
+        return true;
+      }
+      current = current->parent;
+    }
+    return false;
+  }
+  
   void Node::setParent(NodePtr node) {
     if(parent!=nullptr) {
       parent->children.remove_if([this](const NodePtr& item){return item==this;});

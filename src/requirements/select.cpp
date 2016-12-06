@@ -5,6 +5,32 @@
 #include "requirements/nodecollection.hpp"
 
 namespace requirements {
+  
+  bool isSelected(const NodePtr& node, const std::vector<NodePtr>& selected) {
+    for(auto& element:selected) {
+      if(node==element) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  bool hasSelectedParent(const NodePtr& node, const std::vector<NodePtr>& selected) {
+    for(auto& element: selected) {
+      if(element->hasParent(node)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  std::vector<NodePtr> select(NodeCollection& collection, const std::vector<std::string>& parameters, NodePtr defaultValue) {
+    if(parameters.size()==0) {
+      return {defaultValue};
+    }
+    return select(collection, parameters);
+  }
+  
   std::vector<NodePtr> select(NodeCollection& collection, const std::vector<std::string>& parameters) {
     std::vector<NodePtr> result;
     if(parameters.size()==0) {
