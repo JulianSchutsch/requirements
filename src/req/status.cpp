@@ -44,7 +44,6 @@ namespace req {
     TiXmlElement* element = root.FirstChildElement();
     while(element) {
       auto value = element->Value();
-      std::cout<<"Scan"<<value<<std::endl;
       if(strcmp(value, "folder")==0) {
         load_folder(*element);
       }

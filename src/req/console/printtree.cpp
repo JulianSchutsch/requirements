@@ -13,6 +13,7 @@ namespace req {
   namespace console {
     
     void printTree(std::ostream& stream, const requirements::NodePtr& node, const std::string& indent, const std::vector<requirements::NodePtr> selected) {
+      using namespace ::console;
       using namespace ::requirements;
       auto& children = node->getChildren();
       if(node->getParent()) {
@@ -22,7 +23,7 @@ namespace req {
         std::string textIndent;
         {
           std::stringstream ss;
-          ss<<' '<<((children.begin()!=children.end())?::console::line_verticalRight():" ")<<' ';
+          ss<<' '<<((children.begin()!=children.end())?line_vertical():" ")<<' ';
           textIndent = ss.str();
         }
         for(auto& part:parts) {
@@ -38,10 +39,10 @@ namespace req {
         next = it;
         ++next;
         if(next!=children.end()) {
-          stream<<" \xe2\x94\x9c\xe2\x94\x80";
-          printTree(stream, *it, indent+" \xe2\x94\x82 ", selected);
+          stream<<' '<<line_verticalRight()<<line_horizontal();
+          printTree(stream, *it, indent+' '+line_vertical()+' ', selected);
         } else {
-          stream<<" \xe2\x94\x94\xe2\x94\x80";
+          stream<<' '<<line_bottomLeft()<<line_horizontal();
           printTree(stream, *it, indent+"   ", selected);
         }
         it=next;
