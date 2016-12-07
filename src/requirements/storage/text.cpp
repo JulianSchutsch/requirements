@@ -19,7 +19,7 @@ namespace requirements {
       std::vector<std::string> result;
       for(auto it=boost::filesystem::directory_iterator(folder+text_blobFolder);it!=boost::filesystem::directory_iterator();++it) {
         boost::filesystem::path path(*it);
-        auto id = path.stem().native()+path.extension().native();
+        auto id = path.filename().native();
         result.emplace_back(std::move(id));
       }
       return std::move(result);
