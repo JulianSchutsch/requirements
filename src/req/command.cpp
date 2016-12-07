@@ -12,6 +12,8 @@
 #include "req/command/select.hpp"
 #include "req/command/setparent.hpp"
 #include "req/command/edit.hpp"
+#include "req/command/newblob.hpp"
+#include "req/command/listblobs.hpp"
 
 namespace req {
   
@@ -23,6 +25,8 @@ namespace req {
     {"select", &command::processCommand_select},
     {"setparent", &command::processCommand_setParent},
     {"edit", &command::processCommand_edit},
+    {"newblob", &command::processCommand_newBlob},
+    {"listblobs", &command::processCommand_listBlobs},
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

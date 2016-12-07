@@ -1,8 +1,10 @@
 #include "requirements/storage/text.hpp"
 
 #include <fstream>
+#include <iostream>
 
 #include <boost/interprocess/sync/file_lock.hpp>
+#include <boost/filesystem.hpp>
 
 #include "util/path.hpp"
 
@@ -12,6 +14,16 @@
 
 namespace requirements {
   namespace storage {
+    
+    std::vector<std::string> Text::getBlobs() {
+      std::vector<std::string> result;
+      for(auto it=boost::filesystem::directory_iterator(folder+text_blobFolder);it!=boost::filesystem::directory_iterator();++it) {
+        boost::filesystem::path path(*it);
+        auto id = path.stem().native()+path.extension().native();
+        result.emplace_back(std::move(id));
+      }
+      return std::move(result);
+    }
     
     std::string Text::createBlob(const std::string& suffix) {
       return id_to_string(generateRandomId())+"."+suffix;

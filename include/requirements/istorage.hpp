@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "requirements/id.hpp"
 
 namespace requirements {
@@ -9,6 +12,7 @@ namespace requirements {
     virtual std::string createBlob(const std::string& suffix) = 0;
     virtual std::string openBlob(const std::string& id) = 0;
     virtual void closeBlob(const std::string& id) = 0;
+    virtual std::vector<std::string> getBlobs() = 0;
   };
   
 }

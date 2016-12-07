@@ -27,6 +27,7 @@ namespace requirements {
       std::string createBlob(const std::string& suffix) override;
       std::string openBlob(const std::string& id) override;
       void closeBlob(const std::string& id) override;
+      std::vector<std::string> getBlobs() override;
       Text(NodeCollection& collection, const std::string& folder);
       ~Text();
     };
