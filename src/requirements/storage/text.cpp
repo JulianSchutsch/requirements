@@ -13,15 +13,15 @@
 namespace requirements {
   namespace storage {
     
-    Id Text::createBlob() {
-      return generateRandomId();
+    std::string Text::createBlob(const std::string& suffix) {
+      return id_to_string(generateRandomId())+"."+suffix;
     }
     
-    std::string Text::openBlob(Id id) {
-      return folder+text_blobFolder+id_to_string(id);
+    std::string Text::openBlob(const std::string& id) {
+      return folder+text_blobFolder+id;
     }
     
-    void Text::closeBlob(Id id) {
+    void Text::closeBlob(const std::string& id) {
       (void)id;
     }
     
