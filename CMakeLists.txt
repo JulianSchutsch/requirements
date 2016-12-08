@@ -30,4 +30,4 @@ target_link_libraries(req "requirements" ${LIB_TINYXML})
 
 add_executable(greq ${GREQ_SOURCES})
 
-target_link_libraries(greq ${GTKMM_LIBRARIES})
+target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})

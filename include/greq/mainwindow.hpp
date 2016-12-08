@@ -7,26 +7,34 @@
 #include <gtkmm/treestore.h>
 #include <gtkmm/liststore.h>
 
+#include "requirements/node.hpp"
+
 class MainWindow : public Gtk::Window{
   //Member widgets:
   Gtk::Button* _f1_button;
   Gtk::Button* _f2_button;
+  Gtk::Button* _f3_button;
   Gtk::Button* _f10_button;
   Gtk::TreeView* _topictree;
   Gtk::TreeView* _contenttree;
 
   void fill_with_dull_data();
+  void printtree(std::string dirname);
+  void add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
+  void add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   //Signal handlers:
   void on_f1_clicked();
   void on_f2_clicked();
+  void on_f3_clicked();
   void on_f10_clicked();
   bool on_key_press(GdkEventKey *event);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{
   public:
-    TopicColumns() { add(col_node); }
+    TopicColumns() { add(col_node);add(col_cont); }
     Gtk::TreeModelColumn<Glib::ustring> col_node;
+    Gtk::TreeModelColumn<Glib::ustring> col_cont;
   };
 
   TopicColumns _topic_columns;
