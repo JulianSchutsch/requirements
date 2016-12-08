@@ -24,7 +24,7 @@ add_library(requirements SHARED ${REQUIREMENTS_SOURCES} ${UTIL_SOURCES})
 
 target_link_libraries(requirements ${LIB_BOOST_FILESYSTEM} ${LIB_BOOST_SYSTEM})
 
-add_executable(req ${REQ_SOURCES} ${UTIL_SOURCES} ${CONSOLE_SOURCES})
+add_executable(req ${REQ_SOURCES} ${CONSOLE_SOURCES})
 
 target_link_libraries(req "requirements" ${LIB_TINYXML})
 
