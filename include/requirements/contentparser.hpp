@@ -3,13 +3,10 @@
 #include <vector>
 #include <memory>
 
-#include "requirements/node.hpp"
-
 namespace requirements {
+
+  using Sections = std::vector<std::pair<std::string, std::string>>;
   
-  class IContent;
-  
-  std::vector<std::unique_ptr<IContent>> parseContent(NodePtr node);
-  std::vector<std::unique_ptr<IContent>> parseAnnotations(NodePtr node);
+  Sections parseContent(const std::string& content);
   
 }

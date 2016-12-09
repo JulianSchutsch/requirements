@@ -2,9 +2,6 @@
 
 #include <sstream>
 
-#include "requirements/icontent.hpp"
-#include "requirements/content/text.hpp"
-
 namespace requirements {
   
   static bool internal_checkSection(std::string::const_iterator& ppos, std::string::const_iterator end, std::string& sectionName) {
@@ -37,12 +34,8 @@ namespace requirements {
     }
     ss<<std::string(start, ppos);
   }
-  
-  static void internal_createContent(const std::string& sectionName, const std::stringstream& section, std::vector<std::unique_ptr<IContent>>& results) {
-    results.emplace_back(new content::Text(section.str()));
-  }
-  
-  static void internal_parseContent(const std::string& str, std::vector<std::unique_ptr<IContent>>& results) {
+
+  static void internal_parseContent(const std::string& str, Sections& results) {
     auto pos = str.cbegin();
     auto end = str.cend();
     std::stringstream section;
@@ -54,22 +47,16 @@ namespace requirements {
       internal_consumeLine(pos, end, section);
       std::string newSectionName;
       if(internal_checkSection(pos, end, newSectionName)) {
-        internal_createContent(sectionName, section, results);
+        results.emplace_back(std::make_pair(std::move(sectionName), section.str()));
         sectionName = newSectionName;
       }
     }
-    internal_createContent(sectionName, section, results);
-  }
-
-  std::vector<std::unique_ptr<IContent>> parseAnnotations(NodePtr node) {
-    std::vector<std::unique_ptr<IContent>> result;
-    internal_parseContent(node->getAnnotations(), result);
-    return std::move(result);
+    results.emplace_back(std::make_pair(std::move(sectionName), section.str()));
   }
   
-  std::vector<std::unique_ptr<IContent>> parseContent(NodePtr node) {
-    std::vector<std::unique_ptr<IContent>> result;
-    internal_parseContent(node->getContent(), result);
+  Sections parseContent(const std::string& content) {
+    Sections result;
+    internal_parseContent(content, result);
     return std::move(result);
   }
   
