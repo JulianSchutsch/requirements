@@ -7,6 +7,6 @@ namespace requirements {
 
   using Sections = std::vector<std::pair<std::string, std::string>>;
   
-  Sections parseContent(const std::string& content);
+  Sections parseSections(const std::string& content);
   
 }

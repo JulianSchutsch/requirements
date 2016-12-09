@@ -1,4 +1,4 @@
-#include "requirements/contentparser.hpp"
+#include "requirements/sectionparser.hpp"
 
 #include <sstream>
 
@@ -54,7 +54,7 @@ namespace requirements {
     results.emplace_back(std::make_pair(std::move(sectionName), section.str()));
   }
   
-  Sections parseContent(const std::string& content) {
+  Sections parseSections(const std::string& content) {
     Sections result;
     internal_parseContent(content, result);
     return std::move(result);
