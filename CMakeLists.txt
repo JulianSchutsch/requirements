@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(requirements)
 
-add_definitions("--std=c++14 -Wextra -pedantic -Wall -O3 -g")
+add_definitions("--std=c++14 -Wextra -pedantic -Wall -O3 -g -DBOOST_NO_CXX11_SCOPED_ENUMS")
 
 #The gtkmm stuff
 find_package(PkgConfig)
