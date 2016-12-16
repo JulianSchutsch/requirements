@@ -30,10 +30,6 @@ void MainWindow::on_filename_selected(std::string const& filename){
   set_current_project(filename);
 }
 
-void MainWindow::on_f2_clicked(){
-  //fill_with_dull_data();
-}
-
 void MainWindow::on_f3_clicked(){
   //Select root path by dialog
   Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
@@ -55,6 +51,22 @@ void MainWindow::on_f3_clicked(){
   }
 }
 
+void MainWindow::on_f5_clicked(){
+
+}
+
+void MainWindow::on_f6_clicked(){
+
+}
+
+void MainWindow::on_f7_clicked(){
+
+}
+
+void MainWindow::on_f8_clicked(){
+
+}
+
 void MainWindow::on_f10_clicked(){
   hide();
 }
@@ -65,11 +77,20 @@ bool MainWindow::on_key_press(GdkEventKey *event){
   case GDK_F1:
     on_f1_clicked();
     break;
-  case GDK_F2:
-    on_f2_clicked();
-    break;
   case GDK_F3:
     on_f3_clicked();
+    break;
+  case GDK_F5:
+    on_f5_clicked();
+    break;
+  case GDK_F6:
+    on_f6_clicked();
+    break;
+  case GDK_F7:
+    on_f7_clicked();
+    break;
+  case GDK_F8:
+    on_f8_clicked();
     break;
   case GDK_F10:
     on_f10_clicked();
