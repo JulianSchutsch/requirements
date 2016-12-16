@@ -121,6 +121,7 @@ void MainWindow::on_f1_clicked()
 }
 
 void MainWindow::on_filename_selected(std::string filename){
+  Settings::getInstance().current_project=filename;
   printtree(filename);
 }
 
@@ -141,6 +142,7 @@ void MainWindow::on_f3_clicked(){
     //std::cout << filedlg.get_filename() << std::endl;
     printtree(filedlg.get_filename());
     Settings::getInstance().add_project(filedlg.get_filename());
+    Settings::getInstance().current_project=filedlg.get_filename();
     create_recent_menu();
     break;
   case Gtk::RESPONSE_CANCEL:
@@ -193,31 +195,6 @@ void MainWindow::add_children_to_tree(Gtk::TreeModel::Row* row,const requirement
   for(auto& elem: children) add_child_to_tree(row,elem);
 }
 
-void MainWindow::printtree(std::string dirname){
-  //Set root path to library
-  //Auf der Kommandozeile heißt das req folder
-  using namespace ::requirements;
-
-  NodeCollection collection;
-  storage::Text(collection, dirname);
-  std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
-  //now ignore the changed()-Signal
-  _changed_signal_ignore=true;
-  _left_tree_model->clear();
-
-  auto selected = requirements::select(collection, parameters, collection.getRootNode());
-
-  for(auto& node: selected){
-    add_children_to_tree(nullptr,node);
-  }
-
-  _topictree->remove_all_columns();
-  _topictree->append_column("topic", _topic_columns.col_node);
-  _topictree->append_column_editable("text", _topic_columns.col_cont);
-  //now do no longer ignore changed signal
-  _changed_signal_ignore=false;
-}
-
 void MainWindow::create_recent_menu(){
   //destroy old menu
   Gtk::Menu *oldmenu=_recentbutton->get_popup();
@@ -237,6 +214,32 @@ void MainWindow::create_recent_menu(){
   _recentbutton->set_popup(*recentmenu);
 }
 
+void MainWindow::printtree(std::string dirname){
+  //Set root path to library
+  //Auf der Kommandozeile heißt das req folder
+  using namespace ::requirements;
+
+  NodeCollection collection;
+  //storage::Text(collection, dirname);
+  storage::Text(collection,Settings::getInstance().current_project);
+  std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
+  //now ignore the changed()-Signal
+  _changed_signal_ignore=true;
+  _left_tree_model->clear();
+
+  auto selected = requirements::select(collection, parameters, collection.getRootNode());
+
+  for(auto& node: selected){
+    add_children_to_tree(nullptr,node);
+  }
+
+  _topictree->remove_all_columns();
+  _topictree->append_column("topic", _topic_columns.col_node);
+  _topictree->append_column_editable("text", _topic_columns.col_cont);
+  //now do no longer ignore changed signal
+  _changed_signal_ignore=false;
+}
+
 void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
   //std::cout << "row changed " << path << std::endl;
   (void)path;
@@ -248,6 +251,19 @@ void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gt
 
       //Das muss jetzt committed werden
       std::cout << model_node << " " << model_value << std::endl;
+      requirements::NodeCollection collection;
+      requirements::storage::Text storage(collection, Settings::getInstance().current_project);
+      std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
+      parameters.push_back(model_node);
+      std::vector<requirements::NodePtr> selections;
+      selections = requirements::select(collection, parameters);
+      //Und, haben wir jetzt den passenden Knoten? Ein bisschen mehr Doku zum select()
+      //wäre hilfreich
+      if(selections.size()==1){
+        //Oh, das ging ja...
+        requirements::NodePtr node = selections[0];
+        node->updateContent(model_value);
+      }
     }
   }
 }

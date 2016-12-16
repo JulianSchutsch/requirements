@@ -20,6 +20,9 @@ namespace greq{
     void add_project(std::string const& filename);
 
     const std::list<std::string>& last_projects() const;
+
+    //The current selected project
+    std::string current_project;
   protected:
     Settings();
     ~Settings();
