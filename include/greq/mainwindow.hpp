@@ -7,6 +7,7 @@
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treestore.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/cellrenderertext.h>
 
 #include "requirements/node.hpp"
 
@@ -19,10 +20,12 @@ class MainWindow : public Gtk::Window{
   Gtk::Button* _f3_button;
   Gtk::Button* _f10_button;
   Gtk::TreeView* _topictree;
-  Gtk::TreeView* _contenttree;
   Gtk::MenuButton* _recentbutton;
 
-  void fill_with_dull_data();
+  //We need to ignore the changed signal over the treemodel if the tree
+  //is filled out programmatically
+  bool _changed_signal_ignore;
+
   void printtree(std::string dirname);
   void add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   void add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
@@ -35,6 +38,7 @@ class MainWindow : public Gtk::Window{
   void on_f10_clicked();
   bool on_key_press(GdkEventKey *event);
   void on_filename_selected(std::string filename);
+  void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{
@@ -46,19 +50,6 @@ class MainWindow : public Gtk::Window{
 
   TopicColumns _topic_columns;
   Glib::RefPtr<Gtk::TreeStore> _left_tree_model;
-
-  //TreeModel for right content list
-  class ContentColumns : public Gtk::TreeModel::ColumnRecord{
-  public:
-    ContentColumns()
-    { add(col_id); add(col_text);}
-
-    Gtk::TreeModelColumn<unsigned int> col_id;
-    Gtk::TreeModelColumn<Glib::ustring> col_text;
-  };
-
-  ContentColumns _content_columns;
-  Glib::RefPtr<Gtk::ListStore> _right_list_model;
 
 public:
   MainWindow();

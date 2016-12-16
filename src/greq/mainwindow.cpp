@@ -23,15 +23,14 @@
 
 namespace greq{
 
-  //TODO aufräumen: rechtes Model raus
 MainWindow::MainWindow()
 {
   set_title("GReq");
   set_border_width(10);
 
+  _changed_signal_ignore=false;
   //create elements
   _topictree=Gtk::manage(new Gtk::TreeView);
-  _contenttree=Gtk::manage(new Gtk::TreeView);
   _f1_button=Gtk::manage(new Gtk::Button("F1 About"));
   _f2_button=Gtk::manage(new Gtk::Button("F2 Fill dull"));
   _f3_button=Gtk::manage(new Gtk::Button("F3 Open"));
@@ -43,9 +42,6 @@ MainWindow::MainWindow()
   _topictree->set_model(_left_tree_model);
   _topictree->set_reorderable();
 
-  //create right listmodel
-  _right_list_model=Gtk::ListStore::create(_content_columns);
-  _contenttree->set_model(_right_list_model);
 
   //connect signals
   _f1_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f1_clicked));
@@ -53,16 +49,13 @@ MainWindow::MainWindow()
   _f3_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f3_clicked));
   _f10_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f10_clicked));
   this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press));
+  _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
 
   //pack all things
   //Left TreeView
   Gtk::ScrolledWindow* scrolled_left=Gtk::manage(new Gtk::ScrolledWindow);
   scrolled_left->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
   scrolled_left->add(*_topictree);
-  //Right TreeView
-  Gtk::ScrolledWindow* scrolled_right=Gtk::manage(new Gtk::ScrolledWindow);
-  scrolled_right->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-  scrolled_right->add(*_contenttree);
 
   //Buttons
   Gtk::ButtonBox *topbuttonbox=Gtk::manage(new Gtk::ButtonBox(Gtk::ORIENTATION_HORIZONTAL));
@@ -82,7 +75,6 @@ MainWindow::MainWindow()
 
   Gtk::Box *hbox=Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
   hbox->pack_start(*scrolled_left);
-  hbox->pack_start(*scrolled_right);
   Gtk::Box *vbox=Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
   vbox->pack_start(*topbuttonbox,Gtk::PACK_SHRINK);
   vbox->pack_start(*hbox);
@@ -91,8 +83,6 @@ MainWindow::MainWindow()
   //show all things
   _topictree->show();
   scrolled_left->show();
-  //_contenttree->show();
-  //scrolled_right->show();
 
   _recentbutton->show();
   topbuttonbox->show();
@@ -111,7 +101,6 @@ MainWindow::MainWindow()
 }
 
 MainWindow::~MainWindow(){
-  //Einstellungen speichern
   Settings::getInstance().store();
 }
 
@@ -136,7 +125,7 @@ void MainWindow::on_filename_selected(std::string filename){
 }
 
 void MainWindow::on_f2_clicked(){
-  fill_with_dull_data();
+  //fill_with_dull_data();
 }
 
 void MainWindow::on_f3_clicked(){
@@ -182,6 +171,7 @@ bool MainWindow::on_key_press(GdkEventKey *event){
     on_f10_clicked();
     break;
   default:
+    std::cout << "keycode " << std::hex << event->keyval << std::endl;
     break;
   }
 
@@ -211,6 +201,8 @@ void MainWindow::printtree(std::string dirname){
   NodeCollection collection;
   storage::Text(collection, dirname);
   std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
+  //now ignore the changed()-Signal
+  _changed_signal_ignore=true;
   _left_tree_model->clear();
 
   auto selected = requirements::select(collection, parameters, collection.getRootNode());
@@ -218,61 +210,13 @@ void MainWindow::printtree(std::string dirname){
   for(auto& node: selected){
     add_children_to_tree(nullptr,node);
   }
+
   _topictree->remove_all_columns();
   _topictree->append_column("topic", _topic_columns.col_node);
-  _topictree->append_column("text", _topic_columns.col_cont);
-
+  _topictree->append_column_editable("text", _topic_columns.col_cont);
+  //now do no longer ignore changed signal
+  _changed_signal_ignore=false;
 }
-
-void MainWindow::fill_with_dull_data(){
-  //Left
-  //Fill the TreeView's model
-  //clear Tree Model
-  _left_tree_model->clear();
-  Gtk::TreeModel::Row row = *(_left_tree_model->append());
-  row[_topic_columns.col_node] = "1";
-
-  Gtk::TreeModel::Row childrow = *(_left_tree_model->append(row.children()));
-  childrow[_topic_columns.col_node] = "11";
-
-  childrow = *(_left_tree_model->append(row.children()));
-  childrow[_topic_columns.col_node] = "12";
-
-  row = *(_left_tree_model->append());
-  row[_topic_columns.col_node] = "2";
-
-  row = *(_left_tree_model->append());
-  row[_topic_columns.col_node] = "3";
-
-  childrow = *(_left_tree_model->append(row.children()));
-  childrow[_topic_columns.col_node] = "31";
-
-  //Add the TreeView's view columns:
-  _topictree->remove_all_columns();
-  _topictree->append_column("topic", _topic_columns.col_node);
-
-  //Right
-  //Fill the TreeView's model
-  _right_list_model->clear();
-  Gtk::TreeModel::Row rrow = *(_right_list_model->append());
-  rrow[_content_columns.col_id] = 1;
-  rrow[_content_columns.col_text] = "Erster Text";
-
-  rrow = *(_right_list_model->append());
-  rrow[_content_columns.col_id] = 2;
-  rrow[_content_columns.col_text] = "Zweiter Text";
-
-  rrow = *(_right_list_model->append());
-  rrow[_content_columns.col_id] = 3;
-  rrow[_content_columns.col_text] = "Dritter Text";
-
-  //Add the TreeView's view columns:
-  _contenttree->remove_all_columns();
-  //This number will be shown with the default numeric formatting.
-  _contenttree->append_column("ID", _content_columns.col_id);
-  _contenttree->append_column("Text", _content_columns.col_text);
-}
-
 
 void MainWindow::create_recent_menu(){
   //destroy old menu
@@ -291,6 +235,21 @@ void MainWindow::create_recent_menu(){
     recentmenu->append(*menuitem_file);
   }
   _recentbutton->set_popup(*recentmenu);
+}
+
+void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
+  //std::cout << "row changed " << path << std::endl;
+  (void)path;
+  if(_changed_signal_ignore==false){
+    if(iter){
+      Gtk::TreeModel::Row row = *iter;
+      Glib::ustring model_value = row[_topic_columns.col_cont];
+      Glib::ustring model_node = row[_topic_columns.col_node];
+
+      //Das muss jetzt committed werden
+      std::cout << model_node << " " << model_value << std::endl;
+    }
+  }
 }
 
 }
