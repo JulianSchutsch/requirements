@@ -6,10 +6,9 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/liststore.h>
-#include <gtkmm/cellrenderertext.h>
 
 #include "requirements/node.hpp"
+#include "requirements/nodecollection.hpp"
 
 namespace greq{
 
@@ -26,10 +25,10 @@ class MainWindow : public Gtk::Window{
   //is filled out programmatically
   bool _changed_signal_ignore;
 
-  void printtree(std::string dirname);
   void add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   void add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   void create_recent_menu();
+  void set_current_project(std::string const& filename);
 
   //Signal handlers:
   void on_f1_clicked();
@@ -37,8 +36,14 @@ class MainWindow : public Gtk::Window{
   void on_f3_clicked();
   void on_f10_clicked();
   bool on_key_press(GdkEventKey *event);
-  void on_filename_selected(std::string filename);
+  void on_filename_selected(std::string const& filename);
   void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
+
+  //Backend functions
+  requirements::NodeCollection _collection;
+  void init_collection();
+  void printtree();
+  void commit_to_collection(std::string const& uuid, std::string const& content);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{

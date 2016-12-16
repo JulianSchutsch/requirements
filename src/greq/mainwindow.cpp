@@ -4,27 +4,21 @@
 #include <gtkmm/main.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/treestore.h>
-#include <gtkmm/aboutdialog.h>
-#include <gtkmm/filechooserdialog.h>
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/menu.h>
 #include <giomm.h>
 
-#include <gdk/gdkkeysyms-compat.h>
 
 #include "requirements/storage/text.hpp"
 #include "requirements/nodecollection.hpp"
-//#include "requirements/node.hpp"
 #include "requirements/select.hpp"
-#include "req/console/printtree.hpp"
+
 
 #include "greq/settings.hpp"
 #include "greq/mainwindow.hpp"
 
 namespace greq{
-//TODO: Aufräumen 1. Aufteilen in Signal-Handler, Backends, Rest
-//                2. Kann man die Collection auch einfach als Member behalten?
-//      Feature:  1. Hinzufügen von Knoten
+//TODO: Feature:  1. Hinzufügen von Knoten
 //                2. Löschen von Knoten
 //                3. Bessere Darstellung der Knoten
 MainWindow::MainWindow()
@@ -108,82 +102,6 @@ MainWindow::~MainWindow(){
   Settings::getInstance().store();
 }
 
-void MainWindow::on_f1_clicked()
-{
-  Gtk::AboutDialog about;
-  about.set_transient_for(*this);
-  about.set_program_name("Über");
-  about.set_version("0.0.0");
-  about.set_website("https://github.com/JulianSchutsch/requirements");
-  std::vector<Glib::ustring> list_authors;
-  list_authors.push_back("Julian Schutsch");
-  list_authors.push_back("Dirk Neumann");
-  about.set_authors(list_authors);
-  
-  about.show();
-  about.run();
-}
-
-void MainWindow::on_filename_selected(std::string filename){
-  Settings::getInstance().current_project=filename;
-  printtree(filename);
-}
-
-void MainWindow::on_f2_clicked(){
-  //fill_with_dull_data();
-}
-
-void MainWindow::on_f3_clicked(){
-  //Select root path by dialog
-  Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
-  filedlg.set_transient_for(*this);
-  filedlg.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-  filedlg.add_button("Select", Gtk::RESPONSE_OK);
-  //filedlg.show();
-  int result=filedlg.run();
-  switch(result){
-  case Gtk::RESPONSE_OK:
-    //std::cout << filedlg.get_filename() << std::endl;
-    printtree(filedlg.get_filename());
-    Settings::getInstance().add_project(filedlg.get_filename());
-    Settings::getInstance().current_project=filedlg.get_filename();
-    create_recent_menu();
-    break;
-  case Gtk::RESPONSE_CANCEL:
-    break;
-  default:
-    //this is for some strange behavior in terms of unknown button code
-    break;
-  }
-}
-
-void MainWindow::on_f10_clicked(){
-  hide();
-}
-
-bool MainWindow::on_key_press(GdkEventKey *event){
-
-  switch(event->keyval){
-  case GDK_F1:
-    on_f1_clicked();
-    break;
-  case GDK_F2:
-    on_f2_clicked();
-    break;
-  case GDK_F3:
-    on_f3_clicked();
-    break;
-  case GDK_F10:
-    on_f10_clicked();
-    break;
-  default:
-    std::cout << "keycode " << std::hex << event->keyval << std::endl;
-    break;
-  }
-
-  return true;
-}
-
 void MainWindow::add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node){
   Gtk::TreeModel::Row childrow;
   if(row!=nullptr) childrow = *(_left_tree_model->append(row->children()));
@@ -218,57 +136,24 @@ void MainWindow::create_recent_menu(){
   _recentbutton->set_popup(*recentmenu);
 }
 
-void MainWindow::printtree(std::string dirname){
-  //Set root path to library
-  //Auf der Kommandozeile heißt das req folder
-  using namespace ::requirements;
-
-  NodeCollection collection;
-  //storage::Text(collection, dirname);
-  storage::Text(collection,Settings::getInstance().current_project);
-  std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
-  //now ignore the changed()-Signal
-  _changed_signal_ignore=true;
-  _left_tree_model->clear();
-
-  auto selected = requirements::select(collection, parameters, collection.getRootNode());
-
-  for(auto& node: selected){
-    add_children_to_tree(nullptr,node);
-  }
-
-  _topictree->remove_all_columns();
-  _topictree->append_column("topic", _topic_columns.col_node);
-  _topictree->append_column_editable("text", _topic_columns.col_cont);
-  //now do no longer ignore changed signal
-  _changed_signal_ignore=false;
-}
-
 void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
   (void)path;
   if(_changed_signal_ignore==false){
     if(iter){
+      //Dann muss es jetzt committed werden
       Gtk::TreeModel::Row row = *iter;
       Glib::ustring model_value = row[_topic_columns.col_cont];
       Glib::ustring model_node = row[_topic_columns.col_node];
 
-      //Das muss jetzt committed werden
-      std::cout << model_node << " " << model_value << std::endl;
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, Settings::getInstance().current_project);
-      std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
-      parameters.push_back(model_node);
-      std::vector<requirements::NodePtr> selections;
-      selections = requirements::select(collection, parameters);
-      //Und, haben wir jetzt den passenden Knoten? Ein bisschen mehr Doku zum select()
-      //wäre hilfreich
-      if(selections.size()==1){
-        //Oh, das ging ja...
-        requirements::NodePtr node = selections[0];
-        node->updateContent(model_value);
-      }
+      commit_to_collection(model_node,model_value);
     }
   }
+}
+
+void MainWindow::set_current_project(std::string const& filename){
+  Settings::getInstance().current_project=filename;
+  init_collection();
+  printtree();
 }
 
 }
