@@ -22,7 +22,11 @@
 #include "greq/mainwindow.hpp"
 
 namespace greq{
-
+//TODO: Aufräumen 1. Aufteilen in Signal-Handler, Backends, Rest
+//                2. Kann man die Collection auch einfach als Member behalten?
+//      Feature:  1. Hinzufügen von Knoten
+//                2. Löschen von Knoten
+//                3. Bessere Darstellung der Knoten
 MainWindow::MainWindow()
 {
   set_title("GReq");
@@ -241,7 +245,6 @@ void MainWindow::printtree(std::string dirname){
 }
 
 void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
-  //std::cout << "row changed " << path << std::endl;
   (void)path;
   if(_changed_signal_ignore==false){
     if(iter){
