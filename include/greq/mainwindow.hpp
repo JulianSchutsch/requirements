@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gtkmm/button.h>
+#include <gtkmm/menubutton.h>
 #include <gtkmm/window.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treemodelcolumn.h>
@@ -8,6 +9,8 @@
 #include <gtkmm/liststore.h>
 
 #include "requirements/node.hpp"
+
+namespace greq{
 
 class MainWindow : public Gtk::Window{
   //Member widgets:
@@ -17,17 +20,21 @@ class MainWindow : public Gtk::Window{
   Gtk::Button* _f10_button;
   Gtk::TreeView* _topictree;
   Gtk::TreeView* _contenttree;
+  Gtk::MenuButton* _recentbutton;
 
   void fill_with_dull_data();
   void printtree(std::string dirname);
   void add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   void add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
+  void create_recent_menu();
+
   //Signal handlers:
   void on_f1_clicked();
   void on_f2_clicked();
   void on_f3_clicked();
   void on_f10_clicked();
   bool on_key_press(GdkEventKey *event);
+  void on_filename_selected(std::string filename);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{
@@ -59,3 +66,4 @@ public:
 };
 
 
+}

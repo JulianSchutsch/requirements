@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
   //GLib-GIO-CRITICAL **: g_application_set_application_id: assertion 'application_id == NULL || g_application_id_is_valid (application_id)' failed
   auto app = Gtk::Application::create(argc, argv,"greq.application");
 
-  MainWindow mainwindow;
+  greq::MainWindow mainwindow;
   
   return app->run(mainwindow);
 }
