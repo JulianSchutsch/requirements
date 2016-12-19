@@ -21,6 +21,10 @@ namespace greq{
 //TODO: Feature:  1. Hinzufügen von Knoten
 //                2. Löschen von Knoten
 //                3. Verschieben eines Knotens an eine andere Stelle im Baum
+//                   shift+links = Hierarchieebene hoch
+//                   shift+rechts = Hierarchieebene runter
+//                   shift+hoch = In gleicher Ebene nach vorn
+//                   shift+runter = In gleicher Ebene runter
 //                4. Bessere Darstellung der Knoten
 MainWindow::MainWindow()
 {
@@ -54,8 +58,9 @@ MainWindow::MainWindow()
   _f7_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f7_clicked));
   _f8_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f8_clicked));
   _f10_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f10_clicked));
-  this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press));
+  this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press),false);
   _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
+
 
   //pack all things
   //Left TreeView

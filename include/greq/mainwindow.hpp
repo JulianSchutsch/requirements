@@ -41,6 +41,10 @@ class MainWindow : public Gtk::Window{
   void on_f7_clicked();
   void on_f8_clicked();
   void on_f10_clicked();
+  void on_ctrl_right();
+  void on_ctrl_left();
+  void on_ctrl_down();
+  void on_ctrl_up();
   bool on_key_press(GdkEventKey *event);
   void on_filename_selected(std::string const& filename);
   void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
