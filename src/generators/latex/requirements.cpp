@@ -26,6 +26,7 @@ namespace generators {
       struct Context {
         ::requirements::IStorage &storage;
         int sectionPos;
+        int sectionDepth = 0;
         std::ostream &file;
         std::string sectionPrefix;
         MacroMap *macros;
@@ -45,8 +46,18 @@ namespace generators {
       }
 
       void macro_toplevel_section(::requirements::NodePtr node, const std::string& section, Context& context) {
-        context.file<<"\\requirementssection{"<<section<<"}"<<std::endl;
+        switch(context.sectionDepth) {
+          case 0:
+            context.file << "\\requirementssection{" << section << "}" << std::endl;
+            break;
+          case 1:
+            context.file << "\\requirementssubsection{" << section << "}" << std::endl;
+            break;
+          default:
+            context.file << "\\requirementsparagraph{" << section << "}" <<std::endl;
+        }
         context.file<<"\\label{req-sec:"<<::requirements::id_to_string(node->getId())<<"}"<<std::endl;
+        ++context.sectionDepth;
       }
 
       void macro_toplevel_section_shortcut(::requirements::NodePtr node, const std::string& section, Context& context) {
@@ -95,6 +106,7 @@ namespace generators {
       Context childContext(context.storage, context.file, *context.macros);
       childContext.sectionPrefix = context.sectionPrefix;
       childContext.sectionPos = context.sectionPos;
+      childContext.sectionDepth = context.sectionDepth;
       auto sections = ::requirements::parseSections(node->getContent());
       for(auto& section: sections) {
         auto it = context.macros->find(section.first);
