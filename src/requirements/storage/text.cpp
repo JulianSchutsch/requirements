@@ -26,11 +26,15 @@ namespace requirements {
     }
     
     std::string Text::createBlob(const std::string& suffix) {
-      return id_to_string(generateRandomId())+"."+suffix;
+      return id_to_string(generateRandomId()) + "." + suffix;
     }
     
     std::string Text::getBlobFilename(const std::string& id) {
-      return folder+text_blobFolder+id;
+      return folder + text_blobFolder+id;
+    }
+
+    std::string Text::getLatexFolder() {
+      return folder + text_latexFolder;
     }
 
     Text::Text(NodeCollection& a_collection, const std::string& a_folder)

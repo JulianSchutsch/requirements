@@ -14,6 +14,7 @@
 #include "req/command/edit.hpp"
 #include "req/command/newblob.hpp"
 #include "req/command/listblobs.hpp"
+#include "req/command/print.hpp"
 
 namespace req {
   
@@ -27,6 +28,7 @@ namespace req {
     {"edit", &command::processCommand_edit},
     {"newblob", &command::processCommand_newBlob},
     {"listblobs", &command::processCommand_listBlobs},
+    {"print", &command::processCommand_print}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

@@ -10,7 +10,7 @@ link_directories(${GTKMM_LIBRARY_DIRS})
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include" ${GTKMM_INCLUDE_DIRS})
 
-FILE(GLOB_RECURSE REQUIREMENTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/requirements/*.cpp")
+FILE(GLOB_RECURSE REQUIREMENTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/requirements/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/generators/*.cpp")
 FILE(GLOB_RECURSE UTIL_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/util/*.cpp")
 FILE(GLOB_RECURSE REQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/req/*.cpp")
 FILE(GLOB_RECURSE CONSOLE_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/console/*.cpp")
@@ -28,6 +28,6 @@ add_executable(req ${REQ_SOURCES} ${CONSOLE_SOURCES})
 
 target_link_libraries(req "requirements" ${LIB_TINYXML})
 
-add_executable(greq ${GREQ_SOURCES})
+add_executable(greq ${GREQ_SOURCES} include/req/command/print.hpp)
 
 target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})

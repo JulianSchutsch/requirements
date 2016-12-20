@@ -26,6 +26,7 @@ namespace requirements {
     public:
       std::string createBlob(const std::string& suffix) override;
       std::string getBlobFilename(const std::string& id) override;
+      std::string getLatexFolder() override;
       std::vector<std::string> getBlobs() override;
       Text(NodeCollection& collection, const std::string& folder);
       ~Text();
