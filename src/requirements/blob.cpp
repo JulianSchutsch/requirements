@@ -15,9 +15,8 @@ namespace requirements {
       suffix.erase(suffix.begin());
     }
     auto id = storage.createBlob(suffix);
-    auto targetFile = storage.openBlob(id);
+    auto targetFile = storage.getBlobFilename(id);
     boost::filesystem::copy_file(sourceFile, targetFile);
-    storage.closeBlob(id);
     return id;
   }
   

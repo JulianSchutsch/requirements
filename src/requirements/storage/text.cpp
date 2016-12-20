@@ -29,14 +29,10 @@ namespace requirements {
       return id_to_string(generateRandomId())+"."+suffix;
     }
     
-    std::string Text::openBlob(const std::string& id) {
+    std::string Text::getBlobFilename(const std::string& id) {
       return folder+text_blobFolder+id;
     }
-    
-    void Text::closeBlob(const std::string& id) {
-      (void)id;
-    }
-    
+
     Text::Text(NodeCollection& a_collection, const std::string& a_folder)
       : collection(a_collection)
       , folder(util::ensureTrailingSlash(a_folder)) {

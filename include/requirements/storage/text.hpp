@@ -25,8 +25,7 @@ namespace requirements {
       std::unique_ptr<boost::interprocess::file_lock> fileLock;
     public:
       std::string createBlob(const std::string& suffix) override;
-      std::string openBlob(const std::string& id) override;
-      void closeBlob(const std::string& id) override;
+      std::string getBlobFilename(const std::string& id) override;
       std::vector<std::string> getBlobs() override;
       Text(NodeCollection& collection, const std::string& folder);
       ~Text();
