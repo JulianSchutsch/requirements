@@ -4,6 +4,8 @@
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
 
+#include <iostream>
+
 namespace greq{
 
 void MainWindow::init_collection(){
@@ -32,6 +34,17 @@ void MainWindow::printtree(){
   _changed_signal_ignore=false;
 }
 
+requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
+
+  std::vector<std::string> parameters;
+  parameters.push_back(uuid);
+  std::vector<requirements::NodePtr> selections;
+  selections = requirements::select(_collection, parameters);
+  requirements::NodePtr node = selections[0];
+
+  return node;
+}
+
 void MainWindow::commit_to_collection(std::string const& uuid, std::string const& content){
   std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
   parameters.push_back(uuid);
@@ -44,6 +57,25 @@ void MainWindow::commit_to_collection(std::string const& uuid, std::string const
     requirements::NodePtr node = selections[0];
     node->updateContent(content);
   }
+}
+
+void MainWindow::add_new_brother_for(std::string const& uuid){
+  //Also erst mal im Req-Baum finden
+  requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
+  //std::vector<std::string> parameters;
+  //parameters.push_back(uuid);
+  //std::vector<requirements::NodePtr> selections;
+  //selections = requirements::select(_collection, parameters);
+  //requirements::NodePtr node = selections[0];
+  //Jetzt den parent finden
+  //requirements::NodePtr parent = node->getParent();
+  //std::cout << requirements::id_to_string(parent->getId()) << std::endl;
+  //Jetzt neuen Knoten erzeugen
+  auto newnode = _collection.createNode(""); //Hm, das klappt neuerdings auch nicht mehr. was hab ich denn da vergessen beim umräumen?
+  //Jetzt Knoten unter den parent bammeln
+  newnode->setParent(parent);
+  //Jetzt alle Kinder des Parent neu malen
+  //add_children_to_tree(parent);
 }
 
 }

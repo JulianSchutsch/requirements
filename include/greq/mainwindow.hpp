@@ -30,6 +30,9 @@ class MainWindow : public Gtk::Window{
 
   void add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   void add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
+  void remove_children_from_tree(Gtk::TreeModel::Row* row);
+  void remove_children_from_tree(Gtk::TreeNodeChildren childs);
+  requirements::NodePtr get_node_for_uuid(std::string const& uuid);
   void create_recent_menu();
   void set_current_project(std::string const& filename);
 
@@ -54,6 +57,7 @@ class MainWindow : public Gtk::Window{
   void init_collection();
   void printtree();
   void commit_to_collection(std::string const& uuid, std::string const& content);
+  void add_new_brother_for(std::string const& uuid);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{

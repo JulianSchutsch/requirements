@@ -119,6 +119,26 @@ MainWindow::~MainWindow(){
   Settings::getInstance().store();
 }
 
+void MainWindow::remove_children_from_tree(Gtk::TreeModel::Row* row){
+  //remove all children of row.
+  //was ist mit row selbst?
+  Gtk::TreeNodeChildren children=row->children();
+  remove_children_from_tree(children);
+}
+
+void MainWindow::remove_children_from_tree(Gtk::TreeNodeChildren children){
+  for(auto child:children){
+    if(child->children().size()>0){
+      //Noch Enkel da, Enkel löschen
+      remove_children_from_tree(child->children());
+    }
+  }
+  //Alle Enkel gelöscht, jetzt Kinder löschen
+  Gtk::TreeNodeChildren::iterator iter=children.begin();
+  while(iter!=children.end()) iter=_left_tree_model->erase(iter);
+
+}
+
 void MainWindow::add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node){
   Gtk::TreeModel::Row childrow;
   if(row!=nullptr) childrow = *(_left_tree_model->append(row->children()));
@@ -126,7 +146,6 @@ void MainWindow::add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::
   childrow[_topic_columns.col_node] = requirements::id_to_string(node->getId());
   childrow[_topic_columns.col_cont] = node->getContent();
   add_children_to_tree(&childrow,node);
-
 }
 
 void MainWindow::add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node){
@@ -151,20 +170,6 @@ void MainWindow::create_recent_menu(){
     recentmenu->append(*menuitem_file);
   }
   _recentbutton->set_popup(*recentmenu);
-}
-
-void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
-  (void)path;
-  if(_changed_signal_ignore==false){
-    if(iter){
-      //Dann muss es jetzt committed werden
-      Gtk::TreeModel::Row row = *iter;
-      Glib::ustring model_value = row[_topic_columns.col_cont];
-      Glib::ustring model_node = row[_topic_columns.col_node];
-
-      commit_to_collection(model_node,model_value);
-    }
-  }
 }
 
 void MainWindow::set_current_project(std::string const& filename){

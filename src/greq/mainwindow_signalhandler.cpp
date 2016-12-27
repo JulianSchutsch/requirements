@@ -6,6 +6,9 @@
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
 
+//#include "requirements/select.hpp"
+//#include "requirements/id.hpp"
+
 #include <iostream>
 
 namespace greq{
@@ -60,7 +63,40 @@ void MainWindow::on_f6_clicked(){
 }
 
 void MainWindow::on_f7_clicked(){
-  std::cout << "F7" << std::endl;
+  std::cout << "F7 : new" << std::endl;
+  //Erst mal die UUID des aktuellen Knotens herausfinden
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    //Der neue Knoten wird ein Bruder des aktuellen Knotens.
+    //Dazu brauchen wir also den Parent
+    requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
+    //Jetzt neuen Knoten erzeugen
+    auto newnode = _collection.createNode("");
+    //Jetzt Knoten unter den parent bammeln
+    newnode->setParent(parent);
+    //Jetzt alle Kinder des Parent neu malen
+    //Erst mal den Parent im Baum finden
+    Gtk::TreeModel::Path path=_topictree->get_model()->get_path(selected_row);
+    if(path.up()==true){  //Häh? warum ist denn path.up() immer true, auch wenns kein parent gibt?
+      //Wir haben einen Parent im Tree gefunden
+      //Jetzt muss ich erst mal das row zum path finden.
+      Gtk::TreeModel::iterator iter1 = _topictree->get_model()->get_iter(path);
+      Gtk::TreeModel::Row parent_row = *iter1;
+
+      remove_children_from_tree(&parent_row);  //das muss noch implementiert werden
+      add_children_to_tree(&parent_row,parent);  //außerdem gibt es noch TreeView::scroll_to_row()
+      //Jetzt noch wieder an der Stelle parent_row aufklappen
+      _topictree->expand_row(path,true);
+    }
+    else{
+      //Es gibt keinen Vorgängerknoten. Was tun? Den ganzen Baum malen? Nein, eher
+      //einen zusätzlichen neuen Knoten dranhängen.
+      add_children_to_tree(&row,parent);
+    }
+  }
 }
 
 void MainWindow::on_f8_clicked(){
@@ -144,5 +180,18 @@ bool MainWindow::on_key_press(GdkEventKey *event){
   return true;
 }
 
+void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
+  (void)path;
+  if(_changed_signal_ignore==false){
+    if(iter){
+      //Dann muss es jetzt committed werden
+      Gtk::TreeModel::Row row = *iter;
+      Glib::ustring model_value = row[_topic_columns.col_cont];
+      Glib::ustring model_node = row[_topic_columns.col_node];
+
+      commit_to_collection(model_node,model_value);
+    }
+  }
+}
 
 }
