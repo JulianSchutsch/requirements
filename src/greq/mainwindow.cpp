@@ -32,7 +32,7 @@ MainWindow::MainWindow()
   set_border_width(10);
   set_default_size(800,600);
 
-  _changed_signal_ignore=false;
+  _changed_signal_ignore=0;
   //create elements
   _topictree=Gtk::manage(new Gtk::TreeView);
   _f1_button=Gtk::manage(new Gtk::Button("F1 About"));
@@ -134,22 +134,28 @@ void MainWindow::remove_children_from_tree(Gtk::TreeNodeChildren children){
   }
   //Alle Enkel gelöscht, jetzt Kinder löschen
   Gtk::TreeNodeChildren::iterator iter=children.begin();
+  ++_changed_signal_ignore;
   while(iter!=children.end()) iter=_left_tree_model->erase(iter);
+  --_changed_signal_ignore;
 
 }
 
 void MainWindow::add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node){
+  ++_changed_signal_ignore;
   Gtk::TreeModel::Row childrow;
   if(row!=nullptr) childrow = *(_left_tree_model->append(row->children()));
   else childrow=*(_left_tree_model->append());
   childrow[_topic_columns.col_node] = requirements::id_to_string(node->getId());
   childrow[_topic_columns.col_cont] = node->getContent();
   add_children_to_tree(&childrow,node);
+  --_changed_signal_ignore;
 }
 
 void MainWindow::add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node){
   auto& children=node->getChildren();
-  for(auto& elem: children) add_child_to_tree(row,elem);
+  for(auto& elem: children){
+    add_child_to_tree(row,elem);
+  }
 }
 
 void MainWindow::create_recent_menu(){

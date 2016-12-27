@@ -26,7 +26,7 @@ class MainWindow : public Gtk::Window{
 
   //We need to ignore the changed signal over the treemodel if the tree
   //is filled out programmatically
-  bool _changed_signal_ignore;
+  int _changed_signal_ignore;
 
   void add_child_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);
   void add_children_to_tree(Gtk::TreeModel::Row* row,const requirements::NodePtr& node);

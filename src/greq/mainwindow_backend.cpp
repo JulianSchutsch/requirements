@@ -18,7 +18,7 @@ void MainWindow::printtree(){
 
   std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
   //now ignore the changed()-Signal
-  _changed_signal_ignore=true;
+  ++_changed_signal_ignore;
   _left_tree_model->clear();
 
   auto selected = requirements::select(_collection, parameters, _collection.getRootNode());
@@ -31,7 +31,7 @@ void MainWindow::printtree(){
   _topictree->append_column("topic", _topic_columns.col_node);
   _topictree->append_column_editable("text", _topic_columns.col_cont);
   //now do no longer ignore changed signal
-  _changed_signal_ignore=false;
+  --_changed_signal_ignore;
 }
 
 requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){

@@ -6,7 +6,7 @@
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
 
-//#include "requirements/select.hpp"
+#include "requirements/select.hpp"
 //#include "requirements/id.hpp"
 
 #include <iostream>
@@ -77,7 +77,8 @@ void MainWindow::on_f7_clicked(){
     //Jetzt Knoten unter den parent bammeln
     newnode->setParent(parent);
     //Jetzt alle Kinder des Parent neu malen
-    //Erst mal den Parent im Baum finden
+    //Erst mal den Parent im Gtkmm-Baum finden
+
     Gtk::TreeModel::Path path=_topictree->get_model()->get_path(selected_row);
     if(path.up()==true){  //Häh? warum ist denn path.up() immer true, auch wenns kein parent gibt?
       //Wir haben einen Parent im Tree gefunden
@@ -86,7 +87,10 @@ void MainWindow::on_f7_clicked(){
       Gtk::TreeModel::Row parent_row = *iter1;
 
       remove_children_from_tree(&parent_row);
+      ++_changed_signal_ignore;
       add_children_to_tree(&parent_row,parent);
+      --_changed_signal_ignore;
+
       //Jetzt noch wieder an der Stelle parent_row aufklappen
       _topictree->expand_row(path,true);
     }
@@ -94,9 +98,10 @@ void MainWindow::on_f7_clicked(){
       //Es gibt keinen Vorgängerknoten.
       //Einen zusätzlichen neuen Knoten dranhängen.
       //Aus irgend einem Grund kommen wir hier gar nicht rein.
-      add_children_to_tree(&row,parent);
+      add_children_to_tree(nullptr,parent);
     }
   }
+  //printtree();
 }
 
 void MainWindow::on_f8_clicked(){
@@ -182,7 +187,7 @@ bool MainWindow::on_key_press(GdkEventKey *event){
 
 void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
   (void)path;
-  if(_changed_signal_ignore==false){
+  if(_changed_signal_ignore<1){
     if(iter){
       //Dann muss es jetzt committed werden
       Gtk::TreeModel::Row row = *iter;
