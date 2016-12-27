@@ -1,5 +1,6 @@
 #include "requirements/storage/text.hpp"
 #include "requirements/select.hpp"
+#include "requirements/storage/text_save.hpp"
 
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
@@ -9,7 +10,13 @@
 namespace greq{
 
 void MainWindow::init_collection(){
+  //Oh, das macht die alte collection gar nicht leer...
+  //Wäre hübsch, wenns da ein clear() gäbe...
   requirements::storage::Text storage(_collection, Settings::getInstance().current_project);
+}
+
+void MainWindow::store_collection(){
+  requirements::storage::text_save(_collection,Settings::getInstance().current_project);
 }
 
 void MainWindow::printtree(){

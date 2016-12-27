@@ -36,6 +36,7 @@ MainWindow::MainWindow()
   //create elements
   _topictree=Gtk::manage(new Gtk::TreeView);
   _f1_button=Gtk::manage(new Gtk::Button("F1 About"));
+  _f2_button=Gtk::manage(new Gtk::Button("F2 Save"));
   _f3_button=Gtk::manage(new Gtk::Button("F3 Open"));
   _f5_button=Gtk::manage(new Gtk::Button("F5 Copy"));
   _f6_button=Gtk::manage(new Gtk::Button("F6 Move"));
@@ -52,6 +53,7 @@ MainWindow::MainWindow()
 
   //connect signals
   _f1_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f1_clicked));
+  _f2_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f2_clicked));
   _f3_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f3_clicked));
   _f5_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f5_clicked));
   _f6_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f6_clicked));
@@ -80,6 +82,7 @@ MainWindow::MainWindow()
   bottombuttonbox->set_spacing(Gtk::PACK_EXPAND_WIDGET);
   bottombuttonbox->set_layout(Gtk::BUTTONBOX_SPREAD);
   bottombuttonbox->add(*_f1_button);
+  bottombuttonbox->add(*_f2_button);
   bottombuttonbox->add(*_f3_button);
   bottombuttonbox->add(*_f5_button);
   bottombuttonbox->add(*_f6_button);
@@ -100,6 +103,7 @@ MainWindow::MainWindow()
   _recentbutton->show();
   topbuttonbox->show();
   _f1_button->show();
+  _f2_button->show();
   _f3_button->show();
   _f5_button->show();
   _f6_button->show();

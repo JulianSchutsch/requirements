@@ -15,6 +15,7 @@ namespace greq{
 class MainWindow : public Gtk::Window{
   //Member widgets:
   Gtk::Button* _f1_button;
+  Gtk::Button* _f2_button;
   Gtk::Button* _f3_button;
   Gtk::Button* _f5_button;
   Gtk::Button* _f6_button;
@@ -38,6 +39,7 @@ class MainWindow : public Gtk::Window{
 
   //Signal handlers:
   void on_f1_clicked();
+  void on_f2_clicked();
   void on_f3_clicked();
   void on_f5_clicked();
   void on_f6_clicked();
@@ -55,6 +57,7 @@ class MainWindow : public Gtk::Window{
   //Backend functions
   requirements::NodeCollection _collection;
   void init_collection();
+  void store_collection();
   void printtree();
   void commit_to_collection(std::string const& uuid, std::string const& content);
   void add_new_brother_for(std::string const& uuid);
