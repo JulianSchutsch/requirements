@@ -60,7 +60,6 @@ MainWindow::MainWindow()
   _f10_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f10_clicked));
   this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press),false);
   _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
-  _topictree->signal_row_activated().connect(sigc::mem_fun(this,&MainWindow::on_row_activated));
 
 
   //pack all things
