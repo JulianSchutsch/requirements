@@ -182,7 +182,7 @@ bool MainWindow::on_key_press(GdkEventKey *event){
     }
   }
 
-  return true;
+  return false; //Event propagation überdenken: In speziellen Edit-Modes vielleicht true (d.h. Event hier schlucken) zurückgeben?
 }
 
 void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter){
