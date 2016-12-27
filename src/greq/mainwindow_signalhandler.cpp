@@ -63,7 +63,6 @@ void MainWindow::on_f6_clicked(){
 }
 
 void MainWindow::on_f7_clicked(){
-  std::cout << "F7 : new" << std::endl;
   //Erst mal die UUID des aktuellen Knotens herausfinden
   Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
   Gtk::TreeModel::iterator selected_row = selection->get_selected();
@@ -86,14 +85,15 @@ void MainWindow::on_f7_clicked(){
       Gtk::TreeModel::iterator iter1 = _topictree->get_model()->get_iter(path);
       Gtk::TreeModel::Row parent_row = *iter1;
 
-      remove_children_from_tree(&parent_row);  //das muss noch implementiert werden
-      add_children_to_tree(&parent_row,parent);  //außerdem gibt es noch TreeView::scroll_to_row()
+      remove_children_from_tree(&parent_row);
+      add_children_to_tree(&parent_row,parent);
       //Jetzt noch wieder an der Stelle parent_row aufklappen
       _topictree->expand_row(path,true);
     }
     else{
-      //Es gibt keinen Vorgängerknoten. Was tun? Den ganzen Baum malen? Nein, eher
-      //einen zusätzlichen neuen Knoten dranhängen.
+      //Es gibt keinen Vorgängerknoten.
+      //Einen zusätzlichen neuen Knoten dranhängen.
+      //Aus irgend einem Grund kommen wir hier gar nicht rein.
       add_children_to_tree(&row,parent);
     }
   }

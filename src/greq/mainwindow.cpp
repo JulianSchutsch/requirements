@@ -121,7 +121,6 @@ MainWindow::~MainWindow(){
 
 void MainWindow::remove_children_from_tree(Gtk::TreeModel::Row* row){
   //remove all children of row.
-  //was ist mit row selbst?
   Gtk::TreeNodeChildren children=row->children();
   remove_children_from_tree(children);
 }

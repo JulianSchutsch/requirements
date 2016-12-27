@@ -62,20 +62,10 @@ void MainWindow::commit_to_collection(std::string const& uuid, std::string const
 void MainWindow::add_new_brother_for(std::string const& uuid){
   //Also erst mal im Req-Baum finden
   requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
-  //std::vector<std::string> parameters;
-  //parameters.push_back(uuid);
-  //std::vector<requirements::NodePtr> selections;
-  //selections = requirements::select(_collection, parameters);
-  //requirements::NodePtr node = selections[0];
-  //Jetzt den parent finden
-  //requirements::NodePtr parent = node->getParent();
-  //std::cout << requirements::id_to_string(parent->getId()) << std::endl;
   //Jetzt neuen Knoten erzeugen
-  auto newnode = _collection.createNode(""); //Hm, das klappt neuerdings auch nicht mehr. was hab ich denn da vergessen beim umräumen?
+  auto newnode = _collection.createNode("");
   //Jetzt Knoten unter den parent bammeln
   newnode->setParent(parent);
-  //Jetzt alle Kinder des Parent neu malen
-  //add_children_to_tree(parent);
 }
 
 }
