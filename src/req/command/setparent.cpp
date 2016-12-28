@@ -12,8 +12,8 @@
 namespace req {
   namespace command {
     void processCommand_setParent(Status& status, const std::vector<std::string>& parameters) {
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, status.folder);
+      requirements::storage::Text storage(status.folder, true);
+      auto& collection = storage.getNodeCollection();
 
       auto parents = requirements::select(collection, parameters);
       if(parents.size()!=1) {

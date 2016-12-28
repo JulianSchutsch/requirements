@@ -11,8 +11,8 @@
 namespace req {
   namespace command {
     void processCommand_select(Status& status, const std::vector<std::string>& parameters) {
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, status.folder);
+      requirements::storage::Text storage(status.folder, false);
+      auto& collection = storage.getNodeCollection();
       auto selection = requirements::select(collection, parameters);
       status.selections[0].clear();
       status.selections[0].reserve(selection.size());

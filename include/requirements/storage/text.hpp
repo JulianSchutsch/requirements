@@ -5,6 +5,7 @@
 
 #include "requirements/id.hpp"
 #include "requirements/istorage.hpp"
+#include "requirements/nodecollection.hpp"
 
 namespace boost {
   namespace interprocess {
@@ -20,15 +21,19 @@ namespace requirements {
     
     class Text final : public IStorage {
     private:
-      NodeCollection& collection;
+      NodeCollection collection;
       std::string folder;
       std::unique_ptr<boost::interprocess::file_lock> fileLock;
+      bool autosave;
     public:
       std::string createBlob(const std::string& suffix) override;
       std::string getBlobFilename(const std::string& id) override;
       std::string getLatexFolder() override;
       std::vector<std::string> getBlobs() override;
-      Text(NodeCollection& collection, const std::string& folder);
+      void save(const std::string& save) override;
+      void save() override;
+      NodeCollection& getNodeCollection() override { return collection; }
+      Text(const std::string& folder, bool a_autosave);
       ~Text();
     };
     

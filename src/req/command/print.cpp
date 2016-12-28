@@ -21,8 +21,8 @@ namespace req {
       if(parameters.size()!=2) {
         std::cout<<"Expected 2 parameters for print: target format & style"<<std::endl;
       }
-      ::requirements::NodeCollection collection;
-      ::requirements::storage::Text storage(collection, status.folder);
+      ::requirements::storage::Text storage(status.folder, false);
+      auto& collection = storage.getNodeCollection();
 
       std::string format = parameters[0];
       std::string style = parameters[1];

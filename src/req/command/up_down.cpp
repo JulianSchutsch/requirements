@@ -11,8 +11,8 @@
 namespace req {
   namespace command {
     void processCommand_up(Status& status, const std::vector<std::string>& parameters) {
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, status.folder);
+      requirements::storage::Text storage(status.folder, true);
+      auto& collection = storage.getNodeCollection();
       std::vector<requirements::NodePtr> selections;
       if(parameters.size()!=0) {
         selections = requirements::select(collection, parameters);
@@ -31,8 +31,8 @@ namespace req {
     }
 
     void processCommand_down(Status& status, const std::vector<std::string>& parameters) {
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, status.folder);
+      requirements::storage::Text storage(status.folder, true);
+      auto& collection = storage.getNodeCollection();
       std::vector<requirements::NodePtr> selections;
       if(parameters.size()!=0) {
         selections = requirements::select(collection, parameters);

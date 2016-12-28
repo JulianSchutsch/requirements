@@ -14,8 +14,8 @@
 namespace req {
   namespace command {
     void processCommand_newBlob(Status& status, const std::vector<std::string>& parameters) {
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, status.folder);
+      requirements::storage::Text storage(status.folder, true);
+      auto& collection = storage.getNodeCollection();
       if(parameters.size()!=1) {
         std::cout<<"Require source file"<<std::endl;
         return;

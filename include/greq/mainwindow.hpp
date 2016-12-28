@@ -9,6 +9,7 @@
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
+#include "requirements/istorage.hpp"
 
 namespace greq{
 
@@ -58,7 +59,7 @@ class MainWindow : public Gtk::Window{
   void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
 
   //Backend functions
-  requirements::NodeCollection _collection;
+  std::unique_ptr<::requirements::IStorage> _currentProject;
   void init_collection();
   void store_collection();
   void printtree();
