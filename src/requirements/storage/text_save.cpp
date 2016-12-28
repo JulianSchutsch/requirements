@@ -37,14 +37,18 @@ namespace requirements {
       }
     }
 
-    static void saveRelationshipsOfNode(std::ostream& stream, Node& node) {
+    static void saveRelationshipsOfNode(std::ostream& stream, Node& node, bool root) {
       auto& children = node.getChildren();
       if(children.empty()) {
         return;
       }
       std::vector<std::string> ids;
       ids.reserve(children.size()+1);
-      ids.emplace_back(id_to_string(node.getId()));
+      if(!root) {
+        ids.emplace_back(id_to_string(node.getId()));
+      } else {
+        ids.emplace_back("root");
+      }
       for(auto& entry: children) {
         ids.emplace_back(id_to_string(entry->getId()));
       }
@@ -53,8 +57,9 @@ namespace requirements {
     
     static void saveRelationships(NodeCollection& collection, const std::string& folder) {
       std::fstream file(folder+text_relationshipsFile, std::fstream::out);
+      saveRelationshipsOfNode(file, *collection.getRootNode(), true);
       for(auto& node: collection) {
-        saveRelationshipsOfNode(file, *node);
+        saveRelationshipsOfNode(file, *node, false);
       }
     }
 

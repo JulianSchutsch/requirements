@@ -57,15 +57,22 @@ namespace requirements {
         if(it==parts.end()) {
           throw Exception(Exception::Reason::InvalidRelationshipsFile);
         }
-        Id id;
-        if(!string_to_id(*it, id)) {
-          throw Exception(Exception::Reason::InvalidRelationshipsFile);
+        NodePtr parent;
+        if(*it=="root") {
+          parent = collection.getRootNode();
         }
-        auto parent = collection.getNodeById(id);
+        else {
+          Id id;
+          if (!string_to_id(*it, id)) {
+            throw Exception(Exception::Reason::InvalidRelationshipsFile);
+          }
+          parent = collection.getNodeById(id);
+        }
         if(!parent) {
           throw Exception(Exception::Reason::ReferenceToUnknownId);
         }
         for(++it;it!=parts.end();++it) {
+          Id id;
           if(!string_to_id(*it, id)) {
             throw Exception(Exception::Reason::InvalidRelationshipsFile);
           }
