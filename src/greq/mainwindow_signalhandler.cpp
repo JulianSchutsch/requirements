@@ -4,6 +4,7 @@
 #include <gdk/gdkkeysyms-compat.h>
 
 #include "greq/mainwindow.hpp"
+#include "greq/editwindow.hpp"
 #include "greq/settings.hpp"
 
 #include "requirements/select.hpp"
@@ -59,7 +60,30 @@ void MainWindow::on_f3_clicked(){
 }
 
 void MainWindow::on_f4_clicked(){
-  std::cout << "F4" << std::endl;
+  //Finden, ob ein echter Knoten drunter liegt
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    //Text des Knotens raussuchen und in den Dialog quetschen
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring content = row[_topic_columns.col_cont];
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    EditWindow ew(content);
+    ew.set_transient_for(*this);
+    int result=ew.run();
+    switch(result){
+    case 0:{
+      //Text auslesen
+      Glib::ustring read_text=ew.get_text();
+      //In den Baum schreiben, das changed()-Signal sorgt dafür, dass das in die collection kommt
+      row[_topic_columns.col_cont]=read_text;
+    }
+    break;
+    case 1:
+    default:
+      break;
+    }
+  }
 }
 
 void MainWindow::on_f5_clicked(){
@@ -70,6 +94,7 @@ void MainWindow::on_f6_clicked(){
   std::cout << "F6" << std::endl;
 }
 
+//TODO das sieht ein bisschen unaufgeräumt aus...
 void MainWindow::on_f7_clicked(){
   //Erst mal die UUID des aktuellen Knotens herausfinden
   Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
