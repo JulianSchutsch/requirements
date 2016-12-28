@@ -28,6 +28,6 @@ add_executable(req ${REQ_SOURCES} ${CONSOLE_SOURCES})
 
 target_link_libraries(req "requirements" ${LIB_TINYXML})
 
-add_executable(greq ${GREQ_SOURCES} include/req/command/print.hpp)
+add_executable(greq ${GREQ_SOURCES})
 
 target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})
