@@ -16,6 +16,7 @@
 #include "req/command/listblobs.hpp"
 #include "req/command/print.hpp"
 #include "req/command/delete.hpp"
+#include "req/command/up_down.hpp"
 
 namespace req {
   
@@ -30,7 +31,9 @@ namespace req {
     {"newblob", &command::processCommand_newBlob},
     {"listblobs", &command::processCommand_listBlobs},
     {"print", &command::processCommand_print},
-    {"delete", &command::processCommand_delete}
+    {"delete", &command::processCommand_delete},
+    {"up", &command::processCommand_up},
+    {"down", &command::processCommand_down}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {
