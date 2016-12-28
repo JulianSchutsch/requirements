@@ -1,6 +1,11 @@
 #include "requirements/nodecollection.hpp"
 
 namespace requirements {
+
+  void NodeCollection::clear() {
+    nodes.clear();
+    rootNode = nullptr;
+  }
   
   bool NodeCollection::findById(Id id, NodePtr& node) {
     for(auto element: *this) {
