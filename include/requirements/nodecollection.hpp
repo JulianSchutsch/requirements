@@ -34,6 +34,7 @@ namespace requirements {
     NodePtr createNode(const std::string& content);
     inline NodePtr getRootNode() noexcept { return rootNode; }
     NodePtr getNodeById(Id id);
+    void clear();
     NodeCollection();
   };
   
