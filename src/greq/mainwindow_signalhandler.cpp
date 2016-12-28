@@ -110,31 +110,7 @@ void MainWindow::on_f7_clicked(){
     //Jetzt Knoten unter den parent bammeln
     newnode->setParent(parent);
     //Jetzt alle Kinder des Parent neu malen
-    //Erst mal den Parent im Gtkmm-Baum finden
-
-    Gtk::TreeModel::Path path=_topictree->get_model()->get_path(selected_row);
-    if(path.up()==true){  //Häh? warum ist denn path.up() immer true, auch wenns kein parent gibt?
-      //Wir haben einen Parent im Tree gefunden
-      //Jetzt muss ich erst mal das row zum path finden.
-      Gtk::TreeModel::iterator iter1 = _topictree->get_model()->get_iter(path);
-      Gtk::TreeModel::Row parent_row = *iter1;
-
-      remove_children_from_tree(&parent_row);
-      ++_changed_signal_ignore;
-      add_children_to_tree(&parent_row,parent);
-      --_changed_signal_ignore;
-
-      //Jetzt noch wieder an der Stelle parent_row aufklappen
-      _topictree->expand_row(path,false);
-      //Und jetzt an die Stelle des neuen Knotens springen
-      set_focus_to_uuid(&parent_row,requirements::id_to_string(newnode->getId()));
-    }
-    else{
-      //Es gibt keinen Vorgängerknoten.
-      //Einen zusätzlichen neuen Knoten dranhängen.
-      //Aus irgend einem Grund kommen wir hier gar nicht rein.
-      add_children_to_tree(nullptr,parent);
-    }
+    reprint_tree_below_parent_of(&row,requirements::id_to_string(newnode->getId()));
   }
 }
 
@@ -154,12 +130,36 @@ void MainWindow::on_ctrl_left(){
   std::cout << "[Ctrl]+[Left]" << std::endl;
 }
 
+//TODO Die ersten paar Zeilen kann man zu einer eigenen methode machen: get_uuid_on_cursor oder so...
+//Na, dann braucht man noch das &row. Aber das ist bis jetzt immer der aktuelle Cursor gewesen.
 void MainWindow::on_ctrl_down(){
-  std::cout << "[Ctrl]+[Down]" << std::endl;
+  //Erst mal die UUID des aktuellen Knotens herausfinden
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    //Move Node down
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    node->down();
+    //Jetzt den Baum neu malen ab Parent mit ausklappen
+    reprint_tree_below_parent_of(&row,requirements::id_to_string(node->getId()));
+  }
 }
 
 void MainWindow::on_ctrl_up(){
-  std::cout << "[Ctrl]+[Up]" << std::endl;
+  //Erst mal die UUID des aktuellen Knotens herausfinden
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    //Move Node up
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    node->up();
+    //Jetzt den Baum neu malen ab Parent mit ausklappen
+    reprint_tree_below_parent_of(&row,requirements::id_to_string(node->getId()));
+  }
 }
 
 bool MainWindow::on_key_press(GdkEventKey *event){

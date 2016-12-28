@@ -38,6 +38,8 @@ class MainWindow : public Gtk::Window{
   void create_recent_menu();
   void set_current_project(std::string const& filename);
   void set_focus_to_uuid(Gtk::TreeModel::Row* parent,std::string const& uuid);
+  void reprint_tree_below_parent_of(Gtk::TreeModel::Row* row,std::string const& uuid_of_focus_node);
+  std::string get_uuid_on_cursor();
 
   //Signal handlers:
   void on_f1_clicked();

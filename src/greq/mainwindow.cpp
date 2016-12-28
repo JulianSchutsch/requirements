@@ -186,6 +186,8 @@ void MainWindow::set_current_project(std::string const& filename){
 }
 
 void MainWindow::set_focus_to_uuid(Gtk::TreeModel::Row* parent, std::string const& uuid){
+  //Glib::ustring newuuid=(*parent)[_topic_columns.col_node];
+  //std::cout << "parent_uuid: "<< newuuid << std::endl;
   Gtk::TreeNodeChildren children=parent->children();
   //So, eins der Children hat die passende uuid
   for(auto& elem: children){
@@ -196,6 +198,50 @@ void MainWindow::set_focus_to_uuid(Gtk::TreeModel::Row* parent, std::string cons
       _topictree->set_cursor(path);
     }
   }
+}
+
+// uuid_of_focus_node gibt den Knoten an, der den Focus bekommen soll, z.B. nach einer Verschiebung
+void MainWindow::reprint_tree_below_parent_of(Gtk::TreeModel::Row* row,std::string const& uuid_of_focus_node){
+  Gtk::TreeModel::Path path=_topictree->get_model()->get_path(*row);
+  Glib::ustring uuid=(*row)[_topic_columns.col_node];
+  requirements::NodePtr node=get_node_for_uuid(uuid);
+  if(path.up()==true){  //Häh? warum ist denn path.up() immer true, auch wenns kein parent gibt?
+    //Wir haben einen Parent im Tree gefunden
+    //Jetzt muss ich erst mal das row zum path finden.
+    Gtk::TreeModel::iterator iter1 = _topictree->get_model()->get_iter(path);
+    Gtk::TreeModel::Row parent_row = *iter1;
+
+    remove_children_from_tree(&parent_row);
+    //Jetzt suchen wir uns den node-Parent
+    //requirements::NodePtr parent_node=node->getParent();
+    ++_changed_signal_ignore;
+    add_children_to_tree(&parent_row,node->getParent());
+    --_changed_signal_ignore;
+
+    //Jetzt noch wieder an der Stelle parent_row aufklappen
+    _topictree->expand_row(path,false);
+    //Und jetzt an die Stelle des neuen Knotens springen
+    if(uuid_of_focus_node!="") set_focus_to_uuid(&parent_row,uuid_of_focus_node);
+  }
+  else{
+    //Es gibt keinen Vorgängerknoten.
+    //Einen zusätzlichen neuen Knoten dranhängen.
+    //Aus irgend einem Grund kommen wir hier gar nicht rein.
+    add_children_to_tree(nullptr,node->getParent());
+  }
+}
+
+std::string MainWindow::get_uuid_on_cursor(){
+  std::string retval="";
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    retval=uuid;
+    //requirements::NodePtr node=get_node_for_uuid(uuid);
+  }
+  return retval;
 }
 
 }
