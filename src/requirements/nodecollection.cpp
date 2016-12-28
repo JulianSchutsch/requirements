@@ -2,6 +2,11 @@
 
 namespace requirements {
 
+  void NodeCollection::deleteNode(NodePtr node) {
+    auto id = node->getId();
+    nodes.erase(id);
+  }
+
   void NodeCollection::clear() {
     nodes.clear();
     rootNode = nullptr;

@@ -6,9 +6,7 @@
 #include "requirements/id.hpp"
 
 namespace requirements {
-  
-  class IStorage;
-  
+
   class NodeCollection final {
   private:
     using Nodes = std::map<Id, NodePtr>;
@@ -32,6 +30,7 @@ namespace requirements {
     bool findById(Id id, NodePtr& node);
     NodePtr createNode(Id id, std::string&& content, std::string&& annotations);
     NodePtr createNode(const std::string& content);
+    void deleteNode(NodePtr node);
     inline NodePtr getRootNode() noexcept { return rootNode; }
     NodePtr getNodeById(Id id);
     void clear();

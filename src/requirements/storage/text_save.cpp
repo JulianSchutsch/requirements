@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <boost/algorithm/string/join.hpp>
+#include <boost/filesystem.hpp>
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
@@ -57,6 +58,20 @@ namespace requirements {
       }
     }
 
+    static void deleteObsoleteNodes(NodeCollection& collection, const std::string& folder) {
+      for(auto it=boost::filesystem::directory_iterator(folder+text_requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
+        boost::filesystem::path path(*it);
+        Id id;
+        if(!string_to_id(path.stem().string(), id)) {
+          throw Exception(Exception::Reason::InvalidId);
+        }
+        NodePtr dummy;
+        if(!collection.findById(id, dummy)) {
+          boost::filesystem::remove(path);
+        }
+      }
+    }
+
     void text_save(NodeCollection& collection, const std::string& a_folder) {
       const auto& folder = util::ensureTrailingSlash(a_folder);
       if(folder.empty()) {
@@ -65,6 +80,7 @@ namespace requirements {
       text_ensureFolder(folder);
       saveNodes(collection, folder);
       saveRelationships(collection, folder);
+      deleteObsoleteNodes(collection, folder);
     }
   }
 }

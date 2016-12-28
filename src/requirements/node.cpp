@@ -1,7 +1,7 @@
 #include "requirements/node.hpp"
 
 namespace requirements {
-  
+
   bool Node::hasParent(const NodePtr& node) const {
     auto current = parent;
     while(current) {
