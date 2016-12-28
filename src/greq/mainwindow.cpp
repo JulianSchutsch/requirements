@@ -8,12 +8,6 @@
 #include <gtkmm/menu.h>
 #include <giomm.h>
 
-
-#include "requirements/storage/text.hpp"
-#include "requirements/nodecollection.hpp"
-#include "requirements/select.hpp"
-
-
 #include "greq/settings.hpp"
 #include "greq/mainwindow.hpp"
 
@@ -38,6 +32,7 @@ MainWindow::MainWindow()
   _f1_button=Gtk::manage(new Gtk::Button("F1 About"));
   _f2_button=Gtk::manage(new Gtk::Button("F2 Save"));
   _f3_button=Gtk::manage(new Gtk::Button("F3 Open"));
+  _f4_button=Gtk::manage(new Gtk::Button("F4 Edit"));
   _f5_button=Gtk::manage(new Gtk::Button("F5 Copy"));
   _f6_button=Gtk::manage(new Gtk::Button("F6 Move"));
   _f7_button=Gtk::manage(new Gtk::Button("F7 New"));
@@ -55,6 +50,7 @@ MainWindow::MainWindow()
   _f1_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f1_clicked));
   _f2_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f2_clicked));
   _f3_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f3_clicked));
+  _f4_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f4_clicked));
   _f5_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f5_clicked));
   _f6_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f6_clicked));
   _f7_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f7_clicked));
@@ -84,6 +80,7 @@ MainWindow::MainWindow()
   bottombuttonbox->add(*_f1_button);
   bottombuttonbox->add(*_f2_button);
   bottombuttonbox->add(*_f3_button);
+  bottombuttonbox->add(*_f4_button);
   bottombuttonbox->add(*_f5_button);
   bottombuttonbox->add(*_f6_button);
   bottombuttonbox->add(*_f7_button);
@@ -105,6 +102,7 @@ MainWindow::MainWindow()
   _f1_button->show();
   _f2_button->show();
   _f3_button->show();
+  _f4_button->show();
   _f5_button->show();
   _f6_button->show();
   _f7_button->show();
@@ -185,6 +183,19 @@ void MainWindow::set_current_project(std::string const& filename){
   Settings::getInstance().current_project=filename;
   init_collection();
   printtree();
+}
+
+void MainWindow::set_focus_to_uuid(Gtk::TreeModel::Row* parent, std::string const& uuid){
+  Gtk::TreeNodeChildren children=parent->children();
+  //So, eins der Children hat die passende uuid
+  for(auto& elem: children){
+    Glib::ustring model_node = (*elem)[_topic_columns.col_node];
+    if(model_node==(Glib::ustring)uuid){
+      //Found, now set focus
+      Gtk::TreeModel::Path path=_topictree->get_model()->get_path(*elem);
+      _topictree->set_cursor(path);
+    }
+  }
 }
 
 }
