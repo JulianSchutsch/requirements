@@ -10,8 +10,11 @@
 namespace greq{
 
 void MainWindow::init_collection(){
-  //Oh, das macht die alte collection gar nicht leer...
-  //Wäre hübsch, wenns da ein clear() gäbe...
+  //Oh, wie unangenehm:
+  //greq: /usr/include/boost/smart_ptr/intrusive_ptr.hpp:174: T* boost::intrusive_ptr<T>::operator->() const [with T = requirements::Node]:
+  //Zusicherung »px != 0« nicht erfüllt. Abgebrochen
+
+  //_collection.clear();
   requirements::storage::Text storage(_collection, Settings::getInstance().current_project);
 }
 
