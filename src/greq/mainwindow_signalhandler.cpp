@@ -7,7 +7,7 @@
 #include "greq/settings.hpp"
 
 #include "requirements/select.hpp"
-//#include "requirements/id.hpp"
+#include "requirements/id.hpp"
 
 #include <iostream>
 
@@ -58,6 +58,10 @@ void MainWindow::on_f3_clicked(){
   }
 }
 
+void MainWindow::on_f4_clicked(){
+  std::cout << "F4" << std::endl;
+}
+
 void MainWindow::on_f5_clicked(){
   std::cout << "F5" << std::endl;
 }
@@ -96,7 +100,9 @@ void MainWindow::on_f7_clicked(){
       --_changed_signal_ignore;
 
       //Jetzt noch wieder an der Stelle parent_row aufklappen
-      _topictree->expand_row(path,true);
+      _topictree->expand_row(path,false);
+      //Und jetzt an die Stelle des neuen Knotens springen
+      set_focus_to_uuid(&parent_row,requirements::id_to_string(newnode->getId()));
     }
     else{
       //Es gibt keinen Vorgängerknoten.
@@ -165,6 +171,9 @@ bool MainWindow::on_key_press(GdkEventKey *event){
       break;
     case GDK_F3:
       on_f3_clicked();
+      break;
+    case GDK_F4:
+      on_f4_clicked();
       break;
     case GDK_F5:
       on_f5_clicked();

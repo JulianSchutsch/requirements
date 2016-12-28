@@ -17,6 +17,7 @@ class MainWindow : public Gtk::Window{
   Gtk::Button* _f1_button;
   Gtk::Button* _f2_button;
   Gtk::Button* _f3_button;
+  Gtk::Button* _f4_button;
   Gtk::Button* _f5_button;
   Gtk::Button* _f6_button;
   Gtk::Button* _f7_button;
@@ -36,11 +37,13 @@ class MainWindow : public Gtk::Window{
   requirements::NodePtr get_node_for_uuid(std::string const& uuid);
   void create_recent_menu();
   void set_current_project(std::string const& filename);
+  void set_focus_to_uuid(Gtk::TreeModel::Row* parent,std::string const& uuid);
 
   //Signal handlers:
   void on_f1_clicked();
   void on_f2_clicked();
   void on_f3_clicked();
+  void on_f4_clicked();
   void on_f5_clicked();
   void on_f6_clicked();
   void on_f7_clicked();
