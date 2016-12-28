@@ -37,19 +37,30 @@ namespace requirements {
       return folder + text_latexFolder;
     }
 
-    Text::Text(NodeCollection& a_collection, const std::string& a_folder)
-      : collection(a_collection)
-      , folder(util::ensureTrailingSlash(a_folder)) {
+    Text::Text(const std::string& a_folder, bool a_autosave)
+      : folder(util::ensureTrailingSlash(a_folder))
+      , autosave(a_autosave) {
       text_ensureFolder(folder);
       std::string lockFilename = folder+"lock";
       { std::fstream s(lockFilename, std::fstream::out); }
       fileLock.reset(new boost::interprocess::file_lock(lockFilename.c_str()));
       text_load(collection, folder);
     }
-    
-    Text::~Text() {
+
+    void Text::save(const std::string& a_folder) {
+      folder = a_folder;
+      save();
+    }
+
+    void Text::save() {
       text_save(collection, folder);
     }
-    
+
+    Text::~Text() {
+      if(autosave) {
+        save();
+      }
+    }
+
   }
 }

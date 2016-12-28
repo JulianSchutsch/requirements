@@ -106,7 +106,8 @@ void MainWindow::on_f7_clicked(){
     //Dazu brauchen wir also den Parent
     requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
     //Jetzt neuen Knoten erzeugen
-    auto newnode = _collection.createNode("");
+    auto& collection = _currentProject->getNodeCollection();
+    auto newnode = collection.createNode("");
     //Jetzt Knoten unter den parent bammeln
     newnode->setParent(parent);
     //Jetzt alle Kinder des Parent neu malen

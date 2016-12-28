@@ -13,8 +13,8 @@
 namespace req {
   namespace command {
     void processCommand_tree(Status& status, const std::vector<std::string>& parameters) {
-      requirements::NodeCollection collection;
-      requirements::storage::Text(collection, status.folder);
+      requirements::storage::Text storage(status.folder, false);
+      auto& collection = storage.getNodeCollection();
       
       auto selected = requirements::select(collection, parameters, collection.getRootNode());
 

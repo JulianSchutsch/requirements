@@ -1,6 +1,5 @@
 #include "requirements/storage/text.hpp"
 #include "requirements/select.hpp"
-#include "requirements/storage/text_save.hpp"
 
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
@@ -10,16 +9,13 @@
 namespace greq{
 
 void MainWindow::init_collection(){
-  //Oh, wie unangenehm:
-  //greq: /usr/include/boost/smart_ptr/intrusive_ptr.hpp:174: T* boost::intrusive_ptr<T>::operator->() const [with T = requirements::Node]:
-  //Zusicherung »px != 0« nicht erfüllt. Abgebrochen
-
-  //_collection.clear();
-  requirements::storage::Text storage(_collection, Settings::getInstance().current_project);
+  _currentProject.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
 }
 
 void MainWindow::store_collection(){
-  requirements::storage::text_save(_collection,Settings::getInstance().current_project);
+  if(_currentProject) {
+    _currentProject->save(Settings::getInstance().current_project);
+  }
 }
 
 void MainWindow::printtree(){
@@ -31,7 +27,8 @@ void MainWindow::printtree(){
   ++_changed_signal_ignore;
   _left_tree_model->clear();
 
-  auto selected = requirements::select(_collection, parameters, _collection.getRootNode());
+  auto& collection = _currentProject->getNodeCollection();
+  auto selected = requirements::select(collection, parameters, collection.getRootNode());
 
   for(auto& node: selected){
     add_children_to_tree(nullptr,node);
@@ -49,7 +46,8 @@ requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
   std::vector<std::string> parameters;
   parameters.push_back(uuid);
   std::vector<requirements::NodePtr> selections;
-  selections = requirements::select(_collection, parameters);
+  auto& collection = _currentProject->getNodeCollection();
+  selections = requirements::select(collection, parameters);
   requirements::NodePtr node = selections[0];
 
   return node;
@@ -59,7 +57,8 @@ void MainWindow::commit_to_collection(std::string const& uuid, std::string const
   std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
   parameters.push_back(uuid);
   std::vector<requirements::NodePtr> selections;
-  selections = requirements::select(_collection, parameters);
+  auto& collection = _currentProject->getNodeCollection();
+  selections = requirements::select(collection, parameters);
   //Und, haben wir jetzt den passenden Knoten? Ein bisschen mehr Doku zum select()
   //wäre hilfreich
   if(selections.size()==1){
@@ -73,7 +72,8 @@ void MainWindow::add_new_brother_for(std::string const& uuid){
   //Also erst mal im Req-Baum finden
   requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
   //Jetzt neuen Knoten erzeugen
-  auto newnode = _collection.createNode("");
+  auto& collection = _currentProject->getNodeCollection();
+  auto newnode = collection.createNode("");
   //Jetzt Knoten unter den parent bammeln
   newnode->setParent(parent);
 }

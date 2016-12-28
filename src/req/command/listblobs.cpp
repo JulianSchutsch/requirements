@@ -11,8 +11,7 @@ namespace req {
   namespace command {
     void processCommand_listBlobs(Status& status, const std::vector<std::string>& parameters) {
       (void)parameters;
-      requirements::NodeCollection collection;
-      requirements::storage::Text storage(collection, status.folder);
+      requirements::storage::Text storage(status.folder, false);
       auto list = storage.getBlobs();
       for(auto& element: list) {
         std::cout<<element<<std::endl;

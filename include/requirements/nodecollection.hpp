@@ -35,6 +35,8 @@ namespace requirements {
     NodePtr getNodeById(Id id);
     void clear();
     NodeCollection();
+    NodeCollection(const NodeCollection&) = delete;
+    NodeCollection& operator = (const NodeCollection&) = delete;
   };
   
 }
