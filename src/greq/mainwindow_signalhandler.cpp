@@ -110,8 +110,22 @@ void MainWindow::on_f7_clicked(){
     auto newnode = collection.createNode("");
     //Jetzt Knoten unter den parent bammeln
     newnode->setParent(parent);
+    //Jetzt den Knoten einfügen hinter dem letzten child von parent
+    //Dazu erst mal den parent finden
+    Gtk::TreeModel::Path path=_left_tree_model->get_path(*row);
+    if(path.up()==true){
+      Gtk::TreeModel::iterator parent_iter = _left_tree_model->get_iter(path);
+      //Gtk::TreeModel::Row parent_row = *parent_iter;
+      Gtk::TreeModel::iterator newchild_iter=_left_tree_model->append(parent_iter->children());
+      //Inhalt reinschreiben
+      (*newchild_iter)[_topic_columns.col_node] = requirements::id_to_string(newnode->getId());
+      (*newchild_iter)[_topic_columns.col_cont] = newnode->getContent();
+      //Und jetzt den Focus setzen
+      _topictree->set_cursor(_left_tree_model->get_path(*(*newchild_iter)));
+    }
+
     //Jetzt alle Kinder des Parent neu malen
-    reprint_tree_below_parent_of(&row,requirements::id_to_string(newnode->getId()));
+    //reprint_tree_below_parent_of(&row,requirements::id_to_string(newnode->getId()));
   }
 }
 
@@ -125,6 +139,8 @@ void MainWindow::on_f10_clicked(){
 
 void MainWindow::on_ctrl_right(){
   std::cout << "[Ctrl]+[Right]" << std::endl;
+  //Im Branch full_iterate nachschauen: Reparenting der collection, und dann den Tree komplett neu malen
+  //mit dem universellen set_focus_to_uuid(string)
 }
 
 void MainWindow::on_ctrl_left(){
@@ -143,8 +159,10 @@ void MainWindow::on_ctrl_down(){
     Glib::ustring uuid = row[_topic_columns.col_node];
     requirements::NodePtr node=get_node_for_uuid(uuid);
     node->down();
-    //Jetzt den Baum neu malen ab Parent mit ausklappen
-    reprint_tree_below_parent_of(&row,requirements::id_to_string(node->getId()));
+    //Jetzt den Knoten mit dem Nachfolgeknoten gleicher Ebene vertauschen
+    Gtk::TreeModel::iterator successor_row=selected_row;
+    ++successor_row;
+    _left_tree_model->iter_swap(selected_row,successor_row);
   }
 }
 
@@ -158,8 +176,11 @@ void MainWindow::on_ctrl_up(){
     Glib::ustring uuid = row[_topic_columns.col_node];
     requirements::NodePtr node=get_node_for_uuid(uuid);
     node->up();
-    //Jetzt den Baum neu malen ab Parent mit ausklappen
-    reprint_tree_below_parent_of(&row,requirements::id_to_string(node->getId()));
+    //Jetzt den Knoten mit dem Vorgängerknoten gleicher Ebene vertauschen
+    Gtk::TreeModel::iterator ancestor_row=selected_row;
+    --ancestor_row;
+    //iter_is_valid is slow. Is there a faster alternative?
+    if(_left_tree_model->iter_is_valid(ancestor_row)==true) _left_tree_model->iter_swap(selected_row,ancestor_row);
   }
 }
 
