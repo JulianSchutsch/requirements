@@ -52,7 +52,9 @@ namespace requirements {
       internal_consumeLine(pos, end, section);
       if(multiLine) {
         while(pos!=end) {
-          if (internal_checkSection(pos, end, sectionName)) {
+          auto tpos = pos;
+          std::string tSectionName;
+          if (internal_checkSection(tpos, end, tSectionName)) {
             break;
           }
           section<<std::endl;

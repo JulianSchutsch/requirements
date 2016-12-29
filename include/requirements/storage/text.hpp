@@ -28,6 +28,7 @@ namespace requirements {
     public:
       std::string createBlob(const std::string& suffix) override;
       std::string getBlobFilename(const std::string& id) override;
+      std::string getBlobSuffix(const std::string& id) override;
       std::string getLatexFolder() override;
       std::vector<std::string> getBlobs() override;
       void save(const std::string& save) override;

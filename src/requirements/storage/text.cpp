@@ -33,6 +33,11 @@ namespace requirements {
       return folder + text_blobFolder+id;
     }
 
+    std::string Text::getBlobSuffix(const std::string& id) {
+      boost::filesystem::path path(id);
+      return path.extension().native();
+    }
+
     std::string Text::getLatexFolder() {
       return folder + text_latexFolder;
     }
