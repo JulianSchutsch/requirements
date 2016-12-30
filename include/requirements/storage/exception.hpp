@@ -19,7 +19,8 @@ namespace requirements {
         InvalidSuffix,
         InvalidRelationshipsFile,
         InvalidTagsFile,
-        ReferenceToUnknownId
+        ReferenceToUnknownId,
+        BlobNotFound
       };
     private:
       const Reason reason;

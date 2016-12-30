@@ -18,6 +18,7 @@
 #include "req/command/delete.hpp"
 #include "req/command/up_down.hpp"
 #include "req/command/touch.hpp"
+#include "req/command/blobaliases.hpp"
 
 namespace req {
   
@@ -35,7 +36,8 @@ namespace req {
     {"delete", &command::processCommand_delete},
     {"up", &command::processCommand_up},
     {"down", &command::processCommand_down},
-    {"touch", &command::processCommand_touch}
+    {"touch", &command::processCommand_touch},
+    {"blobaliases", &command::processCommand_blobAliases}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

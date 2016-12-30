@@ -39,6 +39,7 @@ namespace requirements {
       std::map<std::string, std::string> getBlobAliases() override;
       void save(const std::string& save) override;
       void save() override;
+      void setBlobAliases(const std::string& blob, const std::string& alias) override;
       NodeCollection& getNodeCollection() override { return collection; }
       Text(const std::string& folder, bool a_autosave);
       ~Text();

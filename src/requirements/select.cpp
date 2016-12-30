@@ -60,7 +60,7 @@ namespace requirements {
       const auto& content = node->getContent();
       const auto& annotations = node->getAnnotations();
       bool matched = true;
-      for(auto e: regexes) {
+      for(auto& e: regexes) {
         if((!std::regex_search(content, e)) && (!std::regex_search(annotations, e)) && (!std::regex_search(idStr, e))) {
           matched = false;
           break;

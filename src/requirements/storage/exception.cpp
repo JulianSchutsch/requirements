@@ -29,6 +29,8 @@ namespace requirements {
           return "Invalid Tags file";
         case Reason::ReferenceToUnknownId:
           return "Reference to unknown id";
+        case Reason::BlobNotFound:
+          return "Blob not found";
       }
       return "Unknown ContextException issue";
     }

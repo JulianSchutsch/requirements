@@ -1,6 +1,6 @@
 #include "requirements/blob.hpp"
 
-#include <iostream>
+#include <regex>
 
 #include <boost/filesystem.hpp>
 
@@ -8,8 +8,30 @@
 
 namespace requirements {
 
-  std::vector<Id> selectBlobs(IStorage& storage, const std::vector<std::string>& parameters) {
-    auto blobs = storage.getBlobs();
+  std::vector<std::string> selectBlobs(IStorage& storage, const std::vector<std::string>& parameters) {
+    std::vector<std::string> result;
+
+    auto blobs = storage.getBlobAliases();
+
+    std::vector<std::regex> regexes;
+    regexes.reserve(parameters.size());
+    for(auto& parameter: parameters) {
+      regexes.emplace_back(parameter);
+    }
+
+    for(auto& pair: blobs) {
+      bool matched = true;
+      for(auto& e: regexes) {
+        if(!std::regex_search(pair.second, e)) {
+          matched = false;
+          break;
+        }
+      }
+      if(matched) {
+        result.emplace_back(pair.first);
+      }
+    }
+    return std::move(result);
   }
 
   std::string importBlob(IStorage& storage, const std::string& sourceFile) {

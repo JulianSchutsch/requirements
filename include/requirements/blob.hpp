@@ -8,6 +8,6 @@ namespace requirements {
   class IStorage;
   
   std::string importBlob(IStorage& storage, const std::string& sourceFile);
-  std::vector<Id> selectBlobs(IStorage& storage, const std::vector<std::string>& parameters);
+  std::vector<std::string> selectBlobs(IStorage& storage, const std::vector<std::string>& parameters);
 
 }

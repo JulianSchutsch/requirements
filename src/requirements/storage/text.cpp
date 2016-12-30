@@ -4,6 +4,7 @@
 
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/filesystem.hpp>
+#include <requirements/storage/exception.hpp>
 
 #include "util/path.hpp"
 
@@ -55,7 +56,7 @@ namespace requirements {
         std::string line;
         while (std::getline(file, line)) {
           auto idSeparator = line.find(' ');
-          auto id = (idSeparator == std::string::npos)?line:std::string(line, 0, idSeparator-1);
+          auto id = (idSeparator == std::string::npos)?line:std::string(line, 0, idSeparator);
           blobAliases[id] = line;
         }
       }
@@ -77,6 +78,14 @@ namespace requirements {
       for(auto& pair: blobAliases) {
         file<<pair.second<<std::endl;
       }
+    }
+
+    void Text::setBlobAliases(const std::string& blob, const std::string& alias) {
+      auto it = blobAliases.find(blob);
+      if(it==blobAliases.end()) {
+        throw Exception(Exception::Reason::BlobNotFound);
+      }
+      it->second = it->first + " " + alias;
     }
 
     Text::Text(const std::string& a_folder, bool a_autosave)

@@ -12,9 +12,9 @@ namespace req {
     void processCommand_listBlobs(Status& status, const std::vector<std::string>& parameters) {
       (void)parameters;
       requirements::storage::Text storage(status.folder, false);
-      auto list = storage.getBlobs();
-      for(auto& element: list) {
-        std::cout<<element<<std::endl;
+      auto list = storage.getBlobAliases();
+      for(auto& pair: list) {
+        std::cout<<pair.first<<"->"<<pair.second<<std::endl;
       }
     }
   }
