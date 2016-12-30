@@ -7,7 +7,6 @@
 #include <boost/filesystem.hpp>
 
 #include "requirements/istorage.hpp"
-#include "requirements/id.hpp"
 #include "requirements/blob.hpp"
 
 namespace generators {
