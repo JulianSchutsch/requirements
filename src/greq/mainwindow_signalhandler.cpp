@@ -123,9 +123,6 @@ void MainWindow::on_f7_clicked(){
       //Und jetzt den Focus setzen
       _topictree->set_cursor(_left_tree_model->get_path(*(*newchild_iter)));
     }
-
-    //Jetzt alle Kinder des Parent neu malen
-    //reprint_tree_below_parent_of(&row,requirements::id_to_string(newnode->getId()));
   }
 }
 
@@ -143,12 +140,38 @@ void MainWindow::on_ctrl_right(){
   std::cout << "[Ctrl]+[Right]" << std::endl;
   //Im Branch full_iterate nachschauen: Reparenting der collection, und dann den Tree komplett neu malen
   //mit dem universellen set_focus_to_uuid(string)
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    //wir brauchen die Liste aller Brüder
+    //dazu fragen wie mal beim Vater nach der Geburtsurkunde
+    //aber erst mal den Bengel nach seinem Vater fragen
+    requirements::NodePtr parent_node=node->getParent();
+    auto children=parent_node->getChildren();
+    for(auto it=children.begin();it!=children.end();++it) {
+      if(node==*it) {
+        //found.
+        if(it!=children.begin()){
+          //er hat auch einen großen bruder:
+          auto brother=it;
+          --brother;
+          //So, erst mal Schluck Glühwein nehmen
+          //Jetzt gehts eklig weiter, jetzt wird nämlich der große Bruder zum Vater
+          node->setParent(*brother);
+          printtree(requirements::id_to_string(node->getId()));
+        }
+        break;
+      }
+    }
+  }
 }
 
 //Move node up one level. New parent is parent of parent.
 //If there is no grandparent, we have the grandfather paradoxon ... not.
 void MainWindow::on_ctrl_left(){
-  std::cout << "[Ctrl]+[Left]" << std::endl;
   //Erst mal die UUID des aktuellen Knotens herausfinden.
   Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
   Gtk::TreeModel::iterator selected_row = selection->get_selected();
