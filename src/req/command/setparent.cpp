@@ -2,12 +2,11 @@
 
 #include <iostream>
 
-#include "req/status.hpp"
-
 #include "requirements/storage/text.hpp"
-#include "requirements/nodecollection.hpp"
-#include "requirements/node.hpp"
 #include "requirements/select.hpp"
+
+#include "req/status.hpp"
+#include "req/exception.hpp"
 
 namespace req {
   namespace command {
@@ -24,8 +23,7 @@ namespace req {
       
       std::vector<requirements::NodePtr> nodes;
       if(!requirements::selectFromIds(collection, status.selections[0], nodes)) {
-        std::cout<<"Invalid selection list"<<std::endl;
-        return;
+        throw Exception("Invalid current selection");
       }
       for(auto node:nodes) {
         std::cout<<"Set Parent for "<<requirements::id_to_string(node->getId())<<" : "<<requirements::id_to_string(parent->getId())<<std::endl;

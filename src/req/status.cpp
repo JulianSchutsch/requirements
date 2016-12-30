@@ -4,8 +4,11 @@
 
 #include "util/path.hpp"
 
+#include "requirements/node.hpp"
+#include "requirements/select.hpp"
+
 namespace req {
- 
+
   void Status::load_folder(TiXmlElement& element) {
     const char* e_folder = element.GetText();
     if(e_folder!=nullptr) {

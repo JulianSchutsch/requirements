@@ -3,11 +3,11 @@
 #include <iostream>
 
 #include "requirements/storage/text.hpp"
-#include "requirements/nodecollection.hpp"
 
 #include "generators/latex/requirements.hpp"
 
 #include "req/status.hpp"
+#include "req/exception.hpp"
 
 namespace req {
   namespace command {
@@ -19,7 +19,7 @@ namespace req {
 
     void processCommand_print(Status& status, const std::vector<std::string>& parameters) {
       if(parameters.size()!=2) {
-        std::cout<<"Expected 2 parameters for print: target format & style"<<std::endl;
+        throw Exception("Require two parameters for print, format & style");
       }
       ::requirements::storage::Text storage(status.folder, false);
       auto& collection = storage.getNodeCollection();
@@ -29,8 +29,7 @@ namespace req {
 
       auto it = printMap.find(std::make_pair(format, style));
       if(it==printMap.end()) {
-        std::cout<<"Print parameters for format and style not supported"<<std::endl;
-        return;
+        throw Exception("Print parameters for format and style not supported");
       }
       it->second(collection, storage, storage.getLatexFolder()+"requirements.tex");
     }

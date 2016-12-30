@@ -5,11 +5,11 @@
 #include <boost/filesystem.hpp>
 
 #include "requirements/nodecollection.hpp"
-#include "requirements/node.hpp"
 #include "requirements/storage/text.hpp"
 #include "requirements/blob.hpp"
 
 #include "req/status.hpp"
+#include "req/exception.hpp"
 
 namespace req {
   namespace command {
@@ -17,18 +17,15 @@ namespace req {
       requirements::storage::Text storage(status.folder, true);
       auto& collection = storage.getNodeCollection();
       if(parameters.size()!=1) {
-        std::cout<<"Require source file"<<std::endl;
-        return;
+        throw Exception("Source file for blob required");
       }
       auto sourceFile = parameters[0];
       if(!boost::filesystem::exists(sourceFile) || boost::filesystem::is_directory(sourceFile)) {
-        std::cout<<"Invalid source file"<<std::endl;
-        return;
+        throw Exception("Source file does not exist or is not valid");
       }
       std::string id = requirements::importBlob(storage, sourceFile);
       if(id.empty()) {
-        std::cout<<"Failed to import blob"<<std::endl;
-        return;
+        throw Exception("Failed to import blob");
       }
       std::cout<<"Blob added:"<<id<<std::endl;
     }
