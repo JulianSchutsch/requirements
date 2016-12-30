@@ -200,6 +200,30 @@ void MainWindow::set_focus_to_uuid(Gtk::TreeModel::Row* parent, std::string cons
   }
 }
 
+void MainWindow::set_focus_to_uuid(std::string const& uuid){
+  Gtk::TreeModel::Children children=_left_tree_model->children();
+  set_focus_to_uuid(children,uuid);
+
+}
+
+void MainWindow::set_focus_to_uuid(Gtk::TreeModel::Children const& children,std::string const& uuid){
+  for(auto child:children){
+    if(child->children().size()>0){
+      //weiter absteigen
+      set_focus_to_uuid(child->children(),uuid);
+    }
+    Gtk::TreeModel::Row row=*child;
+    Glib::ustring read_uuid=row[_topic_columns.col_node];
+    if(read_uuid==uuid){
+      //Ha, gefunden.
+      Gtk::TreeModel::Path path=_left_tree_model->get_path(*child);
+      _topictree->set_cursor(path);
+    }
+    //std::cout << "uuid: " << uuid << std::endl;
+  }
+}
+
+
 // uuid_of_focus_node gibt den Knoten an, der den Focus bekommen soll, z.B. nach einer Verschiebung
 void MainWindow::reprint_tree_below_parent_of(Gtk::TreeModel::Row* row,std::string const& uuid_of_focus_node){
   Gtk::TreeModel::Path path=_topictree->get_model()->get_path(*row);

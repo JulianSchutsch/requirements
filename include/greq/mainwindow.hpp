@@ -39,6 +39,8 @@ class MainWindow : public Gtk::Window{
   void create_recent_menu();
   void set_current_project(std::string const& filename);
   void set_focus_to_uuid(Gtk::TreeModel::Row* parent,std::string const& uuid);
+  void set_focus_to_uuid(std::string const& uuid);
+  void set_focus_to_uuid(Gtk::TreeModel::Children const& children, std::string const& uuid);
   void reprint_tree_below_parent_of(Gtk::TreeModel::Row* row,std::string const& uuid_of_focus_node);
   std::string get_uuid_on_cursor();
 
@@ -64,7 +66,7 @@ class MainWindow : public Gtk::Window{
   std::unique_ptr<::requirements::IStorage> _currentProject;
   void init_collection();
   void store_collection();
-  void printtree();
+  void printtree(std::string const& uuid_to_jump="");
   void commit_to_collection(std::string const& uuid, std::string const& content);
   void add_new_brother_for(std::string const& uuid);
 

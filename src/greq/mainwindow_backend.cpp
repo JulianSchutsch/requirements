@@ -18,7 +18,7 @@ void MainWindow::store_collection(){
   }
 }
 
-void MainWindow::printtree(){
+void MainWindow::printtree(std::string const& uuid_to_jump){
   //Auf der Kommandozeile heißt das req folder
   using namespace ::requirements;
 
@@ -39,6 +39,10 @@ void MainWindow::printtree(){
   _topictree->append_column_editable("text", _topic_columns.col_cont);
   //now do no longer ignore changed signal
   --_changed_signal_ignore;
+  //Tree ausklappen
+  _topictree->expand_all();
+  //Jetzt noch hinspringen
+  if(uuid_to_jump!="") set_focus_to_uuid(uuid_to_jump);
 }
 
 requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
