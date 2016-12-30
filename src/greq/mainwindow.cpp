@@ -12,14 +12,9 @@
 #include "greq/mainwindow.hpp"
 
 namespace greq{
-//TODO: Feature:  1. Hinzufügen von Knoten
-//                2. Löschen von Knoten
-//                3. Verschieben eines Knotens an eine andere Stelle im Baum
-//                   shift+links = Hierarchieebene hoch
-//                   shift+rechts = Hierarchieebene runter
-//                   shift+hoch = In gleicher Ebene nach vorn
-//                   shift+runter = In gleicher Ebene runter
-//                4. Bessere Darstellung der Knoten
+//TODO: Feature:  1. Bessere Darstellung der Knoten
+//                   Liste generell ausklappen, UUIDS nur im Modell, nicht im View
+//                   TextView als CellRenderer
 MainWindow::MainWindow()
 {
   set_title("GReq");
