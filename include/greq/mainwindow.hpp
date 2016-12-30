@@ -69,6 +69,7 @@ class MainWindow : public Gtk::Window{
   void printtree(std::string const& uuid_to_jump="");
   void commit_to_collection(std::string const& uuid, std::string const& content);
   void add_new_brother_for(std::string const& uuid);
+  void new_node(bool copy_content=false);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{
