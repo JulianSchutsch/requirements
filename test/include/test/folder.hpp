@@ -4,7 +4,7 @@
 
 namespace test {
 
-  class UniqueFolder {
+  class UniqueFolder final {
   private:
     std::string name;
   public:
