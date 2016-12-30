@@ -99,8 +99,19 @@ void MainWindow::on_f7_clicked(){
   new_node(false);
 }
 
+//Delete the selected node.
 void MainWindow::on_f8_clicked(){
-  std::cout << "F8" << std::endl;
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    //Lösche den Knoten in der Collection
+    _currentProject->getNodeCollection().deleteNode(node);
+    //Lösche den Knoten im TreeModel
+    _left_tree_model->erase(selected_row);
+  }
 }
 
 void MainWindow::on_f10_clicked(){
@@ -111,8 +122,6 @@ void MainWindow::on_f10_clicked(){
 //If there is no older brother, nothing changes.
 void MainWindow::on_ctrl_right(){
   std::cout << "[Ctrl]+[Right]" << std::endl;
-  //Im Branch full_iterate nachschauen: Reparenting der collection, und dann den Tree komplett neu malen
-  //mit dem universellen set_focus_to_uuid(string)
   Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
   Gtk::TreeModel::iterator selected_row = selection->get_selected();
   if(selected_row!=nullptr){

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 
