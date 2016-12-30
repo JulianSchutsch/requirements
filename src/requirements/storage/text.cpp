@@ -1,7 +1,6 @@
 #include "requirements/storage/text.hpp"
 
 #include <fstream>
-#include <iostream>
 
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/filesystem.hpp>
@@ -14,6 +13,10 @@
 
 namespace requirements {
   namespace storage {
+
+    std::map<std::string, std::string> Text::getBlobAliases() {
+      return blobAliases;
+    }
     
     std::vector<std::string> Text::getBlobs() {
       std::vector<std::string> result;
@@ -42,14 +45,52 @@ namespace requirements {
       return folder + text_latexFolder;
     }
 
+    void Text::loadBlobAliases() {
+      {
+        std::string blobAliasFilename = folder + text_blobaliasFile;
+        if (!boost::filesystem::exists(blobAliasFilename)) {
+          return;
+        }
+        std::fstream file(blobAliasFilename, std::fstream::in);
+        std::string line;
+        while (std::getline(file, line)) {
+          auto idSeparator = line.find(' ');
+          auto id = (idSeparator == std::string::npos)?line:std::string(line, 0, idSeparator-1);
+          blobAliases[id] = line;
+        }
+      }
+      // Ensure every blob has an alias, even if just a trivial one
+      {
+        auto blobs = getBlobs();
+        for(auto& blob: blobs) {
+          auto it = blobAliases.find(blob);
+          if(it==blobAliases.end()) {
+            blobAliases[blob] = blob;
+          }
+        }
+      }
+    }
+
+    void Text::saveBlobAliases() {
+      std::string blobAliasFilename = folder + text_blobaliasFile;
+      std::fstream file(blobAliasFilename, std::fstream::out);
+      for(auto& pair: blobAliases) {
+        file<<pair.second<<std::endl;
+      }
+    }
+
     Text::Text(const std::string& a_folder, bool a_autosave)
       : folder(util::ensureTrailingSlash(a_folder))
       , autosave(a_autosave) {
+
       text_ensureFolder(folder);
+
       std::string lockFilename = folder+"lock";
       { std::fstream s(lockFilename, std::fstream::out); }
       fileLock.reset(new boost::interprocess::file_lock(lockFilename.c_str()));
+
       text_load(collection, folder);
+      loadBlobAliases();
     }
 
     void Text::save(const std::string& a_folder) {
@@ -59,6 +100,7 @@ namespace requirements {
 
     void Text::save() {
       text_save(collection, folder);
+      saveBlobAliases();
     }
 
     Text::~Text() {

@@ -17,6 +17,7 @@
 #include "req/command/print.hpp"
 #include "req/command/delete.hpp"
 #include "req/command/up_down.hpp"
+#include "req/command/touch.hpp"
 
 namespace req {
   
@@ -33,7 +34,8 @@ namespace req {
     {"print", &command::processCommand_print},
     {"delete", &command::processCommand_delete},
     {"up", &command::processCommand_up},
-    {"down", &command::processCommand_down}
+    {"down", &command::processCommand_down},
+    {"touch", &command::processCommand_touch}
   };
   
   void processCommand(Status& status, const std::vector<std::string>& a_commands) {

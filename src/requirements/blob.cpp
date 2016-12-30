@@ -7,7 +7,11 @@
 #include "requirements/istorage.hpp"
 
 namespace requirements {
-  
+
+  std::vector<Id> selectBlobs(IStorage& storage, const std::vector<std::string>& parameters) {
+    auto blobs = storage.getBlobs();
+  }
+
   std::string importBlob(IStorage& storage, const std::string& sourceFile) {
     boost::filesystem::path p(sourceFile);
     auto suffix = p.extension().native();

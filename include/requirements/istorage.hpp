@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "requirements/id.hpp"
 
@@ -15,6 +16,7 @@ namespace requirements {
     virtual std::string getBlobFilename(const std::string& id) = 0;
     virtual std::string getBlobSuffix(const std::string& id) = 0;
     virtual std::vector<std::string> getBlobs() = 0;
+    virtual std::map<std::string, std::string> getBlobAliases() = 0;
     virtual std::string getLatexFolder() = 0;
     virtual NodeCollection& getNodeCollection() = 0;
     virtual void save(const std::string& folder) = 0;
