@@ -8,12 +8,18 @@
 
 #include "requirements/istorage.hpp"
 #include "requirements/id.hpp"
+#include "requirements/blob.hpp"
 
 namespace generators {
   namespace latex {
     bool translateBlob(::requirements::IStorage& storage, const std::string& description, BlobDescription& result) {
       std::cout<<"Desc:"<<description<<std::endl;
-      std::string id = boost::algorithm::trim_copy(description);
+      auto selected = ::requirements::selectBlobs(storage, {boost::algorithm::trim_copy(description)});
+      if(selected.size()!=1) {
+        std::cout<<"More than one blob selected during generation"<<std::endl;
+        return false;
+      }
+      auto id = selected[0];
       const std::string filename = storage.getBlobFilename(id);
       const std::string suffix = storage.getBlobSuffix(id);
       std::cout<<"suf:"<<suffix<<":"<<std::endl;
