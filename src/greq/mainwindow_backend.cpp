@@ -82,4 +82,40 @@ void MainWindow::add_new_brother_for(std::string const& uuid){
   newnode->setParent(parent);
 }
 
+void MainWindow::new_node(bool copy_content){
+  //Erst mal die UUID des aktuellen Knotens herausfinden
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring uuid = row[_topic_columns.col_node];
+    //Der neue Knoten wird ein Bruder des aktuellen Knotens.
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    //Dazu brauchen wir also den Parent
+    requirements::NodePtr parent=node->getParent();
+    //Jetzt neuen Knoten erzeugen
+    auto& collection = _currentProject->getNodeCollection();
+    auto newnode = collection.createNode("");
+    //Jetzt Knoten unter den parent bammeln
+    newnode->setParent(parent);
+    if(copy_content==true){
+      newnode->updateContent(node->getContent());
+    }
+    //Jetzt den Knoten einfügen hinter dem letzten child von parent
+    //Dazu erst mal den parent finden
+    Gtk::TreeModel::Path path=_left_tree_model->get_path(*row);
+    if(path.up()==true){
+      Gtk::TreeModel::iterator parent_iter = _left_tree_model->get_iter(path);
+      Gtk::TreeModel::iterator newchild_iter=_left_tree_model->append(parent_iter->children());
+      //Inhalt reinschreiben
+      ++_changed_signal_ignore;
+      (*newchild_iter)[_topic_columns.col_node] = requirements::id_to_string(newnode->getId());
+      (*newchild_iter)[_topic_columns.col_cont] = newnode->getContent();
+      --_changed_signal_ignore;
+      //Und jetzt den Focus setzen
+      _topictree->set_cursor(_left_tree_model->get_path(*(*newchild_iter)));
+    }
+  }
+}
+
 }
