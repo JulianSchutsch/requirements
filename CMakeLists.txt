@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 project(requirements CXX C)
 
-if(NOT DEFINED ${CMAKE_BUILD_TYPE})
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
   set(CMAKE_BUILD_TYPE DEBUG)
+  message("No build type set, set to default")
 endif()
+message("Build type now ${CMAKE_BUILD_TYPE}")
 
 set(COMMON_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++14 -Wextra -pedantic -Wall -DBOOST_NO_CXX11_SCOPED_ENUMS")
 set(COMMON_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
