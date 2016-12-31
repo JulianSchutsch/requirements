@@ -8,6 +8,7 @@
 
 static const char* testContent1 = "Some random content\nNo spefic stuff";
 static const char* testContent2 = "Some other content";
+static const char* testContent3 = "Even more content";
 
 TEST(Node, Create) {
   test::UniqueFolder folder;
@@ -86,5 +87,73 @@ TEST(Node, Delete) {
     auto rootNode = collection.getRootNode();
     auto topLevel = rootNode->getChildren();
     ASSERT_EQ(topLevel.size(), 0);
+  }
+}
+
+TEST(Node, Recursive_Delete) {
+  test::UniqueFolder folder;
+  ::requirements::Id parentId;
+  {
+    ::requirements::storage::Text storage(folder.getName(), true);
+    auto& collection = storage.getNodeCollection();
+    auto parent = collection.createNode(testContent1);
+    auto child = collection.createNode(testContent2);
+    child->setParent(parent);
+    ASSERT_EQ(child->getParent(), parent);
+    parentId = parent->getId();
+  }
+  {
+    ::requirements::storage::Text storage(folder.getName(), true);
+    auto& collection = storage.getNodeCollection();
+    auto root = collection.getRootNode();
+    auto topLevel = root->getChildren();
+    ASSERT_EQ(topLevel.size(), 1);
+    auto parent = topLevel.front();
+    ASSERT_EQ(parent->getId(), parentId);
+    collection.deleteNode(parent);
+  }
+  {
+    ::requirements::storage::Text storage(folder.getName(), true);
+    auto& collection = storage.getNodeCollection();
+    auto nodes = test::extractNodes(collection);
+    ASSERT_EQ(nodes.size(), 0);
+  }
+}
+
+TEST(Node, Reparent) {
+  test::UniqueFolder folder;
+  ::requirements::Id parent1Id;
+  ::requirements::Id parent2Id;
+  ::requirements::Id childId;
+  {
+    ::requirements::storage::Text storage(folder.getName(), true);
+    auto& collection = storage.getNodeCollection();
+    auto parent1 = collection.createNode(testContent1);
+    parent1Id = parent1->getId();
+    auto parent2 = collection.createNode(testContent2);
+    parent2Id = parent2->getId();
+    auto child = collection.createNode(testContent3);
+    childId = child->getId();
+    child->setParent(parent1);
+    ASSERT_EQ(child->getParent(), parent1);
+    child->setParent(parent2);
+    ASSERT_EQ(child->getParent(), parent2);
+  }
+  {
+    ::requirements::storage::Text storage(folder.getName(), false);
+    auto& collection = storage.getNodeCollection();
+    auto root = collection.getRootNode();
+    auto topLevel = root->getChildren();
+    auto parent1 = topLevel.front();
+    auto parent2 = topLevel.back();
+    ASSERT_EQ(parent1->getId(), parent1Id);
+    ASSERT_EQ(parent2->getId(), parent2Id);
+    auto children1 = parent1->getChildren();
+    auto children2 = parent2->getChildren();
+    ASSERT_EQ(children1.size(), 0);
+    ASSERT_EQ(children2.size(), 1);
+    auto child = children2.front();
+    ASSERT_EQ(child->getId(), childId);
+    ASSERT_EQ(child->getParent(), parent2);
   }
 }

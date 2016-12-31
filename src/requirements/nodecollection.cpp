@@ -5,6 +5,11 @@ namespace requirements {
   void NodeCollection::deleteNode(NodePtr node) {
     auto id = node->getId();
     nodes.erase(id);
+    node->setParent(nullptr);
+    auto children = node->getChildren();
+    for(auto& child:children) {
+      deleteNode(child);
+    }
   }
 
   void NodeCollection::clear() {
