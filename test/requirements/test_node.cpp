@@ -157,3 +157,34 @@ TEST(Node, Reparent) {
     ASSERT_EQ(child->getParent(), parent2);
   }
 }
+
+TEST(Node, Up) {
+  ::requirements::NodeCollection collection;
+  auto node1 = collection.createNode(testContent1);
+  auto node2 = collection.createNode(testContent2);
+  auto root = collection.getRootNode();
+  node1->up();
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.front(), node1);
+    ASSERT_EQ(children.back(), node2);
+  }
+  node2->up();
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.front(), node2);
+    ASSERT_EQ(children.back(), node1);
+  }
+  node2->down();
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.front(), node1);
+    ASSERT_EQ(children.back(), node2);
+  }
+  node2->down();
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.front(), node1);
+    ASSERT_EQ(children.back(), node2);
+  }
+}
