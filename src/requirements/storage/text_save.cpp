@@ -25,9 +25,9 @@ namespace requirements {
         file<<content;
       }
       {
-        auto& annotations = node.getAnnotations();
+        auto& generatedContent = node.getGeneratedContent();
         std::fstream file(folder + text_annotationsFolder + id_to_string(node.getId()), std::fstream::out);
-        file<<annotations;
+        file<<generatedContent;
       }
     }
     

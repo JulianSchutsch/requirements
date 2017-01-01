@@ -60,10 +60,10 @@ namespace requirements {
     }
   }
 
-  Node::Node(NodeCollection& a_collection, Id a_id, std::string&& a_content, std::string&& a_annotations)
+  Node::Node(NodeCollection& a_collection, Id a_id, std::string&& a_content, std::string&& a_generatedContent)
     : id(a_id)
     , collection(a_collection)
     , content(std::move(a_content))
-    , annotations(std::move(a_annotations)) {}
+    , generatedContent(std::move(a_generatedContent)) {}
   
 }

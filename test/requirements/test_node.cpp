@@ -28,7 +28,7 @@ TEST(Node, Create) {
     ASSERT_EQ(node->getId(), nodeId);
     ASSERT_EQ(node->getParent(), collection.getRootNode());
     ASSERT_EQ(node->getContent(), testContent1);
-    ASSERT_EQ(node->getAnnotations(), "");
+    ASSERT_EQ(node->getGeneratedContent(), "");
   }
 }
 
@@ -54,13 +54,13 @@ TEST(Node, SetParent) {
     auto parentNode = topLevel.front();
     ASSERT_EQ(parentNode->getId(), parentId);
     ASSERT_EQ(parentNode->getContent(), testContent1);
-    ASSERT_EQ(parentNode->getAnnotations(), "");
+    ASSERT_EQ(parentNode->getGeneratedContent(), "");
     auto children = parentNode->getChildren();
     ASSERT_EQ(children.size(), 1);
     auto childNode = children.front();
     ASSERT_EQ(childNode->getId(), childId);
     ASSERT_EQ(childNode->getContent(), testContent2);
-    ASSERT_EQ(childNode->getAnnotations(), "");
+    ASSERT_EQ(childNode->getGeneratedContent(), "");
     ASSERT_EQ(childNode->getParent(), parentNode);
   }
 }
