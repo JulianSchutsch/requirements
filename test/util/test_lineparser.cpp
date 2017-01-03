@@ -26,3 +26,23 @@ TEST(LineParser, TwoLines) {
   ASSERT_EQ(line, "SomeText");
   ASSERT_EQ(lineParser.consume(line), false);
 }
+
+TEST(LineParser, Skip) {
+  std::string content = "\t \t\nSomeContent\n\n";
+  util::LineParser lineParser(content);
+  ASSERT_EQ(lineParser.skipEmptyLine(), true);
+  std::string line;
+  ASSERT_EQ(lineParser.consume(line), true);
+  ASSERT_EQ(line, "SomeContent");
+  ASSERT_EQ(lineParser.skipEmptyLine(), true);
+  ASSERT_EQ(lineParser.skipEmptyLine(), false);
+}
+
+TEST(LineParser, FailSkip) {
+  std::string content = "section:";
+  util::LineParser lineParser(content);
+  ASSERT_EQ(lineParser.skipEmptyLine(), false);
+  std::string line;
+  ASSERT_EQ(lineParser.consume(line), true);
+  ASSERT_EQ(line, "section:");
+}

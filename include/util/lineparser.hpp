@@ -14,5 +14,6 @@ namespace util {
     LineParser(const std::string& a_content);
     bool consume(const std::regex& regex, std::smatch& matches);
     bool consume(std::string& line);
+    bool skipEmptyLine();
   };
 }

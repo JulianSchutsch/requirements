@@ -20,6 +20,7 @@ namespace annotations {
     // section: Title \n
     // text*
     // For this purpose, we have to work with iterators
+    
   }
   
   static bool parseTopLevel(::requirements::NodePtr node, ParserResult& result, Builders& builders) {

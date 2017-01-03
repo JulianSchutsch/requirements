@@ -6,8 +6,25 @@ namespace util {
     : content(a_content)
     , position(content.begin()) {}
   
+  bool LineParser::skipEmptyLine() {
+    if(position==content.end()) {
+      return false;
+    }
+    auto eol = position;
+    while(eol!=content.end() && *eol!='\n') {
+      if(*eol!=' ' && *eol!='\t') {
+        return false;;
+      }
+      ++eol;
+    }
+    position = eol;
+    if(position!=content.end()) {
+      ++position;
+    }
+    return true;
+  }
+  
   bool LineParser::consume(const std::regex& regex, std::smatch& matches) {
-    // Find end of line
     auto eol = position;
     while(eol!=content.end() && *eol!='\n') {
       ++eol;
