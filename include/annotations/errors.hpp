@@ -14,8 +14,8 @@ namespace annotations {
   public:
     bool has(::requirements::Id id) const;
     const std::string& get(::requirements::Id id) const;
-    ErrorMap::const_iterator cbegin() const { return errors.cbegin(); }
-    ErrorMap::const_iterator cend() const { return errors.cend(); };
+    ErrorMap::const_iterator begin() const { return errors.cbegin(); }
+    ErrorMap::const_iterator end() const { return errors.cend(); };
   };
   
   class ErrorsBuilder {
