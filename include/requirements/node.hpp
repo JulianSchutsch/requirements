@@ -39,6 +39,8 @@ namespace requirements {
     explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content, std::string&& a_generatedContent);
     void up();
     void down();
+    Node& operator = (const Node&) = delete;
+    Node(const Node&) = delete;
   };
   
   inline void intrusive_ptr_add_ref(Node* node) {

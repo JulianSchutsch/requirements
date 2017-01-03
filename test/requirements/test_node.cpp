@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <iostream>
+
 #include "requirements/nodecollection.hpp"
 #include "requirements/storage/text.hpp"
 
@@ -97,6 +99,8 @@ TEST(Node, Recursive_Delete) {
     ::requirements::storage::Text storage(folder.getName(), true);
     auto& collection = storage.getNodeCollection();
     auto parent = collection.createNode(testContent1);
+    ASSERT_NE(parent->getId(), collection.getRootNode()->getId());
+    ASSERT_EQ(parent->getId(), parent->getId());
     auto child = collection.createNode(testContent2);
     child->setParent(parent);
     ASSERT_EQ(child->getParent(), parent);

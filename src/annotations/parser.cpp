@@ -34,13 +34,12 @@ namespace annotations {
       builders.errors.set(node->getId(), "A requirements title must be a shortcut followed by an arbitrary title string");
       return false;
     }
-    builders.sections.enterSection(matches[2], parser.consumeAll());
+    SectionScope section(builders.sections, matches[2], parser.consumeAll());
     bool success = true;
     for(auto& child: node->getChildren()) {
       success = success and parseRequirementsContext(child, result, builders);
     }
     // TODO: Actually add requirements
-    builders.sections.leaveSection();
     return success;
   }
   
@@ -48,11 +47,10 @@ namespace annotations {
     bool success = true;
     auto title = boost::algorithm::trim_copy(parameters);
     builders.shortcuts.set(node->getId(), title);
-    builders.sections.enterSection(title, parser.consumeAll());
+    SectionScope section(builders.sections, title, parser.consumeAll());
     for(auto& child: node->getChildren()) {
       success = success and parseSectionContext(child, result, builders);
     }
-    builders.sections.leaveSection();
     return success;
   }
   
