@@ -6,6 +6,7 @@
 #include "requirements/node.hpp"
 
 #include "annotations/sections.hpp"
+#include "annotations/errors.hpp"
 
 namespace annotations {
   
@@ -14,7 +15,7 @@ namespace annotations {
   
   struct ParserResult {
     std::map<::requirements::Id, ShortCut> shortcuts;
-    std::map<::requirements::Id, Error> errors;
+    Errors errors;
     Sections sections;
   };
   

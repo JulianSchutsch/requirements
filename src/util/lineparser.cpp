@@ -6,6 +6,10 @@ namespace util {
     : content(a_content)
     , position(content.begin()) {}
   
+  std::string LineParser::consumeAll() {
+    return std::string(position, content.cend());
+  }
+  
   bool LineParser::skipEmptyLine() {
     if(position==content.end()) {
       return false;

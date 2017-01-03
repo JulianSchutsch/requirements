@@ -11,9 +11,10 @@ namespace annotations {
     std::list<::requirements::Id> element;
     int depth;
     std::string title;
+    std::string description;
     friend class SectionsBuilder;
   public:
-    Section(int a_depth, const std::string& a_title);
+    Section(int a_depth, const std::string& a_title, const std::string& description);
     const std::list<::requirements::Id>& getElements() const { return element; };
     int getDepth() const { return depth; }
     const std::string& getTitle() const { return title; }
@@ -34,7 +35,7 @@ namespace annotations {
     bool hasElements = false;
   public:
     SectionsBuilder(Sections& a_sections);
-    void enterSection(const std::string& section);
+    void enterSection(const std::string& section, const std::string& description);
     void addElement(::requirements::Id id);
     void leaveSection();
   };

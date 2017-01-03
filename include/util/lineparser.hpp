@@ -15,5 +15,6 @@ namespace util {
     bool consume(const std::regex& regex, std::smatch& matches);
     bool consume(std::string& line);
     bool skipEmptyLine();
+    std::string consumeAll();
   };
 }
