@@ -7,6 +7,7 @@
 
 #include "annotations/sections.hpp"
 #include "annotations/errors.hpp"
+#include "annotations/shortcuts.hpp"
 
 namespace annotations {
   
@@ -15,6 +16,7 @@ namespace annotations {
   struct ParserResult {
     Errors errors;
     Sections sections;
+    Shortcuts shortcuts;
   };
   
   bool parse(::requirements::IStorage& storage, ParserResult& result);

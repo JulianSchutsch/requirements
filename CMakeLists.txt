@@ -46,13 +46,13 @@ find_library(LIB_TINYXML "tinyxml")
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_library(requirements SHARED ${REQUIREMENTS_SOURCES} src/annotations/errors.cpp)
+add_library(requirements SHARED ${REQUIREMENTS_SOURCES})
 target_link_libraries(requirements ${LIB_BOOST_FILESYSTEM} ${LIB_BOOST_SYSTEM})
 
 add_executable(req ${REQ_SOURCES} ${CONSOLE_SOURCES})
 target_link_libraries(req "requirements" ${LIB_TINYXML})
 
-add_executable(greq ${GREQ_SOURCES})
+add_executable(greq ${GREQ_SOURCES} include/annotations/requirements.hpp include/annotations/common.hpp)
 target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})
 
 add_executable(t ${TEST_SOURCES})

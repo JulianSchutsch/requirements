@@ -20,8 +20,11 @@ namespace req {
         return;
       }
       std::cout<<"Some issues found during parsing"<<std::endl;
-      for(const auto& error: parsed.errors) {
-        std::cout<<::requirements::id_to_string(error.first)<<" -> "<<error.second<<std::endl;
+      for(auto node: storage.getNodeCollection()) {
+        auto id = node->getId();
+        if(parsed.errors.has(id)) {
+          std::cout<<::requirements::id_to_string(id)<<" -> "<<parsed.errors.get(id)<<std::endl;
+        }
       }
     }
   }

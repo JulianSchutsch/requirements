@@ -13,13 +13,19 @@ namespace annotations {
     struct Builders {
       SectionsBuilder sections;
       ErrorsBuilder errors;
+      ShortcutsBuilder shortcuts;
       Builders(ParserResult& result)
         : sections(result.sections)
-        , errors(result.errors) {}
+        , errors(result.errors)
+        , shortcuts(result.shortcuts){}
     };
   }
   
   static bool parseSectionContext(::requirements::NodePtr node, ParserResult& result, Builders& builders);
+  
+  static bool parseRequirementsContext(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+    // What do we expect? Any section style code? No... As this is a child, the entire content of this child is used for a new requirement
+  }
   
   static bool parseRequirements(::requirements::NodePtr node, ParserResult& result, Builders& builders, util::LineParser& parser, const std::string& parameters) {
     static std::regex requirementsTitle(R"(\s*(\w+)\s*(.*))");
@@ -29,14 +35,20 @@ namespace annotations {
       return false;
     }
     builders.sections.enterSection(matches[2], parser.consumeAll());
+    bool success = true;
+    for(auto& child: node->getChildren()) {
+      success = success and parseRequirementsContext(child, result, builders);
+    }
     // TODO: Actually add requirements
     builders.sections.leaveSection();
-    return true;
+    return success;
   }
   
   static bool parseSection(::requirements::NodePtr node, ParserResult& result, Builders& builders, util::LineParser& parser, const std::string& parameters) {
     bool success = true;
-    builders.sections.enterSection(boost::algorithm::trim_copy(parameters), parser.consumeAll());
+    auto title = boost::algorithm::trim_copy(parameters);
+    builders.shortcuts.set(node->getId(), title);
+    builders.sections.enterSection(title, parser.consumeAll());
     for(auto& child: node->getChildren()) {
       success = success and parseSectionContext(child, result, builders);
     }
