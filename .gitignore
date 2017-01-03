@@ -1,4 +1,5 @@
 build/
+test_build/
 *~
 .idea/
 cmake-build-debug/
