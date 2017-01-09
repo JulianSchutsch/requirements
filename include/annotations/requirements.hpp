@@ -50,6 +50,7 @@ namespace annotations {
   public:
     RequirementsBuilderScope(RequirementsBuilder& a_builder, ::requirements::Id nodeId, const std::string& text);
     ~RequirementsBuilderScope();
+    const std::string& getKey() const { return prefix; }
   };
   
 }

@@ -28,6 +28,7 @@ namespace annotations {
   static bool parseRequirement(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
     RequirementsBuilderScope scope(builders.requirements, node->getId(), node->getContent());
     builders.sections.addElement(node->getId());
+    builders.shortcuts.set(node->getId(), scope.getKey());
     bool success = true;
     for(auto& child: node->getChildren()) {
       success = success && parseRequirement(child, result, builders);
@@ -44,8 +45,12 @@ namespace annotations {
     }
     const std::string& shortcut = matches[1];
     const std::string& title = matches[2];
+    
+    builders.shortcuts.set(node->getId(), title);
+    builders.requirements.setMajorPrefix(shortcut);
+    
     SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
-    builders.requirements.setMajorPrefix(matches[1]);
+    
     bool success = true;
     for(auto& child: node->getChildren()) {
       success = success && parseRequirement(child, result, builders);

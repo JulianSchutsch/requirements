@@ -18,7 +18,9 @@ static void compareSection(::annotations::Sections::Iterator it, const std::stri
   ASSERT_EQ(section.getTitle(), title);
   ASSERT_EQ(section.getDescription(), text);
   ASSERT_EQ(section.getDepth(), depth);
-  // TODO: Check if this is also correct in the shortcuts
+  ASSERT_EQ(result.errors.has(id), false);
+  ASSERT_EQ(result.shortcuts.has(id), true);
+  ASSERT_EQ(result.shortcuts.get(id), title);
 }
 
 static void compareRequirement(::requirements::Id id, const std::string& key, const std::string& text, annotations::ParserResult& result) {
@@ -27,7 +29,9 @@ static void compareRequirement(::requirements::Id id, const std::string& key, co
   auto& requirement = requirements.get(id);
   ASSERT_EQ(requirement.getRequirementKey(), key);
   ASSERT_EQ(requirement.getText(), text);
-  // TODO: Check if this is also correct in the shortcuts
+  ASSERT_EQ(result.errors.has(id), false);
+  ASSERT_EQ(result.shortcuts.has(id), true);
+  ASSERT_EQ(result.shortcuts.get(id), key);
 }
 
 TEST(AnnotationsParser, Example1) {
