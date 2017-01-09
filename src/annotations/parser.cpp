@@ -27,6 +27,7 @@ namespace annotations {
   
   static bool parseRequirement(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
     RequirementsBuilderScope scope(builders.requirements, node->getId(), node->getContent());
+    builders.sections.addElement(node->getId());
     bool success = true;
     for(auto& child: node->getChildren()) {
       success = success && parseRequirement(child, result, builders);

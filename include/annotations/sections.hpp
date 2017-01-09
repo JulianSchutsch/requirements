@@ -8,7 +8,8 @@
 namespace annotations {
   class Section final {
   private:
-    std::list<::requirements::Id> elements;
+    using Elements = std::list<::requirements::Id>;
+    Elements elements;
     int depth;
     std::string title;
     std::string description;
@@ -18,6 +19,8 @@ namespace annotations {
     Section(int a_depth, const std::string& a_title, const std::string& description);
     int getDepth() const { return depth; }
     const std::string& getTitle() const { return title; }
+    const std::string& getDescription() const { return description; }
+    const Elements& getElements() const { return elements; }
   };
   
   class Sections final {
@@ -27,7 +30,23 @@ namespace annotations {
     friend class SectionsBuilderScope;
     friend class SectionsNonEmptyFilter;
   public:
-    const std::list<std::unique_ptr<Section>>& getSections() const { return sections; }
+    class Iterator {
+    private:
+      SectionsList::const_iterator iterator;
+    public:
+      Iterator(SectionsList::const_iterator a_iterator)
+        : iterator(a_iterator) {}
+      Iterator& operator ++() {
+        ++iterator;
+        return *this;
+      }
+      bool operator == (const Iterator& other) const { return iterator == other.iterator; }
+      bool operator != (const Iterator& other) const { return iterator != other.iterator; }
+      const Section* operator -> () const { return iterator->get(); }
+      const Section& operator * () const { return *(iterator->get()); }
+    };
+    Iterator begin() { return Iterator(sections.cbegin()); }
+    Iterator end() { return Iterator(sections.cend()); }
   };
   
   class SectionsNonEmptyFilter final {
