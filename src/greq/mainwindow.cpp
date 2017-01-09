@@ -6,6 +6,8 @@
 #include <gtkmm/treestore.h>
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/menu.h>
+#include <gtkmm/toolbar.h>
+#include <gtkmm/toolbutton.h>
 #include <giomm.h>
 
 #include "greq/settings.hpp"
@@ -14,6 +16,9 @@
 namespace greq{
 //TODO: Feature:  1. Bessere Darstellung der Knoten
 //                   TextView als CellRenderer
+//                2. Newblob
+//                3. Listblobs
+//                4. Blobaliases
 MainWindow::MainWindow()
 {
   set_title("GReq");
@@ -39,6 +44,9 @@ MainWindow::MainWindow()
   _topictree->set_model(_left_tree_model);
   _topictree->set_reorderable();
 
+  //create toolbuttons for left toolbar
+  Gtk::ToolButton* tb1=Gtk::manage(new Gtk::ToolButton("TB1"));
+  tb1->set_vexpand(false);
 
   //connect signals
   _f1_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f1_clicked));
@@ -52,7 +60,7 @@ MainWindow::MainWindow()
   _f10_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f10_clicked));
   this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press),false);
   _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
-
+  tb1->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_tb1_clicked));
 
   //pack all things
   //Left TreeView
@@ -66,6 +74,12 @@ MainWindow::MainWindow()
   topbuttonbox->set_spacing(Gtk::PACK_EXPAND_WIDGET);
   topbuttonbox->set_layout(Gtk::BUTTONBOX_START);
   topbuttonbox->add(*_recentbutton);
+
+  Gtk::ButtonBox *lefttoolbuttonbox=Gtk::manage(new Gtk::ButtonBox(Gtk::ORIENTATION_VERTICAL));
+  lefttoolbuttonbox->set_border_width(5);
+  lefttoolbuttonbox->set_spacing(Gtk::PACK_SHRINK);
+  lefttoolbuttonbox->set_layout(Gtk::BUTTONBOX_START);
+  lefttoolbuttonbox->add(*tb1);
 
   Gtk::ButtonBox *bottombuttonbox=Gtk::manage(new Gtk::ButtonBox(Gtk::ORIENTATION_HORIZONTAL));
   bottombuttonbox->set_border_width(5);
@@ -81,13 +95,18 @@ MainWindow::MainWindow()
   bottombuttonbox->add(*_f9_button);
   bottombuttonbox->add(*_f10_button);
 
-  //Gtk::Box *hbox=Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+  Gtk::Box *hbox=Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+  hbox->pack_start(*lefttoolbuttonbox,Gtk::PACK_SHRINK);
+  hbox->pack_start(*scrolled_left);
   Gtk::Box *vbox=Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
   vbox->pack_start(*topbuttonbox,Gtk::PACK_SHRINK);
-  vbox->pack_start(*scrolled_left);
+  vbox->pack_start(*hbox);
+  //vbox->pack_start(*scrolled_left);
   vbox->pack_start(*bottombuttonbox,Gtk::PACK_SHRINK);
 
   //show all things
+  tb1->show();
+  lefttoolbuttonbox->show();
   _topictree->show();
   scrolled_left->show();
 
@@ -103,7 +122,7 @@ MainWindow::MainWindow()
   _f9_button->show();
   _f10_button->show();
   bottombuttonbox->show();
-  //hbox->show();
+  hbox->show();
   vbox->show();
   add(*vbox);
 

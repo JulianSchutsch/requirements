@@ -1,5 +1,6 @@
 #include "requirements/storage/text.hpp"
 #include "requirements/select.hpp"
+#include "requirements/blob.hpp"
 
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
@@ -7,6 +8,10 @@
 #include <iostream>
 
 namespace greq{
+
+void MainWindow::init_project(){
+  //_currentStorage.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
+}
 
 void MainWindow::init_collection(){
   _currentProject.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
@@ -35,7 +40,7 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   }
 
   _topictree->remove_all_columns();
-  //_topictree->append_column("topic", _topic_columns.col_node);
+  _topictree->append_column("topic", _topic_columns.col_node);
   //_topictree->append_column_editable("text", _topic_columns.col_cont);
   _topictree->append_column("text", _topic_columns.col_cont);
   Gtk::CellRendererText* cellrenderer=dynamic_cast<Gtk::CellRendererText*>(_topictree->get_column_cell_renderer(0));
@@ -128,5 +133,16 @@ void MainWindow::new_node(bool copy_content){
     }
   }
 }
+
+void MainWindow::newblob(std::string sourcefilename){
+  std::string id = requirements::importBlob(*_currentProject, sourcefilename);
+  if(id.empty()) {
+    std::cout << "Failed to import blob" << std::endl;
+  }
+  else{
+    std::cout<<"Blob added: "<<id<<std::endl;
+  }
+}
+
 
 }

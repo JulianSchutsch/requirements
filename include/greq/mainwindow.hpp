@@ -10,6 +10,7 @@
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 #include "requirements/istorage.hpp"
+#include "requirements/storage/text.hpp"
 
 namespace greq{
 
@@ -61,15 +62,19 @@ class MainWindow : public Gtk::Window{
   bool on_key_press(GdkEventKey *event);
   void on_filename_selected(std::string const& filename);
   void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
+  void on_tb1_clicked();
 
   //Backend functions
   std::unique_ptr<::requirements::IStorage> _currentProject;
+  //std::unique_ptr<::requirements::storage::Text> _currentStorage;
+  void init_project();
   void init_collection();
   void store_collection();
   void printtree(std::string const& uuid_to_jump="");
   void commit_to_collection(std::string const& uuid, std::string const& content);
   void add_new_brother_for(std::string const& uuid);
   void new_node(bool copy_content=false);
+  void newblob(std::string sourcefilename);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{

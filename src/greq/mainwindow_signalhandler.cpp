@@ -10,6 +10,8 @@
 
 #include "requirements/select.hpp"
 #include "requirements/id.hpp"
+#include "requirements/nodecollection.hpp"
+#include "requirements/storage/text.hpp"
 
 #include <iostream>
 
@@ -313,6 +315,40 @@ void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gt
       commit_to_collection(model_node,model_value);
     }
   }
+}
+
+void MainWindow::on_tb1_clicked(){
+  std::cout << "on_tb1_clicked()" << std::endl;
+  //Newblob machen
+  //Ein blob enthält eine Quelldatei, z.B. ein Bild.
+  //Man muss also den Dateinamen fürs Bild haben und dann erzeugt man einen neuen Blob mit diesem Bild.
+  Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_OPEN);
+  filedlg.set_transient_for(*this);
+  filedlg.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  filedlg.add_button("Select", Gtk::RESPONSE_OK);
+  int result=filedlg.run();
+  switch(result){
+  case Gtk::RESPONSE_OK:
+    //newblob(filedlg.get_filename());
+    printtree();
+    break;
+  case Gtk::RESPONSE_CANCEL:
+    break;
+  default:
+    //this is for some strange behavior in terms of unknown button code
+    break;
+  }
+
+  //Mal listblobs machen
+  //Die Blobs stecken nicht mit in der collection, die sind extra zu laden
+  requirements::storage::Text storage(Settings::getInstance().current_project, false);
+  auto list = storage.getBlobAliases();
+  std::cout << "len: " << list.size() << std::endl;
+  for(auto& pair: list) {
+    std::cout<<pair.first<<"->"<<pair.second<<std::endl;
+  }
+  std::vector<std::string> blobs=storage.getBlobs();
+  std::cout << "bloblen: " << blobs.size() << std::endl;
 }
 
 }
