@@ -11,8 +11,6 @@
 
 namespace annotations {
   
-  class Error;
-  
   struct ParserResult {
     Errors errors;
     Sections sections;
