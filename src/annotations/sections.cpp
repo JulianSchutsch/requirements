@@ -14,6 +14,11 @@ namespace annotations {
     sections.sections.clear();
   }
   
+  void SectionsBuilder::addElement(::requirements::Id id) {
+    hasElements = true;
+    sections.sections.back()->elements.emplace_back(id);
+  }
+  
   void SectionsBuilder::enterSection(const std::string& title, const std::string& description) {
     if(hasElements) {
       throw Exception("Cannot add sections to a section with common elements");

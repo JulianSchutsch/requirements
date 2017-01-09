@@ -37,7 +37,7 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/test/include")
 add_sources(REQUIREMENTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src" "requirements" "generators" "annotations" "util")
 add_sources(REQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src" "req" "console")
 add_sources(GREQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src" "greq")
-add_sources(TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/test" "requirements" "util" "test")
+add_sources(TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/test" "requirements" "util" "test" "annotations")
 
 find_library(LIB_BOOST_FILESYSTEM "boost_filesystem")
 find_library(LIB_BOOST_SYSTEM "boost_system")
