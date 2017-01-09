@@ -39,6 +39,7 @@ TEST(AnnotationsParser, Example1) {
   static const char* FunctionalText = "requirements: FR Functional requirements";
   static const char* NonFunctionalText = "requirements: NFR Non functional requirements";
   static const char* FRequirementText1 = "Some functional requirement";
+  static const char* FSubrequirementText = "Some details";
   static const char* FRequirementText2 = "Some other functional requirement";
   static const char* NFRequirementText1 = "Some non functional requirement";
   static const char* NFRequirementText2 = "Some other non functional requirement";
@@ -49,6 +50,7 @@ TEST(AnnotationsParser, Example1) {
   auto nonFunctional1 = parentCreate(collection, phase1, NonFunctionalText);
   auto nonFunctional2 = parentCreate(collection, phase2, NonFunctionalText);
   auto fr11 = parentCreate(collection, functional1, FRequirementText1);
+  auto fr11s = parentCreate(collection, fr11, FSubrequirementText);
   auto fr12 = parentCreate(collection, functional1, FRequirementText2);
   auto fr21 = parentCreate(collection, functional2, FRequirementText1);
   auto fr22 = parentCreate(collection, functional2, FRequirementText2);
@@ -65,9 +67,13 @@ TEST(AnnotationsParser, Example1) {
   compareSection(sectionIterator, "Functional requirements", "", 1, functional1->getId(), parseResult);
   {
     auto elements = sectionIterator->getElements();
-    ASSERT_EQ(elements.size(), 2);
-    compareRequirement(elements.front(), "FR1", "Some functional requirement", parseResult);
-    compareRequirement(elements.back(), "FR2", "Some other functional requirement", parseResult);
+    ASSERT_EQ(elements.size(), 3);
+    auto it = elements.begin();
+    compareRequirement(*it, "FR1", "Some functional requirement", parseResult);
+    ++it;
+    compareRequirement(*it, "FR1.1", "Some details", parseResult);
+    ++it;
+    compareRequirement(*it, "FR2", "Some other functional requirement", parseResult);
   }
   ++sectionIterator;
   compareSection(sectionIterator, "Non functional requirements", "", 1, nonFunctional1->getId(), parseResult);
