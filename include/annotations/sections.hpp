@@ -12,7 +12,7 @@ namespace annotations {
     int depth;
     std::string title;
     std::string description;
-    friend class SectionsBuilder;
+    friend class SectionsBuilderScope;
     friend class SectionsNonEmptyFilter;
   public:
     Section(int a_depth, const std::string& a_title, const std::string& description);
@@ -24,7 +24,7 @@ namespace annotations {
   private:
     using SectionsList = std::list<std::unique_ptr<Section>>;
     SectionsList sections;
-    friend class SectionsBuilder;
+    friend class SectionsBuilderScope;
     friend class SectionsNonEmptyFilter;
   public:
     const std::list<std::unique_ptr<Section>>& getSections() const { return sections; }
@@ -72,31 +72,29 @@ namespace annotations {
       , filterFunction(a_filterFunction) {}
   };
   
+  class SectionsBuilderScope;
+  
   class SectionsBuilder final {
   private:
+    SectionsBuilderScope* currentScope = nullptr;
     Sections& sections;
-    int currentDepth = 0;
-    bool hasElements = false;
-    void leaveSection();
-    void enterSection(const std::string& section, const std::string& description);
-    void addElement(::requirements::Id id);
-    friend class SectionScope;
+    friend class SectionsBuilderScope;
   public:
-    SectionsBuilder(Sections& a_sections);
+    SectionsBuilder(Sections& a_sections)
+      : sections(a_sections) {}
+    void addElement(::requirements::Id);
   };
   
-  class SectionScope final {
+  class SectionsBuilderScope final {
   private:
+    bool hasElements = false;
+    int depth;
+    SectionsBuilderScope* previousScope;
     SectionsBuilder& builder;
   public:
-    void addElement(::requirements::Id id) { builder.addElement(id); }
-    SectionScope(SectionsBuilder& a_builder, const std::string& title, const std::string& description)
-      : builder(a_builder) {
-      builder.enterSection(title, description);
-    }
-    ~SectionScope() {
-      builder.leaveSection();
-    }
+    void addElement(::requirements::Id id);
+    SectionsBuilderScope(SectionsBuilder& a_builder, const std::string& title, const std::string& description);
+    ~SectionsBuilderScope();
   };
   
 }

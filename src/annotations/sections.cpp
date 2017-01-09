@@ -8,23 +8,34 @@ namespace annotations {
     : depth(a_depth)
     , title(a_title)
     , description(a_description) {}
-
-  SectionsBuilder::SectionsBuilder(Sections& a_sections)
-    : sections(a_sections) {
-    sections.sections.clear();
-  }
   
-  void SectionsBuilder::enterSection(const std::string& title, const std::string& description) {
-    if(hasElements) {
-      throw Exception("Cannot add sections to a section with common elements");
+  SectionsBuilderScope::SectionsBuilderScope(SectionsBuilder& a_builder, const std::string& title, const std::string& description)
+    : builder(a_builder) {
+    previousScope = builder.currentScope;
+    builder.currentScope = this;
+    if(previousScope) {
+      if(previousScope->hasElements) {
+        throw Exception("Cannot add sections to a section with common elements");
+      }
+      depth = previousScope->depth+1;
     }
-    ++currentDepth;
-    sections.sections.emplace_back(std::make_unique<Section>(currentDepth, title, description));
+    builder.sections.sections.emplace_back(std::make_unique<Section>(depth, title, description));
   }
   
-  void SectionsBuilder::leaveSection() {
-    hasElements = false;
-    --currentDepth;
+  SectionsBuilderScope::~SectionsBuilderScope() {
+    builder.currentScope = previousScope;
   }
-
+  
+  void SectionsBuilderScope::addElement(::requirements::Id id) {
+    hasElements = true;
+    builder.sections.sections.back()->elements.emplace_back(id);
+  }
+  
+  void SectionsBuilder::addElement(::requirements::Id id) {
+    if(currentScope==nullptr) {
+      throw Exception("Cannot add element without active SectionsBuilderScope");
+    }
+    currentScope->addElement(id);
+  }
+  
 }

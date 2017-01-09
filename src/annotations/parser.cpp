@@ -14,32 +14,41 @@ namespace annotations {
       SectionsBuilder sections;
       ErrorsBuilder errors;
       ShortcutsBuilder shortcuts;
+      RequirementsBuilder requirements;
       Builders(ParserResult& result)
         : sections(result.sections)
         , errors(result.errors)
-        , shortcuts(result.shortcuts){}
+        , shortcuts(result.shortcuts)
+        , requirements(result.requirements) {}
     };
   }
   
   static bool parseSectionContext(::requirements::NodePtr node, ParserResult& result, Builders& builders);
   
-  static bool parseRequirementsContext(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
-    // What do we expect? Any section style code? No... As this is a child, the entire content of this child is used for a new requirement
+  static bool parseRequirement(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+    RequirementsBuilderScope scope(builders.requirements, node->getId(), node->getContent());
+    bool success = true;
+    for(auto& child: node->getChildren()) {
+      success = success && parseRequirement(child, result, builders);
+    }
+    return success;
   }
   
-  static bool parseRequirements(::requirements::NodePtr node, ParserResult& result, Builders& builders, util::LineParser& parser, const std::string& parameters) {
+  static bool parseRequirementSection(::requirements::NodePtr node, ParserResult& result, Builders& builders, util::LineParser& parser, const std::string& parameters) {
     static std::regex requirementsTitle(R"(\s*(\w+)\s*(.*))");
     std::smatch matches;
     if(!std::regex_match(parameters, matches, requirementsTitle)) {
       builders.errors.set(node->getId(), "A requirements title must be a shortcut followed by an arbitrary title string");
       return false;
     }
-    SectionScope section(builders.sections, matches[2], parser.consumeAll());
+    const std::string& shortcut = matches[1];
+    const std::string& title = matches[2];
+    SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+    builders.requirements.setMajorPrefix(matches[1]);
     bool success = true;
     for(auto& child: node->getChildren()) {
-      success = success and parseRequirementsContext(child, result, builders);
+      success = success && parseRequirement(child, result, builders);
     }
-    // TODO: Actually add requirements
     return success;
   }
   
@@ -47,9 +56,9 @@ namespace annotations {
     bool success = true;
     auto title = boost::algorithm::trim_copy(parameters);
     builders.shortcuts.set(node->getId(), title);
-    SectionScope section(builders.sections, title, parser.consumeAll());
+    SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
     for(auto& child: node->getChildren()) {
-      success = success and parseSectionContext(child, result, builders);
+      success = success && parseSectionContext(child, result, builders);
     }
     return success;
   }
@@ -66,7 +75,7 @@ namespace annotations {
     
     static std::map<std::string, bool (*)(::requirements::NodePtr node, ParserResult& result, Builders& builders, util::LineParser& parser, const std::string& parameters)> sectionContextTags = {
       {"section", parseSection},
-      {"requirements", parseRequirements}
+      {"requirements", parseRequirementSection}
     };
     auto tagIt = sectionContextTags.find(matches[1]);
     if(tagIt==sectionContextTags.end()) {
@@ -79,7 +88,7 @@ namespace annotations {
   static bool parseTopLevel(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
     bool success = true;
     for(auto& child: node->getChildren()) {
-      success = success and parseSectionContext(child, result, builders);
+      success = success && parseSectionContext(child, result, builders);
     }
     return success;
   }
