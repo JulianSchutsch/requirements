@@ -36,7 +36,7 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   }
 
   _topictree->remove_all_columns();
-  _topictree->append_column("topic", _topic_columns.col_node);
+  //_topictree->append_column("topic", _topic_columns.col_node);
   //_topictree->append_column_editable("text", _topic_columns.col_cont);
   _topictree->append_column("text", _topic_columns.col_cont);
   Gtk::CellRendererText* cellrenderer=dynamic_cast<Gtk::CellRendererText*>(_topictree->get_column_cell_renderer(0));
