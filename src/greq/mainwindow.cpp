@@ -48,8 +48,8 @@ MainWindow::MainWindow()
   //create toolbuttons for left toolbar
   Gtk::ToolButton* newblobbutton=Gtk::manage(new Gtk::ToolButton("New Blob"));
   newblobbutton->set_vexpand(false);
-  Gtk::ToolButton* tb2=Gtk::manage(new Gtk::ToolButton("TB2"));
-  tb2->set_vexpand(false);
+  Gtk::ToolButton* linkblobbutton=Gtk::manage(new Gtk::ToolButton("Link Blob"));
+  linkblobbutton->set_vexpand(false);
 
   //connect signals
   _f1_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f1_clicked));
@@ -65,7 +65,7 @@ MainWindow::MainWindow()
   _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
 
   newblobbutton->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_newblob_clicked));
-  tb2->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_tb2_clicked));
+  linkblobbutton->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_linkblob_clicked));
 
   //pack all things
   //Left TreeView
@@ -85,7 +85,7 @@ MainWindow::MainWindow()
   lefttoolbuttonbox->set_spacing(Gtk::PACK_SHRINK);
   lefttoolbuttonbox->set_layout(Gtk::BUTTONBOX_START);
   lefttoolbuttonbox->add(*newblobbutton);
-  lefttoolbuttonbox->add(*tb2);
+  lefttoolbuttonbox->add(*linkblobbutton);
 
   Gtk::ButtonBox *bottombuttonbox=Gtk::manage(new Gtk::ButtonBox(Gtk::ORIENTATION_HORIZONTAL));
   bottombuttonbox->set_border_width(5);
@@ -112,7 +112,7 @@ MainWindow::MainWindow()
 
   //show all things
   newblobbutton->show();
-  tb2->show();
+  linkblobbutton->show();
   lefttoolbuttonbox->show();
   _topictree->show();
   scrolled_left->show();
@@ -286,6 +286,16 @@ std::string MainWindow::get_uuid_on_cursor(){
     //requirements::NodePtr node=get_node_for_uuid(uuid);
   }
   return retval;
+}
+
+void MainWindow::add_blob_to_row(Gtk::TreeModel::iterator selected_row,std::string const& blobtext){
+  Gtk::TreeModel::Row row = *selected_row;
+  Glib::ustring content = row[_topic_columns.col_cont];
+  content+="\n";
+  content+=blobtext;
+  content+="\n";
+  //In den Baum schreiben, das changed()-Signal sorgt dafür, dass das in die collection kommt
+  row[_topic_columns.col_cont]=content;
 }
 
 }

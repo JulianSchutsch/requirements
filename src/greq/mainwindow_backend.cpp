@@ -130,14 +130,15 @@ void MainWindow::new_node(bool copy_content){
   }
 }
 
-void MainWindow::newblob(std::string sourcefilename){
+std::string MainWindow::newblob(std::string sourcefilename){
   std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
-  if(id.empty()) {
-    std::cout << "Failed to import blob" << std::endl;
-  }
-  else{
-    std::cout<<"Blob added: "<<id<<std::endl;
-  }
+  //if(id.empty()) {
+  //  std::cout << "Failed to import blob" << std::endl;
+  //}
+  //else{
+  //  std::cout<<"Blob added: "<<id<<std::endl;
+  //}
+  return id;
 }
 
 
