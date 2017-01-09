@@ -23,7 +23,7 @@ namespace annotations {
   
   static bool parseSectionContext(::requirements::NodePtr node, ParserResult& result, Builders& builders);
   
-  static bool parseRequirementsContext(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+  static bool parseSubRequirement(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
     // What do we expect? Any section style code? No... As this is a child, the entire content of this child is used for a new requirement
   }
   
@@ -34,12 +34,11 @@ namespace annotations {
       builders.errors.set(node->getId(), "A requirements title must be a shortcut followed by an arbitrary title string");
       return false;
     }
-    SectionScope section(builders.sections, matches[2], parser.consumeAll());
+    SectionsBuilderScope section(builders.sections, matches[2], parser.consumeAll());
     bool success = true;
     for(auto& child: node->getChildren()) {
-      success = success and parseRequirementsContext(child, result, builders);
+      success = success and parseSubRequirement(child, result, builders);
     }
-    // TODO: Actually add requirements
     return success;
   }
   
@@ -47,7 +46,7 @@ namespace annotations {
     bool success = true;
     auto title = boost::algorithm::trim_copy(parameters);
     builders.shortcuts.set(node->getId(), title);
-    SectionScope section(builders.sections, title, parser.consumeAll());
+    SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
     for(auto& child: node->getChildren()) {
       success = success and parseSectionContext(child, result, builders);
     }

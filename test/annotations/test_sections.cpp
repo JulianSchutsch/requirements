@@ -13,19 +13,19 @@ TEST(AnnotationsSections, Filtera) {
   ::requirements::Id element5 = ::requirements::generateRandomId();
   
   {
-    ::annotations::SectionScope top(builder, "1", "");
+    ::annotations::SectionsBuilderScope top(builder, "1", "");
     {
-      ::annotations::SectionScope sec(builder, "1.1", "");
+      ::annotations::SectionsBuilderScope sec(builder, "1.1", "");
       sec.addElement(element1);
       sec.addElement(element2);
     }
     {
-      ::annotations::SectionScope sec(builder, "1.2", "");
+      ::annotations::SectionsBuilderScope sec(builder, "1.2", "");
       sec.addElement(element3);
     }
   }
   {
-    ::annotations::SectionScope top(builder, "2", "");
+    ::annotations::SectionsBuilderScope top(builder, "2", "");
     top.addElement(element4);
     top.addElement(element5);
   }
