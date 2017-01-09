@@ -1,14 +1,14 @@
 #pragma once
 
-#include <string>
+#include <ostream>
 
-namespace requirements {
-  class NodeCollection;
-  class IStorage;
+namespace annotations {
+  class Sections;
+  class Requirements;
 }
 
 namespace generators {
   namespace latex {
-    void  printRequirements(::requirements::NodeCollection &collection, ::requirements::IStorage &storage, const std::string &filename);
+    void  printRequirements(::annotations::Sections& sections, ::annotations::Requirements& requirements, std::ostream& output);
   }
 }
