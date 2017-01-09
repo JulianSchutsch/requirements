@@ -19,6 +19,7 @@ namespace greq{
 //                2. Newblob
 //                3. Listblobs
 //                4. Blobaliases
+//      Fixes:    1. Die ganze Fehlerbehandlung, wenn _currentStorage nicht initialisiert ist
 MainWindow::MainWindow()
 {
   set_title("GReq");
