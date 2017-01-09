@@ -15,8 +15,12 @@ namespace annotations {
     if(currentScope!=nullptr) {
       throw Exception("Cannot change major prefix with current active scope");
     }
+    majorPrefixStates[majorPrefix] = majorNumber;
     majorPrefix = prefix;
-    majorNumber = 0;
+    {
+      auto continuationIt = majorPrefixStates.find(prefix);
+      majorNumber = (continuationIt != majorPrefixStates.end())?continuationIt->second:0;
+    }
   }
   
   RequirementsBuilderScope::RequirementsBuilderScope(

@@ -30,6 +30,7 @@ namespace annotations {
   
   class RequirementsBuilder final {
   private:
+    std::map<std::string, int> majorPrefixStates;
     RequirementsBuilderScope* currentScope = nullptr;
     Requirements& requirements;
     std::string majorPrefix;
