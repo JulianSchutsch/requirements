@@ -44,6 +44,7 @@ class MainWindow : public Gtk::Window{
   void set_focus_to_uuid(Gtk::TreeModel::Children const& children, std::string const& uuid);
   void reprint_tree_below_parent_of(Gtk::TreeModel::Row* row,std::string const& uuid_of_focus_node);
   std::string get_uuid_on_cursor();
+  void add_blob_to_row(Gtk::TreeModel::iterator selected_row,std::string const& blobtext);
 
   //Signal handlers:
   void on_f1_clicked();
@@ -63,7 +64,7 @@ class MainWindow : public Gtk::Window{
   void on_filename_selected(std::string const& filename);
   void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
   void on_newblob_clicked();
-  void on_tb2_clicked();
+  void on_linkblob_clicked();
 
   //Backend functions
   std::unique_ptr<::requirements::storage::Text> _currentStorage;
@@ -74,7 +75,7 @@ class MainWindow : public Gtk::Window{
   void commit_to_collection(std::string const& uuid, std::string const& content);
   void add_new_brother_for(std::string const& uuid);
   void new_node(bool copy_content=false);
-  void newblob(std::string sourcefilename);
+  std::string newblob(std::string sourcefilename);
 
   //TreeModel for left topictree
   class TopicColumns : public Gtk::TreeModel::ColumnRecord{

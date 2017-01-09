@@ -7,6 +7,7 @@
 #include "greq/editwindow.hpp"
 #include "greq/keycodewindow.hpp"
 #include "greq/settings.hpp"
+#include "greq/blobselector.hpp"
 
 #include "requirements/select.hpp"
 #include "requirements/id.hpp"
@@ -319,40 +320,69 @@ void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gt
 
 void MainWindow::on_newblob_clicked(){
   if(_currentStorage){
-    Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_OPEN);
-    filedlg.set_transient_for(*this);
-    filedlg.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-    filedlg.add_button("Select", Gtk::RESPONSE_OK);
-    int result=filedlg.run();
-    switch(result){
-    case Gtk::RESPONSE_OK:
-      newblob(filedlg.get_filename());
-      printtree();
-      break;
-    case Gtk::RESPONSE_CANCEL:
-      break;
-    default:
-      //this is for some strange behavior in terms of unknown button code
-      break;
+    Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+    Gtk::TreeModel::iterator selected_row = selection->get_selected();
+    if(selected_row!=nullptr){
+
+      Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_OPEN);
+      filedlg.set_transient_for(*this);
+      filedlg.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+      filedlg.add_button("Select", Gtk::RESPONSE_OK);
+      int result=filedlg.run();
+      switch(result){
+      case Gtk::RESPONSE_OK:{
+        //newblob(filedlg.get_filename());
+        std::string trblob=newblob(filedlg.get_filename());
+        add_blob_to_row(selected_row,trblob);}
+        //printtree();
+        //std::cout << trblob << std::endl;}
+        break;
+      case Gtk::RESPONSE_CANCEL:
+        break;
+      default:
+        //this is for some strange behavior in terms of unknown button code
+        break;
+      }
+    }
+    else{
+      //TODO print message
     }
   }
   else{
-    //TODO print message
+    //TODO: Print message
   }
 }
 
-void MainWindow::on_tb2_clicked(){
-  std::cout << "on_tb2_clicked()" << std::endl;
-  //Mal listblobs machen
-  auto list = _currentStorage->getBlobAliases();
-  std::cout << "len: " << list.size() << std::endl;
-  for(auto& pair: list) {
-    std::cout<<pair.first<<"->"<<pair.second<<std::endl;
+void MainWindow::on_linkblob_clicked(){
+  Glib::RefPtr<Gtk::TreeSelection> selection = _topictree->get_selection();
+  Gtk::TreeModel::iterator selected_row = selection->get_selected();
+  if(selected_row!=nullptr){
+    std::vector<std::string> blobs=_currentStorage->getBlobs();
+
+    //Und jetzt mal in den Blobselector
+    BlobSelector bs;
+    bs.set_transient_for(*this);
+
+    for(auto& elem: blobs){
+      bs.append(elem);
+    }
+
+    int result=bs.run();
+    switch(result){
+      case 0:{
+        //Text auslesen
+        std::string selected_blob=bs.get_selected_blob();
+        add_blob_to_row(selected_row,selected_blob);
+      }
+      break;
+      case 1:
+      default:
+        break;
+    }
   }
-  std::vector<std::string> blobs=_currentStorage->getBlobs();
-  std::cout << "bloblen: " << blobs.size() << std::endl;
-  for(auto& elem: blobs){
-    std::cout << elem << std::endl;
+  else{
+    //Keine Zeile gewählt, dann wird auch nicht gelinkt
+    //TODO: Print message
   }
 }
 
