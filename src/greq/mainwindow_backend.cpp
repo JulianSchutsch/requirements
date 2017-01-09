@@ -10,16 +10,12 @@
 namespace greq{
 
 void MainWindow::init_project(){
-  //_currentStorage.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
-}
-
-void MainWindow::init_collection(){
-  _currentProject.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
+  _currentStorage.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
 }
 
 void MainWindow::store_collection(){
-  if(_currentProject) {
-    _currentProject->save(Settings::getInstance().current_project);
+  if(_currentStorage){
+    _currentStorage->save(Settings::getInstance().current_project);
   }
 }
 
@@ -32,7 +28,7 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   ++_changed_signal_ignore;
   _left_tree_model->clear();
 
-  auto& collection = _currentProject->getNodeCollection();
+  auto& collection = _currentStorage->getNodeCollection();
   auto selected = requirements::select(collection, parameters, collection.getRootNode());
 
   for(auto& node: selected){
@@ -66,7 +62,7 @@ requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
   std::vector<std::string> parameters;
   parameters.push_back(uuid);
   std::vector<requirements::NodePtr> selections;
-  auto& collection = _currentProject->getNodeCollection();
+  auto& collection = _currentStorage->getNodeCollection();
   selections = requirements::select(collection, parameters);
   requirements::NodePtr node = selections[0];
 
@@ -77,7 +73,7 @@ void MainWindow::commit_to_collection(std::string const& uuid, std::string const
   std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
   parameters.push_back(uuid);
   std::vector<requirements::NodePtr> selections;
-  auto& collection = _currentProject->getNodeCollection();
+  auto& collection = _currentStorage->getNodeCollection();
   selections = requirements::select(collection, parameters);
   //Und, haben wir jetzt den passenden Knoten? Ein bisschen mehr Doku zum select()
   //wäre hilfreich
@@ -92,7 +88,7 @@ void MainWindow::add_new_brother_for(std::string const& uuid){
   //Also erst mal im Req-Baum finden
   requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
   //Jetzt neuen Knoten erzeugen
-  auto& collection = _currentProject->getNodeCollection();
+  auto& collection = _currentStorage->getNodeCollection();
   auto newnode = collection.createNode("");
   //Jetzt Knoten unter den parent bammeln
   newnode->setParent(parent);
@@ -110,7 +106,7 @@ void MainWindow::new_node(bool copy_content){
     //Dazu brauchen wir also den Parent
     requirements::NodePtr parent=node->getParent();
     //Jetzt neuen Knoten erzeugen
-    auto& collection = _currentProject->getNodeCollection();
+    auto& collection = _currentStorage->getNodeCollection();
     auto newnode = collection.createNode("");
     //Jetzt Knoten unter den parent bammeln
     newnode->setParent(parent);
@@ -135,7 +131,7 @@ void MainWindow::new_node(bool copy_content){
 }
 
 void MainWindow::newblob(std::string sourcefilename){
-  std::string id = requirements::importBlob(*_currentProject, sourcefilename);
+  std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
   if(id.empty()) {
     std::cout << "Failed to import blob" << std::endl;
   }

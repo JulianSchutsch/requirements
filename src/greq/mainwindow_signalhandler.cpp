@@ -107,7 +107,7 @@ void MainWindow::on_f8_clicked(){
     Glib::ustring uuid = row[_topic_columns.col_node];
     requirements::NodePtr node=get_node_for_uuid(uuid);
     //Lösche den Knoten in der Collection
-    _currentProject->getNodeCollection().deleteNode(node);
+    _currentStorage->getNodeCollection().deleteNode(node);
     //Lösche den Knoten im TreeModel
     _left_tree_model->erase(selected_row);
   }
@@ -317,38 +317,43 @@ void MainWindow::on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gt
   }
 }
 
-void MainWindow::on_tb1_clicked(){
-  std::cout << "on_tb1_clicked()" << std::endl;
-  //Newblob machen
-  //Ein blob enthält eine Quelldatei, z.B. ein Bild.
-  //Man muss also den Dateinamen fürs Bild haben und dann erzeugt man einen neuen Blob mit diesem Bild.
-  Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_OPEN);
-  filedlg.set_transient_for(*this);
-  filedlg.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-  filedlg.add_button("Select", Gtk::RESPONSE_OK);
-  int result=filedlg.run();
-  switch(result){
-  case Gtk::RESPONSE_OK:
-    //newblob(filedlg.get_filename());
-    printtree();
-    break;
-  case Gtk::RESPONSE_CANCEL:
-    break;
-  default:
-    //this is for some strange behavior in terms of unknown button code
-    break;
+void MainWindow::on_newblob_clicked(){
+  if(_currentStorage){
+    Gtk::FileChooserDialog filedlg(*this,"Select project",Gtk::FILE_CHOOSER_ACTION_OPEN);
+    filedlg.set_transient_for(*this);
+    filedlg.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+    filedlg.add_button("Select", Gtk::RESPONSE_OK);
+    int result=filedlg.run();
+    switch(result){
+    case Gtk::RESPONSE_OK:
+      newblob(filedlg.get_filename());
+      printtree();
+      break;
+    case Gtk::RESPONSE_CANCEL:
+      break;
+    default:
+      //this is for some strange behavior in terms of unknown button code
+      break;
+    }
   }
+  else{
+    //TODO print message
+  }
+}
 
+void MainWindow::on_tb2_clicked(){
+  std::cout << "on_tb2_clicked()" << std::endl;
   //Mal listblobs machen
-  //Die Blobs stecken nicht mit in der collection, die sind extra zu laden
-  requirements::storage::Text storage(Settings::getInstance().current_project, false);
-  auto list = storage.getBlobAliases();
+  auto list = _currentStorage->getBlobAliases();
   std::cout << "len: " << list.size() << std::endl;
   for(auto& pair: list) {
     std::cout<<pair.first<<"->"<<pair.second<<std::endl;
   }
-  std::vector<std::string> blobs=storage.getBlobs();
+  std::vector<std::string> blobs=_currentStorage->getBlobs();
   std::cout << "bloblen: " << blobs.size() << std::endl;
+  for(auto& elem: blobs){
+    std::cout << elem << std::endl;
+  }
 }
 
 }

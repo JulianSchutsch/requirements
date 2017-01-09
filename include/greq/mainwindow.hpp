@@ -62,11 +62,11 @@ class MainWindow : public Gtk::Window{
   bool on_key_press(GdkEventKey *event);
   void on_filename_selected(std::string const& filename);
   void on_topic_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator& iter);
-  void on_tb1_clicked();
+  void on_newblob_clicked();
+  void on_tb2_clicked();
 
   //Backend functions
-  std::unique_ptr<::requirements::IStorage> _currentProject;
-  //std::unique_ptr<::requirements::storage::Text> _currentStorage;
+  std::unique_ptr<::requirements::storage::Text> _currentStorage;
   void init_project();
   void init_collection();
   void store_collection();

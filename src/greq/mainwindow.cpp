@@ -45,8 +45,10 @@ MainWindow::MainWindow()
   _topictree->set_reorderable();
 
   //create toolbuttons for left toolbar
-  Gtk::ToolButton* tb1=Gtk::manage(new Gtk::ToolButton("TB1"));
-  tb1->set_vexpand(false);
+  Gtk::ToolButton* newblobbutton=Gtk::manage(new Gtk::ToolButton("New Blob"));
+  newblobbutton->set_vexpand(false);
+  Gtk::ToolButton* tb2=Gtk::manage(new Gtk::ToolButton("TB2"));
+  tb2->set_vexpand(false);
 
   //connect signals
   _f1_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f1_clicked));
@@ -60,7 +62,9 @@ MainWindow::MainWindow()
   _f10_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f10_clicked));
   this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press),false);
   _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
-  tb1->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_tb1_clicked));
+
+  newblobbutton->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_newblob_clicked));
+  tb2->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_tb2_clicked));
 
   //pack all things
   //Left TreeView
@@ -79,7 +83,8 @@ MainWindow::MainWindow()
   lefttoolbuttonbox->set_border_width(5);
   lefttoolbuttonbox->set_spacing(Gtk::PACK_SHRINK);
   lefttoolbuttonbox->set_layout(Gtk::BUTTONBOX_START);
-  lefttoolbuttonbox->add(*tb1);
+  lefttoolbuttonbox->add(*newblobbutton);
+  lefttoolbuttonbox->add(*tb2);
 
   Gtk::ButtonBox *bottombuttonbox=Gtk::manage(new Gtk::ButtonBox(Gtk::ORIENTATION_HORIZONTAL));
   bottombuttonbox->set_border_width(5);
@@ -105,7 +110,8 @@ MainWindow::MainWindow()
   vbox->pack_start(*bottombuttonbox,Gtk::PACK_SHRINK);
 
   //show all things
-  tb1->show();
+  newblobbutton->show();
+  tb2->show();
   lefttoolbuttonbox->show();
   _topictree->show();
   scrolled_left->show();
@@ -194,7 +200,7 @@ void MainWindow::create_recent_menu(){
 
 void MainWindow::set_current_project(std::string const& filename){
   Settings::getInstance().current_project=filename;
-  init_collection();
+  init_project();
   printtree();
 }
 
