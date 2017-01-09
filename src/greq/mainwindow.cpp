@@ -13,7 +13,6 @@
 
 namespace greq{
 //TODO: Feature:  1. Bessere Darstellung der Knoten
-//                   Liste generell ausklappen, UUIDS nur im Modell, nicht im View
 //                   TextView als CellRenderer
 MainWindow::MainWindow()
 {
@@ -29,9 +28,9 @@ MainWindow::MainWindow()
   _f3_button=Gtk::manage(new Gtk::Button("F3 Open"));
   _f4_button=Gtk::manage(new Gtk::Button("F4 Edit"));
   _f5_button=Gtk::manage(new Gtk::Button("F5 Copy"));
-  _f6_button=Gtk::manage(new Gtk::Button("F6 Move"));
   _f7_button=Gtk::manage(new Gtk::Button("F7 New"));
   _f8_button=Gtk::manage(new Gtk::Button("F8 Delete"));
+  _f9_button=Gtk::manage(new Gtk::Button("F9 KeyCodes"));
   _f10_button=Gtk::manage(new Gtk::Button("F10 Exit"));
   _recentbutton=Gtk::manage(new Gtk::MenuButton());
 
@@ -47,9 +46,9 @@ MainWindow::MainWindow()
   _f3_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f3_clicked));
   _f4_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f4_clicked));
   _f5_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f5_clicked));
-  _f6_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f6_clicked));
   _f7_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f7_clicked));
   _f8_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f8_clicked));
+  _f9_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f9_clicked));
   _f10_button->signal_clicked().connect(sigc::mem_fun(*this,&MainWindow::on_f10_clicked));
   this->signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press),false);
   _left_tree_model->signal_row_changed().connect(sigc::mem_fun(this,&MainWindow::on_topic_row_changed));
@@ -77,9 +76,9 @@ MainWindow::MainWindow()
   bottombuttonbox->add(*_f3_button);
   bottombuttonbox->add(*_f4_button);
   bottombuttonbox->add(*_f5_button);
-  bottombuttonbox->add(*_f6_button);
   bottombuttonbox->add(*_f7_button);
   bottombuttonbox->add(*_f8_button);
+  bottombuttonbox->add(*_f9_button);
   bottombuttonbox->add(*_f10_button);
 
   //Gtk::Box *hbox=Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
@@ -99,9 +98,9 @@ MainWindow::MainWindow()
   _f3_button->show();
   _f4_button->show();
   _f5_button->show();
-  _f6_button->show();
   _f7_button->show();
   _f8_button->show();
+  _f9_button->show();
   _f10_button->show();
   bottombuttonbox->show();
   //hbox->show();

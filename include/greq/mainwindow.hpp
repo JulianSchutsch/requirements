@@ -20,9 +20,9 @@ class MainWindow : public Gtk::Window{
   Gtk::Button* _f3_button;
   Gtk::Button* _f4_button;
   Gtk::Button* _f5_button;
-  Gtk::Button* _f6_button;
   Gtk::Button* _f7_button;
   Gtk::Button* _f8_button;
+  Gtk::Button* _f9_button;
   Gtk::Button* _f10_button;
   Gtk::TreeView* _topictree;
   Gtk::MenuButton* _recentbutton;
@@ -50,9 +50,9 @@ class MainWindow : public Gtk::Window{
   void on_f3_clicked();
   void on_f4_clicked();
   void on_f5_clicked();
-  void on_f6_clicked();
   void on_f7_clicked();
   void on_f8_clicked();
+  void on_f9_clicked();
   void on_f10_clicked();
   void on_ctrl_right();
   void on_ctrl_left();

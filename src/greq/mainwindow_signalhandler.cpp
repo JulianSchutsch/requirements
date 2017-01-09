@@ -5,6 +5,7 @@
 
 #include "greq/mainwindow.hpp"
 #include "greq/editwindow.hpp"
+#include "greq/keycodewindow.hpp"
 #include "greq/settings.hpp"
 
 #include "requirements/select.hpp"
@@ -91,10 +92,6 @@ void MainWindow::on_f5_clicked(){
   new_node(true);
 }
 
-void MainWindow::on_f6_clicked(){
-  std::cout << "F6" << std::endl;
-}
-
 void MainWindow::on_f7_clicked(){
   new_node(false);
 }
@@ -112,6 +109,12 @@ void MainWindow::on_f8_clicked(){
     //Lösche den Knoten im TreeModel
     _left_tree_model->erase(selected_row);
   }
+}
+
+void MainWindow::on_f9_clicked(){
+  KeyCodeWindow kw;
+  kw.set_transient_for(*this);
+  kw.run();
 }
 
 void MainWindow::on_f10_clicked(){
@@ -234,8 +237,32 @@ bool MainWindow::on_key_press(GdkEventKey *event){
       break;
     }
   }
+  else if(event->state==0x18){
+    //Alt-Key
+    switch(event->keyval){
+    default:
+      std::cout << "Alt+ " << std::hex << event->keyval << std::endl;
+      break;
+    }
+  }
+  else if(event->state==0x1c){
+    //Ctrl+Alt
+    switch(event->keyval){
+    default:
+      std::cout << "Ctrl+Alt+ " << std::hex << event->keyval << std::endl;
+      break;
+    }
+  }
+  else if(event->state==0x90){
+    //Alt-Gr
+    switch(event->keyval){
+    default:
+      std::cout << "AltGr+ " << std::hex << event->keyval << std::endl;
+      break;
+    }
+  }
   else{
-    //No Ctrl-Key
+    //No Ctrl-Key, No Alt-Key
     switch(event->keyval){
     case GDK_F1:
       on_f1_clicked();
@@ -252,14 +279,14 @@ bool MainWindow::on_key_press(GdkEventKey *event){
     case GDK_F5:
       on_f5_clicked();
       break;
-    case GDK_F6:
-      on_f6_clicked();
-      break;
     case GDK_F7:
       on_f7_clicked();
       break;
     case GDK_F8:
       on_f8_clicked();
+      break;
+    case GDK_F9:
+      on_f9_clicked();
       break;
     case GDK_F10:
       on_f10_clicked();
