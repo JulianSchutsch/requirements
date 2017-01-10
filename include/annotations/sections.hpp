@@ -50,17 +50,13 @@ namespace annotations {
           iterator = iterator->firstChild.get();
           return *this;
         }
-        if(iterator->nextSibling) {
+        while(iterator!=nullptr && iterator->nextSibling.get()==nullptr) {
+          iterator = iterator->parent;
+        }
+        if(iterator!=nullptr) {
           iterator = iterator->nextSibling.get();
           return *this;
         }
-        if(iterator->parent) {
-          if(iterator->parent->nextSibling) {
-            iterator = iterator->parent->nextSibling.get();
-            return *this;
-          }
-        }
-        iterator = nullptr;
         return *this;
       }
       bool operator == (const Iterator& other) const { return iterator == other.iterator; }

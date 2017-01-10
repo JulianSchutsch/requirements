@@ -9,9 +9,7 @@ namespace annotations {
     , depth(inherited.depth)
     , title(inherited.title)
     , description(inherited.description)
-    , parent(inherited.parent)
-    , firstChild(std::move(newFirstChild))
-     {}
+    , firstChild(std::move(newFirstChild)) {}
   
   Section::Section(const std::string& a_title, const std::string& a_description, Section* a_parent)
     : depth(a_parent?a_parent->depth+1:0)
@@ -82,13 +80,13 @@ namespace annotations {
     auto it = firstChild.get();
     while(it!=nullptr) {
       auto newSection = it->filter(filterFunction);
-      auto previous = previousSibling;
-      previousSibling = newSection.get();
       if(newSection) {
+        auto previous = previousSibling;
+        previousSibling = newSection.get();
         if(previous!=nullptr) {
           previous->nextSibling = std::move(newSection);
         } else {
-          firstChild = std::move(newSection);
+          newFirstChild = std::move(newSection);
         }
       }
       it = it->nextSibling.get();
@@ -96,7 +94,13 @@ namespace annotations {
     if(!newFirstChild && newElements.empty()) {
       return nullptr;
     }
-    return std::make_unique<Section>(*this, std::move(newElements), std::move(newFirstChild));
+    it = newFirstChild.get();
+    auto result = std::make_unique<Section>(*this, std::move(newElements), std::move(newFirstChild));
+    while(it!=nullptr) {
+      it->parent = result.get();
+      it = it->nextSibling.get();
+    }
+    return std::move(result);
   }
   
   Sections Sections::filter(std::function<bool(::requirements::Id)> filterFunction) {
@@ -104,17 +108,19 @@ namespace annotations {
     auto it = firstSection.get();
     Section* previousSection = nullptr;
     while(it!=nullptr) {
-      bool hasDirectElements = !it->elements.empty();
       auto newChildSection = it->filter(filterFunction);
-      if(hasDirectElements || newChildSection) {
-        if(previousSection!=nullptr) {
-          previousSection->nextSibling = std::move(newChildSection);
+      if(newChildSection) {
+        auto previous = previousSection;
+        previousSection = newChildSection.get();
+        if(previous!=nullptr) {
+          previous->nextSibling = std::move(newChildSection);
         } else {
           result.firstSection = std::move(newChildSection);
         }
       }
       it = it->nextSibling.get();
     }
+    it = firstSection.get();
     return std::move(result);
   }
   
