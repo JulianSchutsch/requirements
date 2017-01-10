@@ -39,6 +39,7 @@ class MainWindow : public Gtk::Window{
   requirements::NodePtr get_node_for_uuid(std::string const& uuid);
   void create_recent_menu();
   void set_current_project(std::string const& filename);
+  void load_current_project();
   void set_focus_to_uuid(Gtk::TreeModel::Row* parent,std::string const& uuid);
   void set_focus_to_uuid(std::string const& uuid);
   void set_focus_to_uuid(Gtk::TreeModel::Children const& children, std::string const& uuid);

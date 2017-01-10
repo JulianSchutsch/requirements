@@ -44,6 +44,8 @@ void Settings::load(){
       std::cout << "Push: " << val.second.data() << std::endl;
       _last_projects.push_back(val.second.data());
     }
+    //TODO: Das muss konfigurierbar sein
+    if(_last_projects.size()>0) current_project=_last_projects.back();
   }
   catch(std::exception& e){
     //Nothing read, data stay with default values
@@ -92,5 +94,6 @@ void Settings::add_project(std::string const& filename){
 const std::list<std::string>& Settings::last_projects() const{
   return _last_projects;
 }
+
 
 }

@@ -20,18 +20,9 @@ namespace greq{
 
 void MainWindow::on_f1_clicked()
 {
-  Gtk::AboutDialog about;
-  about.set_transient_for(*this);
-  about.set_program_name("Über");
-  about.set_version("0.0.0");
-  about.set_website("https://github.com/JulianSchutsch/requirements");
-  std::vector<Glib::ustring> list_authors;
-  list_authors.push_back("Julian Schutsch");
-  list_authors.push_back("Dirk Neumann");
-  about.set_authors(list_authors);
-
-  about.show();
-  about.run();
+  KeyCodeWindow kw;
+  kw.set_transient_for(*this);
+  kw.run();
 }
 
 void MainWindow::on_filename_selected(std::string const& filename){
@@ -115,9 +106,17 @@ void MainWindow::on_f8_clicked(){
 }
 
 void MainWindow::on_f9_clicked(){
-  KeyCodeWindow kw;
-  kw.set_transient_for(*this);
-  kw.run();
+  Gtk::AboutDialog about;
+  about.set_transient_for(*this);
+  about.set_program_name("Über");
+  about.set_version("0.0.0");
+  about.set_website("https://github.com/JulianSchutsch/requirements");
+  std::vector<Glib::ustring> list_authors;
+  list_authors.push_back("Julian Schutsch");
+  list_authors.push_back("Dirk Neumann");
+  about.set_authors(list_authors);
+
+  about.run();
 }
 
 void MainWindow::on_f10_clicked(){
@@ -334,8 +333,6 @@ void MainWindow::on_newblob_clicked(){
         //newblob(filedlg.get_filename());
         std::string trblob=newblob(filedlg.get_filename());
         add_blob_to_row(selected_row,trblob);}
-        //printtree();
-        //std::cout << trblob << std::endl;}
         break;
       case Gtk::RESPONSE_CANCEL:
         break;
