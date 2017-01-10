@@ -17,7 +17,9 @@ namespace greq{
   "Ctrl+left: Move node up one level\n"
   "Ctrl+right: Move node down one level\n"
   "Ctrl+up: Move node up\n"
-  "Ctrl+down: Move node down\n";
+  "Ctrl+down: Move node down\n"
+  "+: Expand node\n"
+  "-: Collapse node\n";
 
 
 

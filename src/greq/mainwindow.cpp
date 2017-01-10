@@ -16,6 +16,7 @@
 namespace greq{
 //TODO: Feature:  1. Bessere Darstellung der Knoten
 //                   TextView als CellRenderer
+//                2. Auswahl, ob letztes Projekt automatisch beim Start geladen werden soll
 //                2. Newblob
 //                3. Listblobs
 //                4. Blobaliases
@@ -29,14 +30,14 @@ MainWindow::MainWindow()
   _changed_signal_ignore=0;
   //create elements
   _topictree=Gtk::manage(new Gtk::TreeView);
-  _f1_button=Gtk::manage(new Gtk::Button("F1 About"));
+  _f1_button=Gtk::manage(new Gtk::Button("F1 KeyCodes"));
   _f2_button=Gtk::manage(new Gtk::Button("F2 Save"));
   _f3_button=Gtk::manage(new Gtk::Button("F3 Open"));
   _f4_button=Gtk::manage(new Gtk::Button("F4 Edit"));
   _f5_button=Gtk::manage(new Gtk::Button("F5 Copy"));
   _f7_button=Gtk::manage(new Gtk::Button("F7 New"));
   _f8_button=Gtk::manage(new Gtk::Button("F8 Delete"));
-  _f9_button=Gtk::manage(new Gtk::Button("F9 KeyCodes"));
+  _f9_button=Gtk::manage(new Gtk::Button("F9 About"));
   _f10_button=Gtk::manage(new Gtk::Button("F10 Exit"));
   _recentbutton=Gtk::manage(new Gtk::MenuButton());
 
@@ -197,10 +198,16 @@ void MainWindow::create_recent_menu(){
     recentmenu->append(*menuitem_file);
   }
   _recentbutton->set_popup(*recentmenu);
+  //Und jetzt gleich das letzte Projekt laden
+  if(Settings::getInstance().current_project!="") load_current_project();
 }
 
 void MainWindow::set_current_project(std::string const& filename){
   Settings::getInstance().current_project=filename;
+  load_current_project();
+}
+
+void MainWindow::load_current_project(){
   init_project();
   printtree();
 }
@@ -289,13 +296,15 @@ std::string MainWindow::get_uuid_on_cursor(){
 }
 
 void MainWindow::add_blob_to_row(Gtk::TreeModel::iterator selected_row,std::string const& blobtext){
-  Gtk::TreeModel::Row row = *selected_row;
-  Glib::ustring content = row[_topic_columns.col_cont];
-  content+="\n";
-  content+=blobtext;
-  content+="\n";
-  //In den Baum schreiben, das changed()-Signal sorgt dafür, dass das in die collection kommt
-  row[_topic_columns.col_cont]=content;
+  if(blobtext!=""){
+    Gtk::TreeModel::Row row = *selected_row;
+    Glib::ustring content = row[_topic_columns.col_cont];
+    content+="\n%(blob:";
+    content+=blobtext;
+    content+=")\n";
+    //In den Baum schreiben, das changed()-Signal sorgt dafür, dass das in die collection kommt
+    row[_topic_columns.col_cont]=content;
+  }
 }
 
 }
