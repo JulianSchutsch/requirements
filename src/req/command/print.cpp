@@ -15,6 +15,7 @@ namespace req {
   namespace command {
     
     void processCommand_print(Status& status, const std::vector<std::string>& parameters) {
+      (void)parameters;
       ::requirements::storage::Text storage(status.folder, false);
       ::annotations::ParserResult parsed;
       if(!::annotations::parse(storage, parsed)) {

@@ -24,11 +24,6 @@ namespace requirements {
         std::fstream file(folder + text_requirementsFolder + id_to_string(node.getId()), std::fstream::out);
         file<<content;
       }
-      {
-        auto& generatedContent = node.getGeneratedContent();
-        std::fstream file(folder + text_annotationsFolder + id_to_string(node.getId()), std::fstream::out);
-        file<<generatedContent;
-      }
     }
     
     static void saveNodes(NodeCollection& collection, const std::string& folder) {
@@ -65,17 +60,6 @@ namespace requirements {
 
     static void deleteObsoleteNodes(NodeCollection& collection, const std::string& folder) {
       for(auto it=boost::filesystem::directory_iterator(folder+text_requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
-        boost::filesystem::path path(*it);
-        Id id;
-        if(!string_to_id(path.stem().string(), id)) {
-          throw Exception(Exception::Reason::InvalidId);
-        }
-        NodePtr dummy;
-        if(!collection.findById(id, dummy)) {
-          boost::filesystem::remove(path);
-        }
-      }
-      for(auto it=boost::filesystem::directory_iterator(folder+text_annotationsFolder);it!=boost::filesystem::directory_iterator();++it) {
         boost::filesystem::path path(*it);
         Id id;
         if(!string_to_id(path.stem().string(), id)) {

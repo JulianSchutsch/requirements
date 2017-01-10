@@ -58,10 +58,9 @@ namespace requirements {
     for(auto& node: collection) {
       const std::string idStr = "id:"+id_to_string(node->getId());
       const auto& content = node->getContent();
-      const auto& generatedContent = node->getGeneratedContent();
       bool matched = true;
       for(auto& e: regexes) {
-        if((!std::regex_search(content, e)) && (!std::regex_search(generatedContent, e)) && (!std::regex_search(idStr, e))) {
+        if((!std::regex_search(content, e)) && (!std::regex_search(idStr, e))) {
           matched = false;
           break;
         }

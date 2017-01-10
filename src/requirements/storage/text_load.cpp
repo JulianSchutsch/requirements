@@ -30,8 +30,7 @@ namespace requirements {
           }
           {
             auto content = util::readFileToString(path.native());
-            auto annotations = util::readFileToString(folder + text_annotationsFolder + id_to_string(id));
-            auto node = collection.createNode(id, std::move(content), std::move(annotations));
+            auto node = collection.createNode(id, std::move(content));
           }
         }
       }

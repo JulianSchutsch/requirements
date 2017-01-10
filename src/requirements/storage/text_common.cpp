@@ -23,7 +23,6 @@ namespace requirements {
       // Ensure root folder exists
       ensureSubFolder(folder);
       ensureSubFolder(folder + text_requirementsFolder);
-      ensureSubFolder(folder + text_annotationsFolder);
       ensureSubFolder(folder + text_blobFolder);
       ensureSubFolder(folder + text_latexFolder);
     }
