@@ -18,9 +18,9 @@ set(CMAKE_EXE_LINKER_FLAGS_GCOV "${COMMON_EXE_LINKER_FLAGS} -lgcov")
 
 find_package(Threads REQUIRED)
 
-function (add_sources varName baseFolder)
+function (add_sources varName filePattern baseFolder)
     foreach(folder IN LISTS ARGN)
-        file(GLOB_RECURSE SOURCES "${baseFolder}/${folder}/*.cpp")
+        file(GLOB_RECURSE SOURCES "${baseFolder}/${folder}/${filePattern}")
         list(APPEND RESULT "${SOURCES}")
     endforeach()
     set(${varName} ${RESULT} PARENT_SCOPE)
@@ -31,13 +31,20 @@ find_package(PkgConfig)
 pkg_check_modules(GTKMM gtkmm-3.0)
 link_directories(${GTKMM_LIBRARY_DIRS})
 
+#the qt stuff
+find_package(Qt5Widgets)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include" ${GTKMM_INCLUDE_DIRS})
 include_directories("${CMAKE_CURRENT_LIST_DIR}/test/include")
 
-add_sources(REQUIREMENTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src" "requirements" "generators" "annotations" "util" "commands")
-add_sources(REQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src" "req" "console")
-add_sources(GREQ_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src" "greq")
-add_sources(TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/test" "requirements" "util" "test" "annotations" "commands")
+add_sources(REQUIREMENTS_SOURCES "*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src" "requirements" "generators" "annotations" "util" "commands")
+add_sources(REQ_SOURCES "*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src" "req" "console")
+add_sources(GREQ_SOURCES "*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src" "greq")
+add_sources(QREQ_SOURCES "*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src" "qreq")
+add_sources(QREQ_HEADERS "*.hpp" "${CMAKE_CURRENT_LIST_DIR}/include" "qreq")
+add_sources(TEST_SOURCES "*.cpp" "${CMAKE_CURRENT_LIST_DIR}/test" "requirements" "util" "test" "annotations" "commands")
 
 find_library(LIB_BOOST_FILESYSTEM "boost_filesystem")
 find_library(LIB_BOOST_SYSTEM "boost_system")
@@ -54,6 +61,9 @@ target_link_libraries(req "requirements" ${LIB_TINYXML})
 
 add_executable(greq ${GREQ_SOURCES})
 target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})
+
+add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS})
+target_link_libraries (qreq Qt5::Widgets)
 
 add_executable(t ${TEST_SOURCES})
 target_link_libraries(t "requirements" ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES})
