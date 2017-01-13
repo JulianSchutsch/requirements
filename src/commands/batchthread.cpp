@@ -1,8 +1,8 @@
 #include "commands/batchthread.hpp"
 
-#include <iostream>
-
+#include "commands/status.hpp"
 #include "commands/icommand.hpp"
+#include "commands/batchresponse.hpp"
 
 namespace commands {
   
@@ -12,21 +12,35 @@ namespace commands {
     queueCondition.notify_all();
   }
   
+  void BatchThread::parse(Status& status) {
+    auto storage = status.openStorage();
+    
+  }
+  
   void BatchThread::mainloop() {
+    Status status;
+    status.load(statusFilename);
     std::unique_lock<std::mutex> guard(queueMutex);
     while(!terminated) {
       queueCondition.wait(guard);
+      bool requiredParse = !queue.empty();
       while(!queue.empty()) {
         auto& top = queue.front();
         guard.unlock();
-        top->execute();
+        top->execute(status);
         guard.lock();
         queue.pop();
       }
+      if(requiredParse) {
+        parse(status);
+      }
     }
+    status.save(statusFilename);
   }
   
-  BatchThread::BatchThread() {
+  BatchThread::BatchThread(ResponseFunction a_responseFunction, const std::string& a_statusFilename)
+    : responseFunction(a_responseFunction)
+    , statusFilename(a_statusFilename) {
     thread = std::thread(&BatchThread::mainloop, this);
   }
   

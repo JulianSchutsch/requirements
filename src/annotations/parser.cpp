@@ -16,10 +16,10 @@ namespace annotations {
       ShortcutsBuilder shortcuts;
       RequirementsBuilder requirements;
       Builders(ParserResult& result)
-        : sections(result.sections)
-        , errors(result.errors)
-        , shortcuts(result.shortcuts)
-        , requirements(result.requirements) {}
+        : sections(*result.sections)
+        , errors(*result.errors)
+        , shortcuts(*result.shortcuts)
+        , requirements(*result.requirements) {}
     };
   }
   
@@ -100,6 +100,7 @@ namespace annotations {
   }
   
   bool parse(::requirements::IStorage& storage, ParserResult& result) {
+    result.errors.reset(new Errors());
     Builders builders(result);
     return parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders);
   }

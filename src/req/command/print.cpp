@@ -22,8 +22,8 @@ namespace req {
         std::cout<<"Some issues found during parsing"<<std::endl;
         for(auto node: storage.getNodeCollection()) {
           auto id = node->getId();
-          if(parsed.errors.has(id)) {
-            std::cout<<::requirements::id_to_string(id)<<" -> "<<parsed.errors.get(id)<<std::endl;
+          if(parsed.errors->has(id)) {
+            std::cout<<::requirements::id_to_string(id)<<" -> "<<parsed.errors->get(id)<<std::endl;
           }
         }
         return;
@@ -33,7 +33,7 @@ namespace req {
         std::cout<<"Could not open target file"<<std::endl;
         return;
       }
-      ::generators::latex::printRequirements(parsed.sections, parsed.requirements, file);
+      ::generators::latex::printRequirements(*parsed.sections, *parsed.requirements, file);
       std::cout<<"Generated requirements document in requirements "<<status.folder<<"/latex/requirements.tex"<<std::endl;
     }
   }

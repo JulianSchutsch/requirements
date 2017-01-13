@@ -13,25 +13,25 @@ static ::requirements::NodePtr parentCreate(::requirements::NodeCollection& coll
 }
 
 static void compareSection(::annotations::Sections::Iterator it, const std::string& title, const std::string& text, int depth, ::requirements::Id id, ::annotations::ParserResult& result) {
-  ASSERT_NE(it, result.sections.end());
+  ASSERT_NE(it, result.sections->end());
   auto& section = *it;
   ASSERT_EQ(section.getTitle(), title);
   ASSERT_EQ(section.getDescription(), text);
   ASSERT_EQ(section.getDepth(), depth);
-  ASSERT_EQ(result.errors.has(id), false);
-  ASSERT_EQ(result.shortcuts.has(id), true);
-  ASSERT_EQ(result.shortcuts.get(id), title);
+  ASSERT_EQ(result.errors->has(id), false);
+  ASSERT_EQ(result.shortcuts->has(id), true);
+  ASSERT_EQ(result.shortcuts->get(id), title);
 }
 
 static void compareRequirement(::requirements::Id id, const std::string& key, const std::string& text, annotations::ParserResult& result) {
-  auto& requirements = result.requirements;
+  auto& requirements = *result.requirements;
   ASSERT_EQ(requirements.has(id), true);
   auto& requirement = requirements.get(id);
   ASSERT_EQ(requirement.getRequirementKey(), key);
   ASSERT_EQ(requirement.getText(), text);
-  ASSERT_EQ(result.errors.has(id), false);
-  ASSERT_EQ(result.shortcuts.has(id), true);
-  ASSERT_EQ(result.shortcuts.get(id), key);
+  ASSERT_EQ(result.errors->has(id), false);
+  ASSERT_EQ(result.shortcuts->has(id), true);
+  ASSERT_EQ(result.shortcuts->get(id), key);
 }
 
 TEST(AnnotationsParser, Example1) {
@@ -65,7 +65,7 @@ TEST(AnnotationsParser, Example1) {
   ::annotations::ParserResult parseResult;
   ::annotations::parse(storage, parseResult);
   auto& sections = parseResult.sections;
-  auto sectionIterator = sections.begin();
+  auto sectionIterator = sections->begin();
   compareSection(sectionIterator, "Phase1", "Some example for a first phase", 0, phase1->getId(), parseResult);
   ++sectionIterator;
   compareSection(sectionIterator, "Functional requirements", "", 1, functional1->getId(), parseResult);
@@ -105,5 +105,5 @@ TEST(AnnotationsParser, Example1) {
     compareRequirement(elements.back(), "NFR4", "Some other non functional requirement", parseResult);
   }
   ++sectionIterator;
-  ASSERT_EQ(sectionIterator, sections.end());
+  ASSERT_EQ(sectionIterator, sections->end());
 }

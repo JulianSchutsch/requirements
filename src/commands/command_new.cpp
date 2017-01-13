@@ -1,0 +1,27 @@
+#include "commands/command_new.hpp"
+
+#include "annotations/exception.hpp"
+
+#include "requirements/istorage.hpp"
+#include "requirements/nodecollection.hpp"
+
+#include "commands/status.hpp"
+#include "commands/parser.hpp"
+
+namespace commands {
+  
+  void Command_New::execute(Status& status) {
+    auto storage = status.openStorage();
+    auto& collection = storage->getNodeCollection();
+  }
+  
+  Command_New::Command_New(Parser& parser) {
+    if(parser.getRemaining()!="") {
+      throw annotations::Exception("No parameters for new command expected");
+    }
+  }
+  
+  Command_New::Command_New(::requirements::Id a_id)
+    : idProvided(true)
+    , id(a_id) {}
+}

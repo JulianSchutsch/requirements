@@ -2,9 +2,11 @@
 
 namespace commands {
   
+  class Status;
+  
   class ICommand {
   public:
-    virtual void execute()=0;
+    virtual void execute(Status& status)=0;
     virtual ~ICommand() {}
   };
   

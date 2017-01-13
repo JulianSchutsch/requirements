@@ -13,10 +13,10 @@
 namespace annotations {
   
   struct ParserResult {
-    Errors errors;
-    Sections sections;
-    Shortcuts shortcuts;
-    Requirements requirements;
+    std::unique_ptr<Errors> errors;
+    std::unique_ptr<Sections> sections;
+    std::unique_ptr<Shortcuts> shortcuts;
+    std::unique_ptr<Requirements> requirements;
   };
   
   bool parse(::requirements::IStorage& storage, ParserResult& result);
