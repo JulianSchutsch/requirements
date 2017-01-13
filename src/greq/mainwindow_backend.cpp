@@ -4,6 +4,8 @@
 
 #include "greq/mainwindow.hpp"
 #include "greq/settings.hpp"
+#include "greq/cellrendererreqtext.hpp"
+#include "greq/cellrendererreqtext2.hpp"
 
 #include <iostream>
 
@@ -17,6 +19,11 @@ void MainWindow::store_collection(){
   if(_currentStorage){
     _currentStorage->save(Settings::getInstance().current_project);
   }
+}
+
+void MainWindow::cellrenderer_reqtext_on_editing_started( Gtk::CellEditable* cell_editable, const Glib::ustring& /* path */)
+{
+  std::cout << "on_editing_started" << std::endl;
 }
 
 void MainWindow::printtree(std::string const& uuid_to_jump){
@@ -37,17 +44,36 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
 
   _topictree->remove_all_columns();
   //_topictree->append_column("topic", _topic_columns.col_node);
+
+  //Basteln des Cellrenderers und der ViewColumn
+  //Gtk::TreeViewColumn* view_column = Gtk::manage(new Gtk::TreeViewColumn(("text")));
+  //CellRendererReqText* reqtextrenderer=Gtk::manage(new CellRendererReqText);
+  //reqtextrenderer->property_editable() = true;
+  //view_column->pack_start(*reqtextrenderer, false);
+  //_topictree->append_column(*view_column);
+  //Make the CellRenderer editable, and handle its editing signals:
+  //Jetzt müssen wir die passende modelcolumn zuweisen
+
+  //alternativ:
+  CellRendererReqText2* reqtextrenderer=Gtk::manage(new CellRendererReqText2);
+  reqtextrenderer->property_editable() = true;
+  Gtk::TreeViewColumn* view_column2 = Gtk::manage(new Gtk::TreeViewColumn(Glib::ustring("text"),*reqtextrenderer));
+  view_column2->add_attribute(*reqtextrenderer,"text",1);
+  _topictree->append_column(*view_column2);
+  reqtextrenderer->signal_editing_started().connect(sigc::mem_fun(*this, &MainWindow::cellrenderer_reqtext_on_editing_started) );
+
+
+  //_topictree->append_column("topic", _topic_columns.col_node);
   //_topictree->append_column_editable("text", _topic_columns.col_cont);
-  _topictree->append_column("text", _topic_columns.col_cont);
-  Gtk::CellRendererText* cellrenderer=dynamic_cast<Gtk::CellRendererText*>(_topictree->get_column_cell_renderer(0));
-  //Alignment tries
-  //float xalign;
-  //float yalign;
-  //cellrenderer->get_alignment(xalign,yalign);
-  //std::cout << "xalign: " << xalign << " yalign: " << yalign << std::endl;
-  //cellrenderer->set_alignment(0,0);
-  //other tries:
-  cellrenderer->property_editable()=true;
+  //Original
+  //_topictree->append_column_editable("text", _topic_columns.col_cont);
+  //Ende Original
+
+
+  //CellRendererReqText* reqtextrenderer=Gtk::manage(new CellRendererReqText);
+  //_topictree->get_column(0)->set_renderer(*reqtextrenderer,_topic_columns.col_cont);
+  //Gtk::CellRendererText* cellrenderer=dynamic_cast<Gtk::CellRendererText*>(_topictree->get_column_cell_renderer(0));
+  //cellrenderer->property_editable()=true;
 
   //now do no longer ignore changed signal
   --_changed_signal_ignore;

@@ -67,6 +67,8 @@ class MainWindow : public Gtk::Window{
   void on_newblob_clicked();
   void on_linkblob_clicked();
 
+  void cellrenderer_reqtext_on_editing_started( Gtk::CellEditable* cell_editable, const Glib::ustring& /* path */);
+
   //Backend functions
   std::unique_ptr<::requirements::storage::Text> _currentStorage;
   void init_project();
