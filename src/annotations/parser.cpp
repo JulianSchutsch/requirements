@@ -101,6 +101,9 @@ namespace annotations {
   
   bool parse(::requirements::IStorage& storage, ParserResult& result) {
     result.errors.reset(new Errors());
+    result.sections.reset(new Sections());
+    result.requirements.reset(new Requirements());
+    result.shortcuts.reset(new Shortcuts());
     Builders builders(result);
     return parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders);
   }
