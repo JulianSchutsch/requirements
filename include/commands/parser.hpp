@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace commands {
   class Parser {
   public:
@@ -13,11 +15,15 @@ namespace commands {
   private:
     std::string string;
     std::string::const_iterator pos;
+    std::string::const_iterator tokenStart;
     TokenType tokenType = TokenType::Unknown;
-    std::string tokenString;
+    void consumeSpace();
+    bool nextSymbol();
+    bool nextInteger();
   public:
     TokenType getTokenType() const { return tokenType; }
-    const std::string& getTokenString() const { return tokenString; }
+    std::string getTokenString() const { return std::string(tokenStart, pos); }
+    std::string getRemaining() { consumeSpace(); return std::string(pos, string.cend()); }
     Parser(const std::string& str);
     bool next();
   };
