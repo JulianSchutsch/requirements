@@ -24,7 +24,7 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
   //now ignore the changed()-Signal
   //++_changed_signal_ignore;  //TODO anschließen
-  //_left_tree_model->clear(); //TODO anschließen
+  _reqmodel->clear();
 
   auto& collection = _currentStorage->getNodeCollection();
   auto selected = requirements::select(collection, parameters, collection.getRootNode());
@@ -35,12 +35,9 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   }
   _reqtree->resizeColumnToContents(0);
 
-  //_topictree->remove_all_columns();   //TODO anschließen
-  //_topictree->append_column("topic", _topic_columns.col_node);  //TODO anschließen
-  //_topictree->append_column_editable("text", _topic_columns.col_cont);  //TODO anschließen
-
   //--_changed_signal_ignore;  //TODO anschließen
   //Tree ausklappen
+  _reqtree->expandAll();
   //_topictree->expand_all();  //TODO anschließen
   //Jetzt noch hinspringen
   //if(uuid_to_jump!="") set_focus_to_uuid(uuid_to_jump);  //TODO anschließen

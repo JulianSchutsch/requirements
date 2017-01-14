@@ -34,12 +34,15 @@ MainWindow::~MainWindow(){
 
 void MainWindow::generate_elements(){
   Settings::getInstance().load();
+  //Vorgeschlagene Standardgröße für das Hauptfenster: 800x600
+  setMinimumWidth(800);
+  setMinimumHeight(600);
   //Das ist eine Alternative zu FocusPolicy. Mal sehen, was besser ist.
   //QApplication::instance()->installEventFilter(this);
   _reqmodel=new QStandardItemModel();
   _reqtree=new QTreeView(this);
   _reqtree->setModel(_reqmodel);
-  _reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded
+  //_reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded
   _reqtree->setHeaderHidden(true);
   connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
   connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));

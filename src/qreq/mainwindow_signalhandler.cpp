@@ -116,7 +116,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 }
 
 void MainWindow::on_openact_triggered(QString const& filename){
-  std::cout << "triggered: " << filename.toStdString() << std::endl;
+  //std::cout << "triggered: " << filename.toStdString() << std::endl;
+  set_current_project(filename.toStdString());
 }
 
 void MainWindow::on_reqtree_expanded(const QModelIndex& i){
