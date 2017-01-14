@@ -26,7 +26,9 @@ TEST(Commands, CommandNew_Console) {
   auto response = b.wait();
   auto root = response.nodeCollection->getRootNode();
   auto children = root->getChildren();
+  auto selections = response.status->selections[0];
+  ASSERT_EQ(selections.size(), 1);
   ASSERT_EQ(children.size(), 1);
   ASSERT_EQ(children.front()->getChildren().size(), 0);
-
+  ASSERT_EQ(children.front()->getId(), selections[0]);
 }

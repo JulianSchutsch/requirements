@@ -26,6 +26,7 @@ namespace commands {
     std::map<int, Selection> selections;
     bool load(const std::string& filename="");
     bool save(const std::string& filename="");
+    std::unique_ptr<Status> clone();
   };
   
 }

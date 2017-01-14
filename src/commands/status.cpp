@@ -11,6 +11,13 @@
 #include "requirements/storage/text.hpp"
 
 namespace commands {
+
+  std::unique_ptr<Status> Status::clone() {
+    std::unique_ptr<Status> s(new Status);
+    s->folder = folder;
+    s->selections = selections;
+    return std::move(s);
+  }
   
   std::unique_ptr<::requirements::IStorage> Status::openStorage() {
     if(folder=="") {

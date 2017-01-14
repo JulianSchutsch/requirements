@@ -23,6 +23,7 @@ namespace commands {
     ::annotations::parse(*storage, result);
     if(responseFunction) {
       BatchResponse response;
+      response.status = status.clone();
       response.shortcuts = std::move(result.shortcuts);
       response.errors = std::move(result.errors);
       response.requirements = std::move(result.requirements);

@@ -16,9 +16,11 @@ namespace commands {
     std::string nullStr;
     if(idProvided) {
       collection.createNode(id, std::move(nullStr));
+      status.selections[0] = {id};
       return;
     }
-    collection.createNode(std::move(nullStr));
+    auto newNode = collection.createNode(std::move(nullStr));
+    status.selections[0] = {newNode->getId()};
   }
   
   Command_New::Command_New(Parser& parser) {
