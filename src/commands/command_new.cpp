@@ -13,6 +13,12 @@ namespace commands {
   void Command_New::execute(Status& status) {
     auto storage = status.openStorage();
     auto& collection = storage->getNodeCollection();
+    std::string nullStr;
+    if(idProvided) {
+      collection.createNode(id, std::move(nullStr));
+      return;
+    }
+    collection.createNode(std::move(nullStr));
   }
   
   Command_New::Command_New(Parser& parser) {

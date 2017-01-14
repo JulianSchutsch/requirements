@@ -7,7 +7,6 @@ namespace requirements {
     NodePtr n=new Node(a_collection, id, std::move(cp_content));
     for(auto& child: children) {
       auto nChild = child->clone(a_collection);
-      children.emplace_back(nChild);
       nChild->setParent(n);
     }
     return std::move(n);

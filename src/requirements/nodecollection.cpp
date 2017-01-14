@@ -5,7 +5,7 @@ namespace requirements {
   std::unique_ptr<NodeCollection> NodeCollection::clone() {
     std::unique_ptr<NodeCollection> collection(new NodeCollection());
     collection->rootNode = rootNode->clone(*collection);
-    return collection;
+    return std::move(collection);
   }
 
   void NodeCollection::deleteNode(NodePtr node) {

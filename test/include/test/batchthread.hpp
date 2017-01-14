@@ -35,7 +35,7 @@ namespace test {
       batch.reset(new ::commands::BatchThread(std::bind(&BatchThread::responseFunction, this, std::placeholders::_1), statusFile));
     }
     ~BatchThread() {
-      batch.release();
+      batch.reset();
       boost::filesystem::remove(statusFile);
     }
     commands::BatchResponse wait() {
