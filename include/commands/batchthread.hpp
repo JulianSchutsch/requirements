@@ -23,6 +23,7 @@ namespace commands {
     volatile bool terminated = false;
     void mainloop();
     void parse(Status& status);
+    void processQueue(Status& status, std::unique_lock<std::mutex>& guard);
   public:
     void enqueue(std::unique_ptr<ICommand> command);
     BatchThread(ResponseFunction a_responseFunction, const std::string& a_statusFilename="");

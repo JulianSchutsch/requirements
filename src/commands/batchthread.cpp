@@ -31,24 +31,29 @@ namespace commands {
       responseFunction(std::move(response));
     }
   }
+
+  void BatchThread::processQueue(Status& status, std::unique_lock<std::mutex>& guard) {
+    bool requiredParse = !queue.empty();
+    while(!queue.empty()) {
+      auto& top = queue.front();
+      guard.unlock();
+      top->execute(status);
+      guard.lock();
+      queue.pop();
+    }
+    if(requiredParse) {
+      parse(status);
+    }
+  }
   
   void BatchThread::mainloop() {
     Status status;
     status.load(statusFilename);
     std::unique_lock<std::mutex> guard(queueMutex);
+    processQueue(status, guard);
     while(!terminated) {
       queueCondition.wait(guard);
-      bool requiredParse = !queue.empty();
-      while(!queue.empty()) {
-        auto& top = queue.front();
-        guard.unlock();
-        top->execute(status);
-        guard.lock();
-        queue.pop();
-      }
-      if(requiredParse) {
-        parse(status);
-      }
+      processQueue(status, guard);
     }
     status.save(statusFilename);
   }

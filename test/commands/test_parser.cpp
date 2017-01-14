@@ -2,8 +2,8 @@
 
 #include "commands/parser.hpp"
 
-const char * content1 = "c1 cb c2";
-const char * content2 = "10 Hello Remaining text\n";
+static const char * content1 = "c1 cb c2";
+static const char * content2 = "10 Hello Remaining text\n";
 
 TEST(Commands, Parser) {
   {
@@ -25,4 +25,9 @@ TEST(Commands, Parser) {
     ASSERT_EQ(parser.getTokenString(), "10");
     ASSERT_EQ(parser.getRemaining(), "Hello Remaining text\n");
   }
+}
+
+TEST(Commands, ParseEmtpy) {
+  commands::Parser parser("");
+  ASSERT_EQ(parser.getRemaining(), "");
 }

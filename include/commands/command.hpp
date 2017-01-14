@@ -1,7 +1,10 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 namespace commands {
-  void assembleFromString(const std::string& str);
+  class ICommand;
+
+  std::unique_ptr<ICommand> assembleFromString(const std::string& str);
 }

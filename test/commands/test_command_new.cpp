@@ -4,6 +4,7 @@
 #include "test/batchthread.hpp"
 
 #include "commands/command_new.hpp"
+#include "commands/command.hpp"
 
 TEST(Commands, CommandNew_ExplizitId) {
   test::BatchThread b;
@@ -15,4 +16,17 @@ TEST(Commands, CommandNew_ExplizitId) {
   ASSERT_EQ(children.size(), 1);
   ASSERT_EQ(children.front()->getId(), id);
   ASSERT_EQ(children.front()->getChildren().size(), 0);
+}
+
+TEST(Commands, CommandNew_Console) {
+  test::BatchThread b;
+  auto command = ::commands::assembleFromString("new");
+  ASSERT_NE(command, nullptr);
+  b.batch->enqueue(std::move(command));
+  auto response = b.wait();
+  auto root = response.nodeCollection->getRootNode();
+  auto children = root->getChildren();
+  ASSERT_EQ(children.size(), 1);
+  ASSERT_EQ(children.front()->getChildren().size(), 0);
+
 }
