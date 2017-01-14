@@ -2,6 +2,12 @@
 
 namespace requirements {
 
+  std::unique_ptr<NodeCollection> NodeCollection::clone() {
+    std::unique_ptr<NodeCollection> collection(new NodeCollection());
+    collection->rootNode = rootNode->clone(*collection);
+    return collection;
+  }
+
   void NodeCollection::deleteNode(NodePtr node) {
     auto id = node->getId();
     nodes.erase(id);

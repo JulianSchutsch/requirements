@@ -2,6 +2,17 @@
 
 namespace requirements {
 
+  NodePtr Node::clone(NodeCollection& a_collection) {
+    auto cp_content = content;
+    NodePtr n=new Node(a_collection, id, std::move(cp_content));
+    for(auto& child: children) {
+      auto nChild = child->clone(a_collection);
+      children.emplace_back(nChild);
+      nChild->setParent(n);
+    }
+    return std::move(n);
+  }
+
   Node::ChildList::iterator Node::findChild(NodePtr node) {
     for(auto it=children.begin();it!=children.end();++it) {
       if(node==*it) {

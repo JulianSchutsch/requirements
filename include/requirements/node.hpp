@@ -23,9 +23,11 @@ namespace requirements {
     ptrdiff_t referenceCount{0};
     NodeCollection& collection;
     std::string content;
+    ChildList::iterator findChild(NodePtr node);
+    NodePtr clone(NodeCollection& a_collection);
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
-    ChildList::iterator findChild(NodePtr node);
+    friend class NodeCollection;
   public:
     bool hasParent(const NodePtr& node) const;
     const std::string& getContent() const { return content; }

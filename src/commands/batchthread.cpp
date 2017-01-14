@@ -1,5 +1,7 @@
 #include "commands/batchthread.hpp"
 
+#include "annotations/parser.hpp"
+
 #include "commands/status.hpp"
 #include "commands/icommand.hpp"
 #include "commands/batchresponse.hpp"
@@ -13,8 +15,21 @@ namespace commands {
   }
   
   void BatchThread::parse(Status& status) {
+    if(status.folder=="") {
+      return;
+    }
     auto storage = status.openStorage();
-    
+    ::annotations::ParserResult result;
+    ::annotations::parse(*storage, result);
+    if(responseFunction) {
+      BatchResponse response;
+      response.shortcuts = std::move(result.shortcuts);
+      response.errors = std::move(result.errors);
+      response.requirements = std::move(result.requirements);
+      response.sections = std::move(result.sections);
+      response.nodeCollection = storage->getNodeCollection().clone();
+      responseFunction(std::move(response));
+    }
   }
   
   void BatchThread::mainloop() {

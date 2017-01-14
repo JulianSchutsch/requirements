@@ -37,6 +37,7 @@ namespace requirements {
     NodeCollection();
     NodeCollection(const NodeCollection&) = delete;
     NodeCollection& operator = (const NodeCollection&) = delete;
+    std::unique_ptr<NodeCollection> clone();
   };
   
 }
