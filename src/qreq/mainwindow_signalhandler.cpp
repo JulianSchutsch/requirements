@@ -115,4 +115,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
   }
 }
 
+void MainWindow::on_openact_triggered(QString const& filename){
+  std::cout << "triggered: " << filename.toStdString() << std::endl;
+}
+
+void MainWindow::on_reqtree_expanded(const QModelIndex& i){
+  _reqtree->resizeColumnToContents(i.column());
+}
+
 }

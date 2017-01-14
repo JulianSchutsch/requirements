@@ -1,5 +1,5 @@
 #include "qreq/mainwindow.hpp"
-//#include "qreq/keypresseater.hpp"
+#include "qreq/settings.hpp"
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -7,7 +7,12 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
+#include <QMenu>
+#include <QAction>
+#include <QSignalMapper>
+#include <QMenuBar>
 
+#include <iostream>
 
 namespace qreq{
 
@@ -24,15 +29,20 @@ MainWindow::MainWindow(){
 /// Destruktor.
 ///
 MainWindow::~MainWindow(){
+  Settings::getInstance().store();
 }
 
 void MainWindow::generate_elements(){
+  Settings::getInstance().load();
   //Das ist eine Alternative zu FocusPolicy. Mal sehen, was besser ist.
   //QApplication::instance()->installEventFilter(this);
   _reqmodel=new QStandardItemModel();
   _reqtree=new QTreeView(this);
   _reqtree->setModel(_reqmodel);
-
+  _reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded
+  _reqtree->setHeaderHidden(true);
+  connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
+  connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
 }
 
 void MainWindow::generate_view(){
@@ -103,6 +113,34 @@ void MainWindow::generate_view(){
 /// Erzeugt das Menu.
 ///
 void MainWindow::generate_menu(){
+  generate_menu_recent();
+}
+
+void MainWindow::generate_menu_recent(){
+  //Menu erzeugen
+  QMenu *recentmenu=new QMenu("Recent");
+  QSignalMapper* signalMapper = new QSignalMapper (this) ;
+  for(auto filename : Settings::getInstance().last_projects()){
+    std::cout << "adding " << filename << std::endl;
+    QAction *openact=new QAction(filename.c_str(),this);
+    connect (openact, SIGNAL(triggered()), signalMapper, SLOT(map())) ;
+    signalMapper -> setMapping (openact, filename.c_str()) ;
+    recentmenu->addAction(openact);
+  }
+  connect (signalMapper, SIGNAL(mapped(QString)), this, SLOT(on_openact_triggered(QString const&))) ;
+  menuBar()->addMenu(recentmenu);
+  //Und jetzt gleich das letzte Projekt laden
+  if(Settings::getInstance().current_project!="") load_current_project();
+}
+
+void MainWindow::set_current_project(std::string const& filename){
+  Settings::getInstance().current_project=filename;
+  load_current_project();
+}
+
+void MainWindow::load_current_project(){
+  init_project();
+  printtree();
 }
 
 }
