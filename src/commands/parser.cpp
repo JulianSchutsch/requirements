@@ -13,6 +13,19 @@ namespace commands {
   static bool isSpace(char ch) {
     return ch==' ';
   }
+
+  bool Parser::nextSimple() {
+    consumeSpace();
+    if(pos==string.end()) {
+      return false;
+    }
+    tokenStart = pos;
+    while(pos!=string.end() && !isSpace(*pos)) {
+      ++pos;
+    }
+    tokenType = TokenType::String;
+    return true;
+  }
   
   void Parser::consumeSpace() {
     while(pos!=string.end() && isSpace(*pos)) { ++pos; }

@@ -24,6 +24,7 @@ namespace commands {
     TokenType getTokenType() const { return tokenType; }
     std::string getTokenString() const { return std::string(tokenStart, pos); }
     std::string getRemaining() { consumeSpace(); return std::string(pos, string.cend()); }
+    bool nextSimple();
     Parser(const std::string& str);
     bool next();
   };
