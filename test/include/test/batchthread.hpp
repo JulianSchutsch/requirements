@@ -6,6 +6,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include "test/folder.hpp"
+
 #include "commands/batchthread.hpp"
 #include "commands/batchresponse.hpp"
 #include "commands/status.hpp"

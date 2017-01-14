@@ -7,8 +7,7 @@
 #include "commands/parser.hpp"
 #include "commands/icommand.hpp"
 #include "commands/command_new.hpp"
-
-#include <iostream>
+#include "commands/command_select.hpp"
 
 namespace commands {
 
@@ -18,8 +17,13 @@ namespace commands {
     return std::unique_ptr<ICommand>(new Command_New(parser));
   }
 
+  static std::unique_ptr<ICommand> cmd_select(Parser& parser) {
+    return std::unique_ptr<ICommand>(new Command_Select(parser));
+  }
+
   static std::map<std::string, FactoryMethod> commands = {
-    {"new", &cmd_new}
+    {"new", &cmd_new},
+    {"select", &cmd_select}
   };
   
   std::unique_ptr<ICommand> assembleFromString(const std::string& str) {

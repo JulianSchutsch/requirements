@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "test/folder.hpp"
 #include "test/batchthread.hpp"
 
 #include "commands/command_new.hpp"

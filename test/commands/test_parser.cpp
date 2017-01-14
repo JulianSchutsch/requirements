@@ -31,3 +31,12 @@ TEST(Commands, ParseEmtpy) {
   commands::Parser parser("");
   ASSERT_EQ(parser.getRemaining(), "");
 }
+
+TEST(Commands, ParseSimple) {
+  commands::Parser parser("%1ksodkosdk \"30493=04?59");
+  ASSERT_EQ(parser.nextSimple(), true);
+  ASSERT_EQ(parser.getTokenString(), "%1ksodkosdk");
+  ASSERT_EQ(parser.nextSimple(), true);
+  ASSERT_EQ(parser.getTokenString(), "\"30493=04?59");
+  ASSERT_EQ(parser.nextSimple(), false);
+}
