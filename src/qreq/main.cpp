@@ -11,7 +11,7 @@ int main(int argc, char** argv){
   //SettingsManager
   //SettingsManager::instance()->load();
 
-  MainWindow mainwindow;
+  qreq::MainWindow mainwindow;
   mainwindow.show();
   int retval=program.exec();
 

@@ -32,7 +32,8 @@ pkg_check_modules(GTKMM gtkmm-3.0)
 link_directories(${GTKMM_LIBRARY_DIRS})
 
 #the qt stuff
-find_package(Qt5Widgets)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -63,7 +64,7 @@ add_executable(greq ${GREQ_SOURCES})
 target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})
 
 add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS})
-target_link_libraries (qreq Qt5::Widgets)
+target_link_libraries (qreq Qt5::Widgets Qt5::Gui)
 
 add_executable(t ${TEST_SOURCES})
 target_link_libraries(t "requirements" ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES})

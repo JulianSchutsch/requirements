@@ -1,9 +1,15 @@
 #include "qreq/mainwindow.hpp"
+//#include "qreq/keypresseater.hpp"
+
 #include <QApplication>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QWidget>
 #include <QLabel>
+#include <QPushButton>
 
+
+namespace qreq{
 
 ///
 /// Konstruktor.
@@ -20,20 +26,83 @@ MainWindow::MainWindow(){
 MainWindow::~MainWindow(){
 }
 
-///
-/// Legt die Instanzen aller Elemente an.
-///
 void MainWindow::generate_elements(){
+  //Das ist eine Alternative zu FocusPolicy. Mal sehen, was besser ist.
+  //QApplication::instance()->installEventFilter(this);
+  _reqmodel=new QStandardItemModel();
+  _reqtree=new QTreeView(this);
+  _reqtree->setModel(_reqmodel);
+
 }
 
-///
-/// Ordnet alles an.
-///
 void MainWindow::generate_view(){
+  QPushButton *f1_button=new QPushButton(tr("F1 Keycodes"));
+  connect(f1_button,SIGNAL(clicked()),this,SLOT(on_f1button_clicked()));
+  f1_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f2_button=new QPushButton(tr("F2 Save"));
+  connect(f2_button,SIGNAL(clicked()),this,SLOT(on_f2button_clicked()));
+  f2_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f3_button=new QPushButton(tr("F3 Open"));
+  connect(f3_button,SIGNAL(clicked()),this,SLOT(on_f3button_clicked()));
+  f3_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f4_button=new QPushButton(tr("F4 Edit"));
+  connect(f4_button,SIGNAL(clicked()),this,SLOT(on_f4button_clicked()));
+  f4_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f5_button=new QPushButton(tr("F5 Copy"));
+  connect(f5_button,SIGNAL(clicked()),this,SLOT(on_f5button_clicked()));
+  f5_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f7_button=new QPushButton(tr("F7 New"));
+  connect(f7_button,SIGNAL(clicked()),this,SLOT(on_f7button_clicked()));
+  f7_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f8_button=new QPushButton(tr("F8 Delete"));
+  connect(f8_button,SIGNAL(clicked()),this,SLOT(on_f8button_clicked()));
+  f8_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f9_button=new QPushButton(tr("F9 About"));
+  connect(f9_button,SIGNAL(clicked()),this,SLOT(on_f9button_clicked()));
+  f9_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f10_button=new QPushButton(tr("F10 Exit"));
+  connect(f10_button,SIGNAL(clicked()),this,SLOT(on_f10button_clicked()));
+  f10_button->setFocusPolicy(Qt::NoFocus);
+
+  QHBoxLayout *bottombuttonbox=new QHBoxLayout();
+  bottombuttonbox->addWidget(f1_button);
+  bottombuttonbox->addWidget(f2_button);
+  bottombuttonbox->addWidget(f3_button);
+  bottombuttonbox->addWidget(f4_button);
+  bottombuttonbox->addWidget(f5_button);
+  bottombuttonbox->addWidget(f7_button);
+  bottombuttonbox->addWidget(f8_button);
+  bottombuttonbox->addWidget(f9_button);
+  bottombuttonbox->addWidget(f10_button);
+
+  QPushButton *newblob_button=new QPushButton(tr("New Blob"));
+  connect(newblob_button,SIGNAL(clicked()),this,SLOT(on_newblobbutton_clicked()));
+  newblob_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *linkblob_button=new QPushButton(tr("Link Blob"));
+  connect(linkblob_button,SIGNAL(clicked()),this,SLOT(on_linkblobbutton_clicked()));
+  linkblob_button->setFocusPolicy(Qt::NoFocus);
+
+  QVBoxLayout *leftbuttonbox=new QVBoxLayout();
+  leftbuttonbox->addWidget(newblob_button);
+  leftbuttonbox->addWidget(linkblob_button);
+  leftbuttonbox->addStretch();
+
+  QHBoxLayout *hbox=new QHBoxLayout();
+  hbox->addLayout(leftbuttonbox);
+  hbox->addWidget(_reqtree);
+  QVBoxLayout *vbox=new QVBoxLayout();
+  vbox->addLayout(hbox);
+  vbox->addLayout(bottombuttonbox);
+  QWidget *mainwidget=new QWidget();
+  mainwidget->setLayout(vbox);
+
+  setCentralWidget(mainwidget);
 }
 
 ///
 /// Erzeugt das Menu.
 ///
 void MainWindow::generate_menu(){
+}
+
 }
