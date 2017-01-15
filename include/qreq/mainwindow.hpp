@@ -43,6 +43,9 @@ Q_OBJECT
   void printtree(std::string const& uuid_to_jump="");
   void add_children_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
   void add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
+
+  //Tree functions
+  void set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid);
   //void commit_to_collection(std::string const& uuid, std::string const& content);
   //void add_new_brother_for(std::string const& uuid);
   //void new_node(bool copy_content=false);

@@ -147,4 +147,19 @@ void MainWindow::load_current_project(){
   printtree();
 }
 
+void MainWindow::set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid){
+  for(int i=0;i<parent_item->rowCount();i++){
+    QStandardItem* item_id=parent_item->child(i,COLUMN_ID);
+    QStandardItem* item_text=parent_item->child(i,COLUMN_TEXT);
+    if(item_id->text().toStdString()==uuid){
+      //Gefunden, also hinspringen
+      _reqtree->scrollTo(item_text->index());
+    }
+    else{
+      //War nicht dabei, vielleicht in den Kindern?
+      set_focus_to_uuid(item_text,uuid);
+    }
+  }
+}
+
 }

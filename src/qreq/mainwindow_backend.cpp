@@ -5,6 +5,8 @@
 #include "requirements/select.hpp"
 #include "requirements/blob.hpp"
 
+#include <iostream>
+
 namespace qreq{
 
 void MainWindow::init_project(){
@@ -39,9 +41,8 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   //--_changed_signal_ignore;  //TODO anschließen
   //Tree ausklappen
   _reqtree->expandAll();
-  //_topictree->expand_all();  //TODO anschließen
   //Jetzt noch hinspringen
-  //if(uuid_to_jump!="") set_focus_to_uuid(uuid_to_jump);  //TODO anschließen
+  if(uuid_to_jump!="") set_focus_to_uuid(parentItem,uuid_to_jump);
 }
 
 void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
@@ -53,7 +54,6 @@ void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requireme
 
 void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
   //++_changed_signal_ignore;   //TODO anschließen
-  //QStandardItem *item=new QStandardItem(QString(requirements::id_to_string(node->getId()).c_str()));
   QStandardItem *item_text=new QStandardItem(QString(node->getContent().c_str()));
   QStandardItem *item_id=new QStandardItem(QString(requirements::id_to_string(node->getId()).c_str()));
   QList<QStandardItem*> item;
@@ -62,5 +62,6 @@ void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements
   add_children_to_tree(item_text,node);
   //--_changed_signal_ignore;   //TODO anschließen
 }
+
 
 }
