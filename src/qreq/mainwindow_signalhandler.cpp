@@ -124,4 +124,8 @@ void MainWindow::on_reqtree_expanded(const QModelIndex& i){
   _reqtree->resizeColumnToContents(i.column());
 }
 
+void MainWindow::on_reqmodel_item_changed(QStandardItem* item){
+  std::cout << "on_reqmodel_item_changed" << std::endl;
+}
+
 }

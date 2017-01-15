@@ -47,6 +47,7 @@ void MainWindow::generate_elements(){
   _reqtree->setHeaderHidden(true);
   connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
   connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
+  connect(_reqmodel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_reqmodel_item_changed(QStandardItem*)));
 }
 
 void MainWindow::generate_view(){

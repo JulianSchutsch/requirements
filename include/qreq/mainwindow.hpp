@@ -66,6 +66,7 @@ private slots:
   //void on_openact_triggered(unsigned namepos);
   void on_openact_triggered(QString const& filename);
   void on_reqtree_expanded(const QModelIndex& i);
+  void on_reqmodel_item_changed(QStandardItem* item);
 protected:
   void keyPressEvent(QKeyEvent *event);
   //bool eventFilter(QObject *object, QEvent *event);
