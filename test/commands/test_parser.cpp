@@ -17,6 +17,7 @@ TEST(Commands, Parser) {
     ASSERT_EQ(parser.next(), true);
     ASSERT_EQ(parser.getTokenType(), commands::Parser::TokenType::Symbol);
     ASSERT_EQ(parser.getTokenString(), "c2");
+    ASSERT_EQ(parser.next(), false);
   }
   {
     commands::Parser parser(content2);
