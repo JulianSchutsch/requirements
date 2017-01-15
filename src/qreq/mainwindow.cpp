@@ -40,6 +40,7 @@ void MainWindow::generate_elements(){
   //Das ist eine Alternative zu FocusPolicy. Mal sehen, was besser ist.
   //QApplication::instance()->installEventFilter(this);
   _reqmodel=new QStandardItemModel();
+  _reqmodel->setColumnCount(COLUMN_COUNT);
   _reqtree=new QTreeView(this);
   _reqtree->setModel(_reqmodel);
   //_reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded

@@ -33,7 +33,8 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
   for(auto& node: selected){
     add_children_to_tree(parentItem,node);
   }
-  _reqtree->resizeColumnToContents(0);
+  _reqtree->resizeColumnToContents(COLUMN_TEXT);
+  _reqtree->hideColumn(COLUMN_ID);
 
   //--_changed_signal_ignore;  //TODO anschließen
   //Tree ausklappen
@@ -53,9 +54,12 @@ void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requireme
 void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
   //++_changed_signal_ignore;   //TODO anschließen
   //QStandardItem *item=new QStandardItem(QString(requirements::id_to_string(node->getId()).c_str()));
-  QStandardItem *item=new QStandardItem(QString(node->getContent().c_str()));
+  QStandardItem *item_text=new QStandardItem(QString(node->getContent().c_str()));
+  QStandardItem *item_id=new QStandardItem(QString(requirements::id_to_string(node->getId()).c_str()));
+  QList<QStandardItem*> item;
+  item << item_text << item_id;
   parent_item->appendRow(item);
-  add_children_to_tree(item,node);
+  add_children_to_tree(item_text,node);
   //--_changed_signal_ignore;   //TODO anschließen
 }
 
