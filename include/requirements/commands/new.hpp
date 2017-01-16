@@ -13,7 +13,7 @@ namespace requirements {
       bool idProvided = false;
       ::requirements::Id id;
     public:
-      void execute(Status &status, const MessageFunction& msg) override;
+      void execute(Status &status) override;
       
       New(::requirements::Id a_id);
       

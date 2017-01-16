@@ -8,7 +8,7 @@ namespace requirements {
     
     class Null : public ICommand {
     public:
-      virtual void execute(Status &status, const MessageFunction&) override { (void) status; }
+      virtual void execute(Status &status) override { (void) status; }
     };
     
   }

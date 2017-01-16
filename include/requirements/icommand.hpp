@@ -2,18 +2,15 @@
 
 #include <functional>
 
+#include "requirements/node.hpp"
+
 namespace requirements {
   
   class Status;
   
   class ICommand {
   public:
-    enum MessageKind {
-      Error,
-      Content
-    };
-    using MessageFunction = std::function<void(MessageKind, const std::string&)>;
-    virtual void execute(Status& status, const MessageFunction& function)=0;
+    virtual void execute(Status& status)=0;
     virtual ~ICommand() {}
   };
   

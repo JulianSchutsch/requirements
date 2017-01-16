@@ -28,8 +28,8 @@ namespace requirements {
       void enqueue(std::unique_ptr<ICommand> command) { queue.enqueue(std::move(command)); }
       
       Thread(Queue::ResponseFunction a_responseFunction,
-             Queue::MessageFunction a_messageFunction,
-             Queue::EditFunction a_editFunction,
+             Status::MessageFunction a_messageFunction,
+             Status::EditFunction a_editFunction,
              const std::string &a_statusFilename = "");
       
       ~Thread();

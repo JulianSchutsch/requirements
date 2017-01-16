@@ -23,12 +23,8 @@ namespace requirements {
     class Queue final {
     public:
       using ResponseFunction = std::function<void(Response&&)>;
-      using MessageFunction = ICommand::MessageFunction;
-      using EditFunction = std::function<void(NodePtr node)>;
     private:
       ResponseFunction responseFunction;
-      MessageFunction messageFunction;
-      EditFunction editFunction;
       Status status;
       std::string statusFilename;
       std::mutex queueMutex;
@@ -49,8 +45,8 @@ namespace requirements {
       void finish();
       
       Queue(ResponseFunction a_responseFunction,
-            MessageFunction a_messageFunction,
-            EditFunction a_editFunction,
+            Status::MessageFunction a_messageFunction,
+            Status::EditFunction a_editFunction,
             const std::string &a_statusFilename = "");
     };
   }

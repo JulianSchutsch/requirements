@@ -7,6 +7,7 @@
 
 #include "requirements/id.hpp"
 #include "requirements/istorage.hpp"
+#include "requirements/icommand.hpp"
 
 class TiXmlElement;
 
@@ -20,6 +21,14 @@ namespace requirements {
     void save_folder(TiXmlElement& root);
     void save_selections(TiXmlElement& root);
   public:
+    enum MessageKind {
+      Error,
+      Content
+    };
+    using MessageFunction = std::function<void(MessageKind, const std::string&)>;
+    using EditFunction = std::function<void(NodePtr)>;
+    MessageFunction messageFunction;
+    EditFunction editFunction;
     std::unique_ptr<::requirements::IStorage> openStorage();
     using Selection = std::vector<requirements::Id>;
     std::string folder;

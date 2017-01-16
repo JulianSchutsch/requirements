@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <mutex>
+#include <condition_variable>
+#include <memory>
 #include <boost/filesystem.hpp>
 
 #include "test/folder.hpp"
@@ -28,7 +31,7 @@ TEST(Commands, Command_Folder) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&){ FAIL(); },
+      [](Status::MessageKind, const std::string&){ FAIL(); },
       [](NodePtr){FAIL();},
       statusFile);
     batchThread.enqueue(std::make_unique<commands::Folder>(folder.getName()));
@@ -51,7 +54,7 @@ TEST(Commands, Command_Folder) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&){ FAIL(); },
+      [](Status::MessageKind, const std::string&){ FAIL(); },
       [](NodePtr){FAIL();},
       statusFile);
     batchThread.enqueue(std::make_unique<commands::Null>());
@@ -80,7 +83,7 @@ TEST(Commands, Command_Folder_Console) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&){ FAIL(); },
+      [](Status::MessageKind, const std::string&){ FAIL(); },
       [](NodePtr){FAIL();},
       statusFile);
     batchThread.enqueue(commands::assembleFromString("folder "+folder.getName()));
@@ -103,7 +106,7 @@ TEST(Commands, Command_Folder_Console) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&) { FAIL(); },
+      [](Status::MessageKind, const std::string&) { FAIL(); },
       [](NodePtr){FAIL();},
       statusFile);
     batchThread.enqueue(std::make_unique<commands::Null>());

@@ -39,7 +39,7 @@ namespace test {
       }
       batch.reset(new batch::Thread(
         std::bind(&BatchThread::responseFunction, this, std::placeholders::_1),
-        [](ICommand::MessageKind, const std::string&){},
+        [](Status::MessageKind, const std::string&){},
         [](NodePtr){},
         statusFile));
     }

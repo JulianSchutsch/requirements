@@ -16,7 +16,7 @@ namespace requirements {
     private:
       std::string folder;
     public:
-      void execute(Status &status, const MessageFunction& msg) override;
+      void execute(Status &status) override;
       
       Folder(const std::string &a_folder);
       
