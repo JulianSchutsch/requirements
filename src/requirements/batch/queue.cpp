@@ -82,8 +82,12 @@ namespace requirements {
       queueCondition.notify_all();
     }
     
-    Queue::Queue(ResponseFunction a_responseFunction, const std::string &a_statusFilename)
-      : responseFunction(a_responseFunction), statusFilename(a_statusFilename) {
+    Queue::Queue(ResponseFunction a_responseFunction,
+                 MessageFunction a_messageFunction,
+                 const std::string &a_statusFilename)
+      : responseFunction(a_responseFunction)
+      , messageFunction(a_messageFunction)
+      , statusFilename(a_statusFilename) {
       status.load(statusFilename);
     }
     

@@ -27,6 +27,9 @@ TEST(Commands, Command_Folder) {
         batchFolder = response.status->folder;
         batchFolderSet = true;
         responseCondition.notify_all();
+      },
+      [](const std::string&){
+        FAIL();
       }, statusFile);
     batchThread.enqueue(std::make_unique<commands::Folder>(folder.getName()));
     std::unique_lock<std::mutex> guard(responseMutex);
@@ -47,6 +50,9 @@ TEST(Commands, Command_Folder) {
         batchFolder = response.status->folder;
         batchFolderSet = true;
         responseCondition.notify_all();
+      },
+      [](const std::string&){
+        FAIL();
       }, statusFile);
     batchThread.enqueue(std::make_unique<commands::Null>());
     std::unique_lock<std::mutex> guard(responseMutex);
@@ -73,7 +79,10 @@ TEST(Commands, Command_Folder_Console) {
         batchFolder = response.status->folder;
         batchFolderSet = true;
         responseCondition.notify_all();
-      }, statusFile);
+      },
+      [](const std::string&){
+        FAIL();
+      },statusFile);
     batchThread.enqueue(commands::assembleFromString("folder "+folder.getName()));
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
@@ -93,6 +102,9 @@ TEST(Commands, Command_Folder_Console) {
         batchFolder = response.status->folder;
         batchFolderSet = true;
         responseCondition.notify_all();
+      },
+      [](const std::string&) {
+        FAIL();
       }, statusFile);
     batchThread.enqueue(std::make_unique<commands::Null>());
     std::unique_lock<std::mutex> guard(responseMutex);

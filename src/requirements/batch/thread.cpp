@@ -3,8 +3,10 @@
 namespace requirements {
    namespace batch {
      
-     Thread::Thread(Queue::ResponseFunction a_responseFunction, const std::string &a_statusFilename)
-       : queue(a_responseFunction, a_statusFilename)
+     Thread::Thread(Queue::ResponseFunction a_responseFunction,
+                    Queue::MessageFunction a_messageFunction,
+                    const std::string &a_statusFilename)
+       : queue(a_responseFunction, a_messageFunction, a_statusFilename)
        , thread(&Thread::mainloop, this) {}
      
      Thread::~Thread() {

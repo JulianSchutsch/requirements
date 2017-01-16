@@ -21,9 +21,15 @@ namespace requirements {
     
     class Queue final {
     public:
+      enum MessageKind {
+        Error,
+        Content
+      };
       using ResponseFunction = std::function<void(Response&&)>;
+      using MessageFunction = std::function<void(const std::string&)>;
     private:
       ResponseFunction responseFunction;
+      MessageFunction messageFunction;
       Status status;
       std::string statusFilename;
       std::mutex queueMutex;
@@ -43,7 +49,7 @@ namespace requirements {
       void wait();
       void finish();
       
-      Queue(ResponseFunction a_responseFunction, const std::string &a_statusFilename = "");
+      Queue(ResponseFunction a_responseFunction, MessageFunction a_messageFunction, const std::string &a_statusFilename = "");
     };
   }
 }

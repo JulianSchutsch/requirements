@@ -37,7 +37,7 @@ namespace test {
         status.folder = folder.getName();
         status.save(statusFile);
       }
-      batch.reset(new batch::Thread(std::bind(&BatchThread::responseFunction, this, std::placeholders::_1), statusFile));
+      batch.reset(new batch::Thread(std::bind(&BatchThread::responseFunction, this, std::placeholders::_1), [](const std::string&){}, statusFile));
     }
     ~BatchThread() {
       batch.reset();
