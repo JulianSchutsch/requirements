@@ -1,7 +1,5 @@
 #include "commands/batchthread.hpp"
 
-#include <chrono>
-
 #include "annotations/parser.hpp"
 
 #include "commands/status.hpp"
@@ -30,6 +28,11 @@ namespace commands {
   
   void BatchThread::parse(Status& status) {
     if(status.folder=="") {
+      if(responseFunction) {
+        BatchResponse response;
+        response.status = status.clone();
+        responseFunction(std::move(response));
+      }
       return;
     }
     auto storage = status.openStorage();

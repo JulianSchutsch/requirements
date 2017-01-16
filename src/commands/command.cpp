@@ -13,6 +13,7 @@
 #include "commands/command_firstof.hpp"
 #include "commands/command_lastof.hpp"
 #include "commands/command_delete.hpp"
+#include "commands/command_folder.hpp"
 
 namespace commands {
   
@@ -25,7 +26,8 @@ namespace commands {
     {"down", [](Parser& parser){return new Command_Down(parser);}},
     {"firstof", [](Parser& parser){return new Command_FirstOf(parser);}},
     {"lastof", [](Parser& parser){return new Command_LastOf(parser);}},
-    {"delete", [](Parser& parser){return new Command_Delete(parser);}}
+    {"delete", [](Parser& parser){return new Command_Delete(parser);}},
+    {"folder", [](Parser& parser){return new Command_Folder(parser);}}
   };
   
   std::unique_ptr<ICommand> assembleFromString(const std::string& str) {

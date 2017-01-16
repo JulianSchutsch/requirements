@@ -11,7 +11,7 @@ namespace commands {
   class Command_Delete : public ICommand {
     Selection selection;
   public:
-    void execute(Status& status);
+    void execute(Status& status) override;
     Command_Delete(::requirements::Id id);
     Command_Delete(Parser& parser);
   };

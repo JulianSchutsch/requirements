@@ -17,7 +17,7 @@ namespace commands {
   private:
     Selection selection;
   public:
-    void execute(Status& status) {
+    void execute(Status& status) override {
       auto storage = status.openStorage();
       auto node = selection.extractNode(*storage, status);
       operation(node);
@@ -34,7 +34,7 @@ namespace commands {
     Selection selectionElement;
     Selection selectionAnchor;
   public:
-    void execute(Status& status) {
+    void execute(Status& status) override {
       auto storage = status.openStorage();
       auto element = selectionElement.extractNode(*storage, status);
       auto anchor = selectionAnchor.extractNode(*storage);
