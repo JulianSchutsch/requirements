@@ -7,8 +7,8 @@
 #include "requirements/commands/command.hpp"
 #include "requirements/commands/command_folder.hpp"
 #include "requirements/commands/command_null.hpp"
-#include "requirements/batch/batchthread.hpp"
-#include "requirements/batch/batchresponse.hpp"
+#include "requirements/batch/thread.hpp"
+#include "requirements/batch/response.hpp"
 
 using namespace requirements;
  
@@ -20,9 +20,9 @@ TEST(Commands, Command_Folder) {
     volatile bool batchFolderSet = false;
     std::mutex responseMutex;
     std::condition_variable responseCondition;
-    batch::BatchThread batchThread(
+    batch::Thread batchThread(
       [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
-        (batch::BatchResponse &&response) {
+        (batch::Response &&response) {
         std::lock_guard<std::mutex> guard(responseMutex);
         batchFolder = response.status->folder;
         batchFolderSet = true;
@@ -40,9 +40,9 @@ TEST(Commands, Command_Folder) {
     volatile bool batchFolderSet = false;
     std::mutex responseMutex;
     std::condition_variable responseCondition;
-    batch::BatchThread batchThread(
+    batch::Thread batchThread(
       [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
-        (batch::BatchResponse &&response) {
+        (batch::Response &&response) {
         std::lock_guard<std::mutex> guard(responseMutex);
         batchFolder = response.status->folder;
         batchFolderSet = true;
@@ -66,9 +66,9 @@ TEST(Commands, Command_Folder_Console) {
     volatile bool batchFolderSet = false;
     std::mutex responseMutex;
     std::condition_variable responseCondition;
-    batch::BatchThread batchThread(
+    batch::Thread batchThread(
       [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
-        (batch::BatchResponse &&response) {
+        (batch::Response &&response) {
         std::lock_guard<std::mutex> guard(responseMutex);
         batchFolder = response.status->folder;
         batchFolderSet = true;
@@ -86,9 +86,9 @@ TEST(Commands, Command_Folder_Console) {
     volatile bool batchFolderSet = false;
     std::mutex responseMutex;
     std::condition_variable responseCondition;
-    batch::BatchThread batchThread(
+    batch::Thread batchThread(
       [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
-        (batch::BatchResponse &&response) {
+        (batch::Response &&response) {
         std::lock_guard<std::mutex> guard(responseMutex);
         batchFolder = response.status->folder;
         batchFolderSet = true;

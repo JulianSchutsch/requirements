@@ -8,8 +8,8 @@
 
 #include "test/folder.hpp"
 
-#include "requirements/batch/batchthread.hpp"
-#include "requirements/batch/batchresponse.hpp"
+#include "requirements/batch/thread.hpp"
+#include "requirements/batch/response.hpp"
 #include "requirements/status.hpp"
 
 namespace test {
@@ -18,18 +18,18 @@ namespace test {
 
   class BatchThread final {
   private:
-    std::queue<batch::BatchResponse> responseQueue;
+    std::queue<batch::Response> responseQueue;
     std::mutex responseMutex;
     std::condition_variable responseCondition;
     std::string statusFile;
     ::test::UniqueFolder folder;
-    void responseFunction(batch::BatchResponse&& r) {
+    void responseFunction(batch::Response&& r) {
       std::lock_guard<std::mutex> guard(responseMutex);
       responseQueue.emplace(std::move(r));
       responseCondition.notify_all();
     }
   public:
-    std::unique_ptr<batch::BatchThread> batch;
+    std::unique_ptr<batch::Thread> batch;
     BatchThread() {
       statusFile = folder.getName() + "_status.xml";
       {
@@ -37,13 +37,13 @@ namespace test {
         status.folder = folder.getName();
         status.save(statusFile);
       }
-      batch.reset(new batch::BatchThread(std::bind(&BatchThread::responseFunction, this, std::placeholders::_1), statusFile));
+      batch.reset(new batch::Thread(std::bind(&BatchThread::responseFunction, this, std::placeholders::_1), statusFile));
     }
     ~BatchThread() {
       batch.reset();
       boost::filesystem::remove(statusFile);
     }
-    batch::BatchResponse wait() {
+    batch::Response wait() {
       batch->waitForEmptyQueue();
       std::unique_lock<std::mutex> guard(responseMutex);
       if(!responseQueue.empty()) {

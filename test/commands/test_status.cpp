@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "requirements/batch/batchthread.hpp"
+#include "requirements/batch/thread.hpp"
 
 TEST(Commands, Status) {
 }

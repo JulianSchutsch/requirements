@@ -11,7 +11,7 @@
 
 namespace requirements {
   namespace batch {
-    struct BatchResponse final {
+    struct Response final {
       std::unique_ptr<::requirements::Status> status;
       std::unique_ptr<::requirements::NodeCollection> nodeCollection;
       std::unique_ptr<::requirements::annotations::Errors> errors;

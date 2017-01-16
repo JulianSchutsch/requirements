@@ -1,15 +1,17 @@
-#include "requirements/batch/batchthread.hpp"
+#include "requirements/batch/queue.hpp"
+
+#include <thread>
 
 #include "requirements/annotations/parser.hpp"
 
 #include "requirements/status.hpp"
 #include "requirements/icommand.hpp"
-#include "requirements/batch/batchresponse.hpp"
+#include "requirements/batch/response.hpp"
 
 namespace requirements {
   namespace batch {
     
-    void BatchThread::waitForEmptyQueue() {
+    void Queue::waitForEmptyQueue() {
       for (;;) {
         {
           std::lock_guard<std::mutex> guard(queueMutex);
@@ -21,16 +23,16 @@ namespace requirements {
       }
     }
     
-    void BatchThread::enqueue(std::unique_ptr<ICommand> command) {
+    void Queue::enqueue(std::unique_ptr<ICommand> command) {
       std::lock_guard<std::mutex> guard(queueMutex);
       queue.emplace(std::move(command));
       queueCondition.notify_all();
     }
     
-    void BatchThread::parse(Status &status) {
+    void Queue::parse(Status &status) {
       if (status.folder == "") {
         if (responseFunction) {
-          BatchResponse response;
+          Response response;
           response.status = status.clone();
           responseFunction(std::move(response));
         }
@@ -40,7 +42,7 @@ namespace requirements {
       ::requirements::annotations::ParserResult result;
       ::requirements::annotations::parse(*storage, result);
       if (responseFunction) {
-        BatchResponse response;
+        Response response;
         response.status = status.clone();
         response.shortcuts = std::move(result.shortcuts);
         response.errors = std::move(result.errors);
@@ -51,7 +53,7 @@ namespace requirements {
       }
     }
     
-    void BatchThread::processQueue(Status &status, std::unique_lock<std::mutex> &guard) {
+    bool Queue::processQueue(Status &status, std::unique_lock<std::mutex> &guard) {
       bool requiredParse = !queue.empty();
       while (!queue.empty()) {
         auto &top = queue.front();
@@ -63,32 +65,34 @@ namespace requirements {
       if (requiredParse) {
         parse(status);
       }
+      return requiredParse;
     }
     
-    void BatchThread::mainloop() {
-      Status status;
-      status.load(statusFilename);
+    void Queue::wait() {
       std::unique_lock<std::mutex> guard(queueMutex);
+      if(processQueue(status, guard)) {
+        return;
+      }
+      queueCondition.wait(guard);
       processQueue(status, guard);
-      while (!terminated) {
-        queueCondition.wait(guard);
+    }
+    
+    void Queue::notify() {
+      std::lock_guard<std::mutex> guard(queueMutex);
+      queueCondition.notify_all();
+    }
+    
+    Queue::Queue(ResponseFunction a_responseFunction, const std::string &a_statusFilename)
+      : responseFunction(a_responseFunction), statusFilename(a_statusFilename) {
+      status.load(statusFilename);
+    }
+    
+    void Queue::finish() {
+      {
+        std::unique_lock<std::mutex> guard(queueMutex);
         processQueue(status, guard);
       }
       status.save(statusFilename);
-    }
-    
-    BatchThread::BatchThread(ResponseFunction a_responseFunction, const std::string &a_statusFilename)
-      : responseFunction(a_responseFunction), statusFilename(a_statusFilename) {
-      thread = std::thread(&BatchThread::mainloop, this);
-    }
-    
-    BatchThread::~BatchThread() {
-      {
-        std::unique_lock<std::mutex> guard(queueMutex);
-        terminated = true;
-        queueCondition.notify_all();
-      }
-      thread.join();
     }
     
   }
