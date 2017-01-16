@@ -15,7 +15,7 @@ namespace requirements {
     private:
       internal::Selection selection;
     public:
-      void execute(Status &status) override;
+      void execute(Status &status, const MessageFunction& msg) override;
       
       Select(std::vector<::requirements::Id> a_ids);
       

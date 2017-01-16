@@ -21,12 +21,8 @@ namespace requirements {
     
     class Queue final {
     public:
-      enum MessageKind {
-        Error,
-        Content
-      };
       using ResponseFunction = std::function<void(Response&&)>;
-      using MessageFunction = std::function<void(const std::string&)>;
+      using MessageFunction = ICommand::MessageFunction;
     private:
       ResponseFunction responseFunction;
       MessageFunction messageFunction;

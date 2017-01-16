@@ -13,7 +13,7 @@ namespace requirements {
     Delete::Delete(Parser &parser)
       : selection(parser) {}
     
-    void Delete::execute(Status &status) {
+    void Delete::execute(Status &status, const MessageFunction&) {
       auto storage = status.openStorage();
       auto node = selection.extractNode(*storage);
       storage->getNodeCollection().deleteNode(node);

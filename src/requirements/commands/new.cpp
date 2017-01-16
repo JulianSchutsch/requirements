@@ -11,7 +11,7 @@
 namespace requirements {
   namespace commands {
     
-    void New::execute(Status &status) {
+    void New::execute(Status &status, const MessageFunction&) {
       auto storage = status.openStorage();
       auto &collection = storage->getNodeCollection();
       std::string nullStr;

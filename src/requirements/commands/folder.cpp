@@ -8,7 +8,7 @@
 namespace requirements {
   namespace commands {
     
-    void Folder::execute(Status &status) {
+    void Folder::execute(Status &status, const MessageFunction&) {
       status.folder = folder;
     }
     

@@ -14,7 +14,7 @@ namespace requirements {
     class Delete : public ICommand {
       internal::Selection selection;
     public:
-      void execute(Status& status) override;
+      void execute(Status& status, const MessageFunction& msg) override;
       
       Delete(::requirements::Id id);
       

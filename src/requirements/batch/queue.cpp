@@ -58,7 +58,7 @@ namespace requirements {
       while (!queue.empty()) {
         auto &top = queue.front();
         guard.unlock();
-        top->execute(status);
+        top->execute(status, messageFunction);
         guard.lock();
         queue.pop();
       }

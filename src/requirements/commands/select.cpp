@@ -8,7 +8,7 @@
 namespace requirements {
   namespace commands {
     
-    void Select::execute(Status &status) {
+    void Select::execute(Status &status, const MessageFunction&) {
       auto storage = status.openStorage();
       status.selections[0] = selection.extractIds(*storage);
     }
