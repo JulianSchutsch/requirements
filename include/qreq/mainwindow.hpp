@@ -8,6 +8,8 @@
 #include <QString>
 #include <QModelIndex>
 
+#include "qreq/reqtree.hpp"
+
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 #include "requirements/istorage.hpp"
@@ -24,7 +26,7 @@ const int COLUMN_ID=1;
 ///
 class MainWindow : public QMainWindow{
 Q_OBJECT
-  QTreeView *_reqtree;
+  ReqTree *_reqtree;
   QStandardItemModel *_reqmodel;
 
   void generate_elements();
@@ -46,6 +48,9 @@ Q_OBJECT
 
   //Tree functions
   void set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid);
+  std::string get_uuid_by_modelindex(const QModelIndex& index);
+  std::string get_text_by_modelindex(const QModelIndex& index);
+  QStandardItem* get_parent_item_by_modelindex(const QModelIndex& index);
   //void commit_to_collection(std::string const& uuid, std::string const& content);
   //void add_new_brother_for(std::string const& uuid);
   //void new_node(bool copy_content=false);
@@ -63,10 +68,13 @@ private slots:
   void on_f10button_clicked();
   void on_newblobbutton_clicked();
   void on_linkblobbutton_clicked();
-  //void on_openact_triggered(unsigned namepos);
   void on_openact_triggered(QString const& filename);
   void on_reqtree_expanded(const QModelIndex& i);
   void on_reqmodel_item_changed(QStandardItem* item);
+  void on_reqtree_ctrl_left(const QModelIndex& i);
+  void on_reqtree_ctrl_right(const QModelIndex& i);
+  void on_reqtree_ctrl_up(const QModelIndex& i);
+  void on_reqtree_ctrl_down(const QModelIndex& i);
 protected:
   void keyPressEvent(QKeyEvent *event);
   //bool eventFilter(QObject *object, QEvent *event);

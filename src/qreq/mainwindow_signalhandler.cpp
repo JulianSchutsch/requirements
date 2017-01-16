@@ -128,4 +128,24 @@ void MainWindow::on_reqmodel_item_changed(QStandardItem* item){
   std::cout << "on_reqmodel_item_changed" << std::endl;
 }
 
+void MainWindow::on_reqtree_ctrl_left(const QModelIndex& i){
+  std::cout << "on_reqtree_ctrl_left" << std::endl;
+  std::cout << get_uuid_by_modelindex(i) << std::endl;
+  std::cout << get_text_by_modelindex(i) << std::endl;
+
+}
+
+void MainWindow::on_reqtree_ctrl_right(const QModelIndex& i){
+  std::cout << "on_reqtree_ctrl_right" << std::endl;
+}
+
+void MainWindow::on_reqtree_ctrl_up(const QModelIndex& i){
+  std::cout << "on_reqtree_ctrl_up" << std::endl;
+}
+
+void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
+  std::cout << "on_reqtree_ctrl_down" << std::endl;
+}
+
+
 }

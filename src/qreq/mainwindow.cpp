@@ -41,12 +41,17 @@ void MainWindow::generate_elements(){
   //QApplication::instance()->installEventFilter(this);
   _reqmodel=new QStandardItemModel();
   _reqmodel->setColumnCount(COLUMN_COUNT);
-  _reqtree=new QTreeView(this);
+  //_reqtree=new QTreeView(this);
+  _reqtree=new ReqTree(this);
   _reqtree->setModel(_reqmodel);
   //_reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded
   _reqtree->setHeaderHidden(true);
   connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
   connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
+  connect(_reqtree,SIGNAL(ctrl_left_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_left(QModelIndex)));
+  connect(_reqtree,SIGNAL(ctrl_right_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_right(QModelIndex)));
+  connect(_reqtree,SIGNAL(ctrl_up_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_up(QModelIndex)));
+  connect(_reqtree,SIGNAL(ctrl_down_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_down(QModelIndex)));
   connect(_reqmodel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_reqmodel_item_changed(QStandardItem*)));
 }
 
@@ -161,6 +166,44 @@ void MainWindow::set_focus_to_uuid(QStandardItem *parent_item, std::string const
       set_focus_to_uuid(item_text,uuid);
     }
   }
+}
+
+std::string MainWindow::get_uuid_by_modelindex(const QModelIndex& index){
+  std::string retval="";
+  QStandardItem* item_parent=get_parent_item_by_modelindex(index);
+  if(item_parent!=nullptr){
+    QStandardItem* item_id=item_parent->child(index.row(),COLUMN_ID);
+    if(item_id!=nullptr){
+      retval=item_id->text().toStdString();
+    }
+  }
+  return retval;
+}
+
+std::string MainWindow::get_text_by_modelindex(const QModelIndex& index){
+  std::string retval="";
+  QStandardItem* item_parent=get_parent_item_by_modelindex(index);
+  if(item_parent!=nullptr){
+    QStandardItem* item_text=item_parent->child(index.row(),COLUMN_TEXT);
+    if(item_text!=nullptr){
+      retval=item_text->text().toStdString();
+    }
+  }
+  return retval;
+}
+
+QStandardItem* MainWindow::get_parent_item_by_modelindex(const QModelIndex& index){
+  QStandardItem* retval=nullptr;
+  QStandardItem* item=_reqmodel->itemFromIndex(index);
+  if(item!=nullptr){
+    retval=item->parent();
+    if(retval==nullptr){
+      //vielleicht ist der parent ja das invisibleRootItem?
+      //Versuchen wirs mal
+      retval=_reqmodel->invisibleRootItem();
+    }
+  }
+  return retval;
 }
 
 }
