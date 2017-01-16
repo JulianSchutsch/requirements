@@ -2,7 +2,7 @@
 
 #include "test/batchthread.hpp"
 
-#include "requirements/commands/command_new.hpp"
+#include "requirements/commands/new.hpp"
 #include "requirements/commands/command.hpp"
 
 using namespace requirements;
@@ -10,7 +10,7 @@ using namespace requirements;
 TEST(Commands, CommandNew_ExplizitId) {
   test::BatchThread b;
   auto id = generateRandomId();
-  b.batch->enqueue(std::make_unique<commands::Command_New>(id));
+  b.batch->enqueue(std::make_unique<commands::New>(id));
   auto response = b.wait();
   auto root = response.nodeCollection->getRootNode();
   auto children = root->getChildren();

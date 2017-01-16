@@ -6,8 +6,7 @@ namespace requirements {
   class Status;
   namespace commands {
     
-    
-    class Command_Null : public ICommand {
+    class Null : public ICommand {
     public:
       virtual void execute(Status &status) override { (void) status; }
     };

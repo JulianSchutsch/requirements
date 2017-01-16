@@ -12,15 +12,15 @@ namespace requirements {
     
     class Parser;
     
-    class Command_Folder : public ICommand {
+    class Folder : public ICommand {
     private:
       std::string folder;
     public:
       void execute(Status &status);
       
-      Command_Folder(const std::string &a_folder);
+      Folder(const std::string &a_folder);
       
-      Command_Folder(Parser &parser);
+      Folder(Parser &parser);
     };
     
   }

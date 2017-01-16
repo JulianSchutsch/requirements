@@ -1,25 +1,24 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
 #include "requirements/icommand.hpp"
 #include "requirements/commands/internal/selection.hpp"
 
 namespace requirements {
+
+  class Status;
+
   namespace commands {
     
     class Parser;
     
-    class Command_Select final : public ICommand {
-    private:
+    class Delete : public ICommand {
       internal::Selection selection;
     public:
-      void execute(Status &status) override;
+      void execute(Status& status) override;
       
-      Command_Select(std::vector<::requirements::Id> a_ids);
+      Delete(::requirements::Id id);
       
-      Command_Select(Parser &parser);
+      Delete(Parser &parser);
     };
     
   }

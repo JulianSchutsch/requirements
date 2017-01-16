@@ -5,8 +5,8 @@
 #include "test/folder.hpp"
 
 #include "requirements/commands/command.hpp"
-#include "requirements/commands/command_folder.hpp"
-#include "requirements/commands/command_null.hpp"
+#include "requirements/commands/folder.hpp"
+#include "requirements/commands/null.hpp"
 #include "requirements/batch/thread.hpp"
 #include "requirements/batch/response.hpp"
 
@@ -28,7 +28,7 @@ TEST(Commands, Command_Folder) {
         batchFolderSet = true;
         responseCondition.notify_all();
       }, statusFile);
-    batchThread.enqueue(std::make_unique<commands::Command_Folder>(folder.getName()));
+    batchThread.enqueue(std::make_unique<commands::Folder>(folder.getName()));
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
       responseCondition.wait(guard);
@@ -48,7 +48,7 @@ TEST(Commands, Command_Folder) {
         batchFolderSet = true;
         responseCondition.notify_all();
       }, statusFile);
-    batchThread.enqueue(std::make_unique<commands::Command_Null>());
+    batchThread.enqueue(std::make_unique<commands::Null>());
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
       responseCondition.wait(guard);
@@ -94,7 +94,7 @@ TEST(Commands, Command_Folder_Console) {
         batchFolderSet = true;
         responseCondition.notify_all();
       }, statusFile);
-    batchThread.enqueue(std::make_unique<commands::Command_Null>());
+    batchThread.enqueue(std::make_unique<commands::Null>());
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
       responseCondition.wait(guard);

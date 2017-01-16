@@ -6,14 +6,14 @@
 
 #include "requirements/icommand.hpp"
 #include "requirements/commands/parser.hpp"
-#include "requirements/commands/command_new.hpp"
-#include "requirements/commands/command_select.hpp"
-#include "requirements/commands/command_up.hpp"
-#include "requirements/commands/command_down.hpp"
-#include "requirements/commands/command_firstof.hpp"
-#include "requirements/commands/command_lastof.hpp"
-#include "requirements/commands/command_delete.hpp"
-#include "requirements/commands/command_folder.hpp"
+#include "requirements/commands/new.hpp"
+#include "requirements/commands/select.hpp"
+#include "requirements/commands/up.hpp"
+#include "requirements/commands/down.hpp"
+#include "requirements/commands/firstof.hpp"
+#include "requirements/commands/lastof.hpp"
+#include "requirements/commands/delete.hpp"
+#include "requirements/commands/folder.hpp"
 
 namespace requirements {
   namespace commands {
@@ -21,14 +21,14 @@ namespace requirements {
     using FactoryFunction = std::function<ICommand *(Parser &)>;
     
     static std::map<std::string, FactoryFunction> commands = {
-      {"new",     [](Parser &parser) { return new Command_New(parser); }},
-      {"select",  [](Parser &parser) { return new Command_Select(parser); }},
-      {"up",      [](Parser &parser) { return new Command_Up(parser); }},
-      {"down",    [](Parser &parser) { return new Command_Down(parser); }},
-      {"firstof", [](Parser &parser) { return new Command_FirstOf(parser); }},
-      {"lastof",  [](Parser &parser) { return new Command_LastOf(parser); }},
-      {"delete",  [](Parser &parser) { return new Command_Delete(parser); }},
-      {"folder",  [](Parser &parser) { return new Command_Folder(parser); }}
+      {"new",     [](Parser &parser) { return new New(parser); }},
+      {"select",  [](Parser &parser) { return new Select(parser); }},
+      {"up",      [](Parser &parser) { return new Up(parser); }},
+      {"down",    [](Parser &parser) { return new Down(parser); }},
+      {"firstof", [](Parser &parser) { return new FirstOf(parser); }},
+      {"lastof",  [](Parser &parser) { return new LastOf(parser); }},
+      {"delete",  [](Parser &parser) { return new Delete(parser); }},
+      {"folder",  [](Parser &parser) { return new Folder(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {

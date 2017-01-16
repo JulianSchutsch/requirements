@@ -1,4 +1,4 @@
-#include "requirements/commands/command_folder.hpp"
+#include "requirements/commands/folder.hpp"
 
 #include "requirements/exception.hpp"
 
@@ -8,14 +8,14 @@
 namespace requirements {
   namespace commands {
     
-    void Command_Folder::execute(Status &status) {
+    void Folder::execute(Status &status) {
       status.folder = folder;
     }
     
-    Command_Folder::Command_Folder(const std::string &a_folder)
+    Folder::Folder(const std::string &a_folder)
       : folder(a_folder) {}
     
-    Command_Folder::Command_Folder(Parser &parser) {
+    Folder::Folder(Parser &parser) {
       if (!parser.nextSimple()) {
         folder = "";
         return;

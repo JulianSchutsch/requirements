@@ -1,4 +1,4 @@
-#include "requirements/commands/command_delete.hpp"
+#include "requirements/commands/delete.hpp"
 
 #include "requirements/nodecollection.hpp"
 
@@ -7,13 +7,13 @@
 namespace requirements {
   namespace commands {
     
-    Command_Delete::Command_Delete(::requirements::Id id)
+    Delete::Delete(::requirements::Id id)
       : selection(id) {}
     
-    Command_Delete::Command_Delete(Parser &parser)
+    Delete::Delete(Parser &parser)
       : selection(parser) {}
     
-    void Command_Delete::execute(Status &status) {
+    void Delete::execute(Status &status) {
       auto storage = status.openStorage();
       auto node = selection.extractNode(*storage);
       storage->getNodeCollection().deleteNode(node);

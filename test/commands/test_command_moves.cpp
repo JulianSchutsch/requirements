@@ -3,11 +3,11 @@
 #include "test/batchthread.hpp"
 
 #include "requirements/commands/command.hpp"
-#include "requirements/commands/command_new.hpp"
-#include "requirements/commands/command_up.hpp"
-#include "requirements/commands/command_down.hpp"
-#include "requirements/commands/command_firstof.hpp"
-#include "requirements/commands/command_lastof.hpp"
+#include "requirements/commands/new.hpp"
+#include "requirements/commands/up.hpp"
+#include "requirements/commands/down.hpp"
+#include "requirements/commands/firstof.hpp"
+#include "requirements/commands/lastof.hpp"
 
 using namespace requirements;
 
@@ -15,8 +15,8 @@ using namespace requirements;
   test::BatchThread b;\
   auto id1 = generateRandomId();\
   auto id2 = generateRandomId();\
-  b.batch->enqueue(std::make_unique<commands::Command_New>(id1));\
-  b.batch->enqueue(std::make_unique<commands::Command_New>(id2));\
+  b.batch->enqueue(std::make_unique<commands::New>(id1));\
+  b.batch->enqueue(std::make_unique<commands::New>(id2));\
   do {} while(0)
 
 #define THREEELEMENTS\
@@ -24,15 +24,15 @@ using namespace requirements;
   auto id1 = generateRandomId();\
   auto id2 = generateRandomId();\
   auto id3 = generateRandomId();\
-  b.batch->enqueue(std::make_unique<commands::Command_New>(id1));\
-  b.batch->enqueue(std::make_unique<commands::Command_New>(id2));\
-  b.batch->enqueue(std::make_unique<commands::Command_New>(id3));\
+  b.batch->enqueue(std::make_unique<commands::New>(id1));\
+  b.batch->enqueue(std::make_unique<commands::New>(id2));\
+  b.batch->enqueue(std::make_unique<commands::New>(id3));\
   do {} while(0)
   
 
 TEST(Commands, Command_Up) {
   TWOELEMENTS;
-  b.batch->enqueue(std::make_unique<commands::Command_Up>(id2));
+  b.batch->enqueue(std::make_unique<commands::Up>(id2));
   auto response = b.wait();
   auto children = response.nodeCollection->getRootNode()->getChildren();
   ASSERT_EQ(children.size(), 2);
@@ -53,7 +53,7 @@ TEST(Commands, Command_Up_Console) {
 
 TEST(Commands, Command_Down) {
   TWOELEMENTS;
-  b.batch->enqueue(std::make_unique<::commands::Command_Down>(id1));
+  b.batch->enqueue(std::make_unique<::commands::Down>(id1));
   auto response = b.wait();
   auto children = response.nodeCollection->getRootNode()->getChildren();
   ASSERT_EQ(children.size(), 2);
@@ -74,7 +74,7 @@ TEST(Commands, Command_Down_Console) {
 
 TEST(Commands, Command_LastOf) {
   TWOELEMENTS;
-  b.batch->enqueue(std::make_unique<::commands::Command_LastOf>(id1, id2));
+  b.batch->enqueue(std::make_unique<::commands::LastOf>(id1, id2));
   auto response = b.wait();
   auto children = response.nodeCollection->getRootNode()->getChildren();
   ASSERT_EQ(children.size(), 1);
@@ -99,8 +99,8 @@ TEST(Commands, Command_LastOf_Console) {
 
 TEST(Commands, Command_FirstOf) {
   THREEELEMENTS;
-  b.batch->enqueue(std::make_unique<::commands::Command_LastOf>(id2, id1));
-  b.batch->enqueue(std::make_unique<::commands::Command_FirstOf>(id3, id1));
+  b.batch->enqueue(std::make_unique<::commands::LastOf>(id2, id1));
+  b.batch->enqueue(std::make_unique<::commands::FirstOf>(id3, id1));
   auto response = b.wait();
   auto children = response.nodeCollection->getRootNode()->getChildren();
   ASSERT_EQ(children.size(), 1);

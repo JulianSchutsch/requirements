@@ -6,10 +6,10 @@ namespace requirements {
   namespace commands {
     
     
-    void Command_Down_Operation(::requirements::NodePtr node) {
+    void Down_Operation(::requirements::NodePtr node) {
       node->down();
     }
     
-    using Command_Down = internal::Move<&Command_Down_Operation>;
+    using Down = internal::Move<&Down_Operation>;
   }
 }

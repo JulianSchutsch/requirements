@@ -1,4 +1,4 @@
-#include "requirements/commands/command_new.hpp"
+#include "requirements/commands/new.hpp"
 
 #include "requirements/exception.hpp"
 
@@ -11,7 +11,7 @@
 namespace requirements {
   namespace commands {
     
-    void Command_New::execute(Status &status) {
+    void New::execute(Status &status) {
       auto storage = status.openStorage();
       auto &collection = storage->getNodeCollection();
       std::string nullStr;
@@ -24,13 +24,13 @@ namespace requirements {
       status.selections[0] = {newNode->getId()};
     }
     
-    Command_New::Command_New(Parser &parser) {
+    New::New(Parser &parser) {
       if (parser.getRemaining() != "") {
         throw Exception("No parameters for new command expected");
       }
     }
     
-    Command_New::Command_New(::requirements::Id a_id)
+    New::New(::requirements::Id a_id)
       : idProvided(true), id(a_id) {}
   }
 }

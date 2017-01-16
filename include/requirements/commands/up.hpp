@@ -5,10 +5,10 @@
 namespace requirements {
   namespace commands {
     
-    void Command_Up_Operation(::requirements::NodePtr node) {
+    void Up_Operation(::requirements::NodePtr node) {
       node->up();
     }
     
-    using Command_Up = internal::Move<Command_Up_Operation>;
+    using Up = internal::Move<Up_Operation>;
   }
 }
