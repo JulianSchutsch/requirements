@@ -84,9 +84,11 @@ namespace requirements {
     
     Queue::Queue(ResponseFunction a_responseFunction,
                  MessageFunction a_messageFunction,
+                 EditFunction a_editFunction,
                  const std::string &a_statusFilename)
       : responseFunction(a_responseFunction)
       , messageFunction(a_messageFunction)
+      , editFunction(a_editFunction)
       , statusFilename(a_statusFilename) {
       status.load(statusFilename);
     }

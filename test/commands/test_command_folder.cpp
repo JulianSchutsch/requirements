@@ -28,9 +28,9 @@ TEST(Commands, Command_Folder) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&){
-        FAIL();
-      }, statusFile);
+      [](ICommand::MessageKind, const std::string&){ FAIL(); },
+      [](NodePtr){FAIL();},
+      statusFile);
     batchThread.enqueue(std::make_unique<commands::Folder>(folder.getName()));
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
@@ -51,9 +51,9 @@ TEST(Commands, Command_Folder) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&){
-        FAIL();
-      }, statusFile);
+      [](ICommand::MessageKind, const std::string&){ FAIL(); },
+      [](NodePtr){FAIL();},
+      statusFile);
     batchThread.enqueue(std::make_unique<commands::Null>());
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
@@ -80,9 +80,9 @@ TEST(Commands, Command_Folder_Console) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&){
-        FAIL();
-      },statusFile);
+      [](ICommand::MessageKind, const std::string&){ FAIL(); },
+      [](NodePtr){FAIL();},
+      statusFile);
     batchThread.enqueue(commands::assembleFromString("folder "+folder.getName()));
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {
@@ -103,9 +103,9 @@ TEST(Commands, Command_Folder_Console) {
         batchFolderSet = true;
         responseCondition.notify_all();
       },
-      [](ICommand::MessageKind, const std::string&) {
-        FAIL();
-      }, statusFile);
+      [](ICommand::MessageKind, const std::string&) { FAIL(); },
+      [](NodePtr){FAIL();},
+      statusFile);
     batchThread.enqueue(std::make_unique<commands::Null>());
     std::unique_lock<std::mutex> guard(responseMutex);
     while (!batchFolderSet) {

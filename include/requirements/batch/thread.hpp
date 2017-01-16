@@ -29,6 +29,7 @@ namespace requirements {
       
       Thread(Queue::ResponseFunction a_responseFunction,
              Queue::MessageFunction a_messageFunction,
+             Queue::EditFunction a_editFunction,
              const std::string &a_statusFilename = "");
       
       ~Thread();
