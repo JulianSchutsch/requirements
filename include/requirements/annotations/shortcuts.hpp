@@ -2,11 +2,13 @@
 
 #include <string>
 
-#include "common.hpp"
+#include "requirements/annotations/internal/common.hpp"
 
-namespace annotations {
-  
-  using Shortcuts = Common<std::string>;
-  using ShortcutsBuilder = CommonBuilder<std::string>;
-  
+namespace requirements {
+  namespace annotations {
+    
+    using Shortcuts = internal::Common<std::string>;
+    using ShortcutsBuilder = internal::CommonBuilder<std::string>;
+    
+  }
 }

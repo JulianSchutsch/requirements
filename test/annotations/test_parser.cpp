@@ -4,15 +4,17 @@
 
 #include "requirements/storage/text.hpp"
 
-#include "annotations/parser.hpp"
+#include "requirements/annotations/parser.hpp"
 
-static ::requirements::NodePtr parentCreate(::requirements::NodeCollection& collection, ::requirements::NodePtr parent, const std::string& text) {
+using namespace requirements;
+
+static NodePtr parentCreate(NodeCollection& collection, NodePtr parent, const std::string& text) {
   auto node = collection.createNode(text);
   node->setLastOf(parent);
   return node;
 }
 
-static void compareSection(::annotations::Sections::Iterator it, const std::string& title, const std::string& text, int depth, ::requirements::Id id, ::annotations::ParserResult& result) {
+static void compareSection(annotations::Sections::Iterator it, const std::string& title, const std::string& text, int depth, ::requirements::Id id, ::annotations::ParserResult& result) {
   ASSERT_NE(it, result.sections->end());
   auto& section = *it;
   ASSERT_EQ(section.getTitle(), title);
@@ -36,7 +38,7 @@ static void compareRequirement(::requirements::Id id, const std::string& key, co
 
 TEST(AnnotationsParser, Example1) {
   ::test::UniqueFolder folder;
-  ::requirements::storage::Text storage(folder.getName(), false);
+  storage::Text storage(folder.getName(), false);
   auto& collection = storage.getNodeCollection();
   static const char* Phase1Text = "section: Phase1\nSome example for a first phase";
   static const char* Phase2Text = "section: Phase2\nSome example for a second phase";
@@ -62,8 +64,8 @@ TEST(AnnotationsParser, Example1) {
   auto nfr12 = parentCreate(collection, nonFunctional1, NFRequirementText2);
   auto nfr21 = parentCreate(collection, nonFunctional2, NFRequirementText1);
   auto nfr22 = parentCreate(collection, nonFunctional2, NFRequirementText2);
-  ::annotations::ParserResult parseResult;
-  ::annotations::parse(storage, parseResult);
+  annotations::ParserResult parseResult;
+  annotations::parse(storage, parseResult);
   auto& sections = parseResult.sections;
   auto sectionIterator = sections->begin();
   compareSection(sectionIterator, "Phase1", "Some example for a first phase", 0, phase1->getId(), parseResult);

@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "commands/parser.hpp"
+#include "requirements/commands/parser.hpp"
 
 static const char * content1 = "c1 cb c2";
 static const char * content2 = "10 Hello Remaining text\n";
+
+using namespace requirements;
 
 TEST(Commands, Parser) {
   {

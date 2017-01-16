@@ -2,35 +2,37 @@
 
 #include "test/batchthread.hpp"
 
-#include "commands/command.hpp"
-#include "commands/command_new.hpp"
-#include "commands/command_up.hpp"
-#include "commands/command_down.hpp"
-#include "commands/command_firstof.hpp"
-#include "commands/command_lastof.hpp"
+#include "requirements/commands/command.hpp"
+#include "requirements/commands/command_new.hpp"
+#include "requirements/commands/command_up.hpp"
+#include "requirements/commands/command_down.hpp"
+#include "requirements/commands/command_firstof.hpp"
+#include "requirements/commands/command_lastof.hpp"
+
+using namespace requirements;
 
 #define TWOELEMENTS\
   test::BatchThread b;\
-  auto id1 = ::requirements::generateRandomId();\
-  auto id2 = ::requirements::generateRandomId();\
-  b.batch->enqueue(std::make_unique<::commands::Command_New>(id1));\
-  b.batch->enqueue(std::make_unique<::commands::Command_New>(id2));\
+  auto id1 = generateRandomId();\
+  auto id2 = generateRandomId();\
+  b.batch->enqueue(std::make_unique<commands::Command_New>(id1));\
+  b.batch->enqueue(std::make_unique<commands::Command_New>(id2));\
   do {} while(0)
 
 #define THREEELEMENTS\
   test::BatchThread b;\
-  auto id1 = ::requirements::generateRandomId();\
-  auto id2 = ::requirements::generateRandomId();\
-  auto id3 = ::requirements::generateRandomId();\
-  b.batch->enqueue(std::make_unique<::commands::Command_New>(id1));\
-  b.batch->enqueue(std::make_unique<::commands::Command_New>(id2));\
-  b.batch->enqueue(std::make_unique<::commands::Command_New>(id3));\
+  auto id1 = generateRandomId();\
+  auto id2 = generateRandomId();\
+  auto id3 = generateRandomId();\
+  b.batch->enqueue(std::make_unique<commands::Command_New>(id1));\
+  b.batch->enqueue(std::make_unique<commands::Command_New>(id2));\
+  b.batch->enqueue(std::make_unique<commands::Command_New>(id3));\
   do {} while(0)
   
 
 TEST(Commands, Command_Up) {
   TWOELEMENTS;
-  b.batch->enqueue(std::make_unique<::commands::Command_Up>(id2));
+  b.batch->enqueue(std::make_unique<commands::Command_Up>(id2));
   auto response = b.wait();
   auto children = response.nodeCollection->getRootNode()->getChildren();
   ASSERT_EQ(children.size(), 2);
@@ -40,8 +42,8 @@ TEST(Commands, Command_Up) {
 
 TEST(Commands, Command_Up_Console) {
   TWOELEMENTS;
-  b.batch->enqueue(::commands::assembleFromString("select "+::requirements::id_to_string(id2)));
-  b.batch->enqueue(::commands::assembleFromString("up"));
+  b.batch->enqueue(commands::assembleFromString("select "+::requirements::id_to_string(id2)));
+  b.batch->enqueue(commands::assembleFromString("up"));
   auto response = b.wait();
   auto children = response.nodeCollection->getRootNode()->getChildren();
   ASSERT_EQ(children.size(), 2);

@@ -1,14 +1,15 @@
 #pragma once
 
-#include "move.hpp"
+#include "requirements/commands/internal/move.hpp"
 
-namespace commands {
-  
-  class Status;
-  
-  void Command_Down_Operation(::requirements::NodePtr node) {
-    node->down();
+namespace requirements {
+  namespace commands {
+    
+    
+    void Command_Down_Operation(::requirements::NodePtr node) {
+      node->down();
+    }
+    
+    using Command_Down = internal::Move<&Command_Down_Operation>;
   }
-  
-  using Command_Down = Move<&Command_Down_Operation>;
 }

@@ -1,19 +1,25 @@
 #pragma once
 
-#include "icommand.hpp"
-#include "selection.hpp"
+#include "requirements/icommand.hpp"
+#include "requirements/commands/internal/selection.hpp"
 
-namespace commands {
-  
+namespace requirements {
+
   class Status;
-  class Parser;
-  
-  class Command_Delete : public ICommand {
-    Selection selection;
-  public:
-    void execute(Status& status) override;
-    Command_Delete(::requirements::Id id);
-    Command_Delete(Parser& parser);
-  };
-  
+
+  namespace commands {
+    
+    class Parser;
+    
+    class Command_Delete : public ICommand {
+      internal::Selection selection;
+    public:
+      void execute(Status& status) override;
+      
+      Command_Delete(::requirements::Id id);
+      
+      Command_Delete(Parser &parser);
+    };
+    
+  }
 }

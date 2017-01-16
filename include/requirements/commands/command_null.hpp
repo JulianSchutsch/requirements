@@ -1,14 +1,16 @@
 #pragma once
 
-#include "icommand.hpp"
+#include "requirements/icommand.hpp"
 
-namespace commands {
-  
+namespace requirements {
   class Status;
-  
-  class Command_Null : public ICommand {
-  public:
-    virtual void execute(Status& status) override {(void)status; }
-  };
-  
+  namespace commands {
+    
+    
+    class Command_Null : public ICommand {
+    public:
+      virtual void execute(Status &status) override { (void) status; }
+    };
+    
+  }
 }

@@ -2,13 +2,15 @@
 
 #include "test/batchthread.hpp"
 
-#include "commands/command_new.hpp"
-#include "commands/command.hpp"
+#include "requirements/commands/command_new.hpp"
+#include "requirements/commands/command.hpp"
+
+using namespace requirements;
 
 TEST(Commands, CommandNew_ExplizitId) {
   test::BatchThread b;
-  auto id = ::requirements::generateRandomId();
-  b.batch->enqueue(std::make_unique<::commands::Command_New>(id));
+  auto id = generateRandomId();
+  b.batch->enqueue(std::make_unique<commands::Command_New>(id));
   auto response = b.wait();
   auto root = response.nodeCollection->getRootNode();
   auto children = root->getChildren();
@@ -19,7 +21,7 @@ TEST(Commands, CommandNew_ExplizitId) {
 
 TEST(Commands, CommandNew_Console) {
   test::BatchThread b;
-  auto command = ::commands::assembleFromString("new");
+  auto command = commands::assembleFromString("new");
   ASSERT_NE(command, nullptr);
   b.batch->enqueue(std::move(command));
   auto response = b.wait();

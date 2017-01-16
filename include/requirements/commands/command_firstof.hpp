@@ -1,13 +1,15 @@
 #pragma once
 
-#include "move.hpp"
+#include "requirements/commands/internal/move.hpp"
 
-namespace commands {
-  
-  void Command_FirstOf_Operation(::requirements::NodePtr element, ::requirements::NodePtr anchor) {
-    element->setFirstOf(anchor);
+namespace requirements {
+  namespace commands {
+    
+    void Command_FirstOf_Operation(::requirements::NodePtr element, ::requirements::NodePtr anchor) {
+      element->setFirstOf(anchor);
+    }
+    
+    using Command_FirstOf = internal::AnchoredMove<&Command_FirstOf_Operation>;
+    
   }
-  
-  using Command_FirstOf = AnchoredMove<&Command_FirstOf_Operation>;
-  
 }

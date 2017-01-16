@@ -2,11 +2,13 @@
 
 #include <string>
 
-#include "common.hpp"
+#include "requirements/annotations/internal/common.hpp"
 
-namespace annotations {
-  
-  using Errors = Common<std::string>;
-  using ErrorsBuilder = CommonBuilder<std::string>;
-
+namespace requirements {
+  namespace annotations {
+    
+    using Errors = internal::Common<std::string>;
+    using ErrorsBuilder = internal::CommonBuilder<std::string>;
+    
+  }
 }

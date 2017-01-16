@@ -2,20 +2,26 @@
 
 #include <string>
 
-#include "icommand.hpp"
+#include "requirements/icommand.hpp"
 
-namespace commands {
-  
+namespace requirements {
+
   class Status;
-  class Parser;
-  
-  class Command_Folder : public ICommand {
-  private:
-    std::string folder;
-  public:
-    void execute(Status& status);
-    Command_Folder(const std::string& a_folder);
-    Command_Folder(Parser& parser);
-  };
-  
+
+  namespace commands {
+    
+    class Parser;
+    
+    class Command_Folder : public ICommand {
+    private:
+      std::string folder;
+    public:
+      void execute(Status &status);
+      
+      Command_Folder(const std::string &a_folder);
+      
+      Command_Folder(Parser &parser);
+    };
+    
+  }
 }

@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
 
-#include "annotations/sections.hpp"
+#include "requirements/annotations/sections.hpp"
 
-void compareSections(::annotations::Sections& sections, const std::vector<std::pair<std::string, int>> data) {
+using namespace requirements;
+
+void compareSections(annotations::Sections& sections, const std::vector<std::pair<std::string, int>> data) {
   auto it = sections.begin();
   auto dit = data.begin();
   while(it!=sections.end()) {
@@ -16,37 +18,37 @@ void compareSections(::annotations::Sections& sections, const std::vector<std::p
 }
 
 TEST(AnnotationsSections, Filter) {
-  ::annotations::Sections sections;
-  ::annotations::SectionsBuilder builder(sections);
+  annotations::Sections sections;
+  annotations::SectionsBuilder builder(sections);
   
-  ::requirements::Id element1 = ::requirements::generateRandomId();
-  ::requirements::Id element2 = ::requirements::generateRandomId();
-  ::requirements::Id element3 = ::requirements::generateRandomId();
-  ::requirements::Id element4 = ::requirements::generateRandomId();
-  ::requirements::Id element5 = ::requirements::generateRandomId();
-  ::requirements::Id element6 = ::requirements::generateRandomId();
+  Id element1 = generateRandomId();
+  Id element2 = generateRandomId();
+  Id element3 = generateRandomId();
+  Id element4 = generateRandomId();
+  Id element5 = generateRandomId();
+  Id element6 = generateRandomId();
   
   {
-    ::annotations::SectionsBuilderScope top(builder, "1", "");
+    annotations::SectionsBuilderScope top(builder, "1", "");
     {
-      ::annotations::SectionsBuilderScope sec(builder, "1.1", "");
+      annotations::SectionsBuilderScope sec(builder, "1.1", "");
       sec.addElement(element1);
       sec.addElement(element2);
     }
     {
-      ::annotations::SectionsBuilderScope sec(builder, "1.2", "");
+      annotations::SectionsBuilderScope sec(builder, "1.2", "");
       sec.addElement(element3);
     }
     {
-      ::annotations::SectionsBuilderScope sec(builder, "1.3", "");
+      annotations::SectionsBuilderScope sec(builder, "1.3", "");
       {
-        ::annotations::SectionsBuilderScope subsec(builder, "1.3.1", "");
+        annotations::SectionsBuilderScope subsec(builder, "1.3.1", "");
         subsec.addElement(element6);
       }
     }
   }
   {
-    ::annotations::SectionsBuilderScope top(builder, "2", "");
+    annotations::SectionsBuilderScope top(builder, "2", "");
     top.addElement(element4);
     top.addElement(element5);
   }

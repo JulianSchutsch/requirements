@@ -4,99 +4,102 @@
 
 #include "test/folder.hpp"
 
-#include "commands/command.hpp"
-#include "commands/command_folder.hpp"
-#include "commands/command_null.hpp"
-#include "commands/batchthread.hpp"
-#include "commands/batchresponse.hpp"
+#include "requirements/commands/command.hpp"
+#include "requirements/commands/command_folder.hpp"
+#include "requirements/commands/command_null.hpp"
+#include "requirements/batch/batchthread.hpp"
+#include "requirements/batch/batchresponse.hpp"
 
-namespace commands {
-  
-  TEST(Commands, Command_Folder) {
-    ::test::UniqueFolder folder;
-    std::string statusFile = folder.getName()+"_status.xml";
-    {
-      std::string batchFolder;
-      volatile bool batchFolderSet = false;
-      std::mutex responseMutex;
-      std::condition_variable responseCondition;
-      ::commands::BatchThread batchThread(
-        [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition](::commands::BatchResponse &&response) {
-          std::lock_guard<std::mutex> guard(responseMutex);
-          batchFolder = response.status->folder;
-          batchFolderSet = true;
-          responseCondition.notify_all();
-        }, statusFile);
-      batchThread.enqueue(std::make_unique<::commands::Command_Folder>(folder.getName()));
-      std::unique_lock<std::mutex> guard(responseMutex);
-      while (!batchFolderSet) {
-        responseCondition.wait(guard);
-      }
-      ASSERT_EQ(batchFolder, folder.getName());
+using namespace requirements;
+ 
+TEST(Commands, Command_Folder) {
+  ::test::UniqueFolder folder;
+  std::string statusFile = folder.getName()+"_status.xml";
+  {
+    std::string batchFolder;
+    volatile bool batchFolderSet = false;
+    std::mutex responseMutex;
+    std::condition_variable responseCondition;
+    batch::BatchThread batchThread(
+      [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
+        (batch::BatchResponse &&response) {
+        std::lock_guard<std::mutex> guard(responseMutex);
+        batchFolder = response.status->folder;
+        batchFolderSet = true;
+        responseCondition.notify_all();
+      }, statusFile);
+    batchThread.enqueue(std::make_unique<commands::Command_Folder>(folder.getName()));
+    std::unique_lock<std::mutex> guard(responseMutex);
+    while (!batchFolderSet) {
+      responseCondition.wait(guard);
     }
-    {
-      std::string batchFolder;
-      volatile bool batchFolderSet = false;
-      std::mutex responseMutex;
-      std::condition_variable responseCondition;
-      ::commands::BatchThread batchThread(
-        [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition](::commands::BatchResponse &&response) {
-          std::lock_guard<std::mutex> guard(responseMutex);
-          batchFolder = response.status->folder;
-          batchFolderSet = true;
-          responseCondition.notify_all();
-        }, statusFile);
-      batchThread.enqueue(std::make_unique<::commands::Command_Null>());
-      std::unique_lock<std::mutex> guard(responseMutex);
-      while (!batchFolderSet) {
-        responseCondition.wait(guard);
-      }
-      ASSERT_EQ(batchFolder, folder.getName());
-    }
-    boost::filesystem::remove(statusFile);
+    ASSERT_EQ(batchFolder, folder.getName());
   }
-  
-  TEST(Commands, Command_Folder_Console) {
-    ::test::UniqueFolder folder;
-    std::string statusFile = folder.getName()+"_status.xml";
-    {
-      std::string batchFolder;
-      volatile bool batchFolderSet = false;
-      std::mutex responseMutex;
-      std::condition_variable responseCondition;
-      ::commands::BatchThread batchThread(
-        [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition](::commands::BatchResponse &&response) {
-          std::lock_guard<std::mutex> guard(responseMutex);
-          batchFolder = response.status->folder;
-          batchFolderSet = true;
-          responseCondition.notify_all();
-        }, statusFile);
-      batchThread.enqueue(::commands::assembleFromString("folder "+folder.getName()));
-      std::unique_lock<std::mutex> guard(responseMutex);
-      while (!batchFolderSet) {
-        responseCondition.wait(guard);
-      }
-      ASSERT_EQ(batchFolder, folder.getName());
+  {
+    std::string batchFolder;
+    volatile bool batchFolderSet = false;
+    std::mutex responseMutex;
+    std::condition_variable responseCondition;
+    batch::BatchThread batchThread(
+      [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
+        (batch::BatchResponse &&response) {
+        std::lock_guard<std::mutex> guard(responseMutex);
+        batchFolder = response.status->folder;
+        batchFolderSet = true;
+        responseCondition.notify_all();
+      }, statusFile);
+    batchThread.enqueue(std::make_unique<commands::Command_Null>());
+    std::unique_lock<std::mutex> guard(responseMutex);
+    while (!batchFolderSet) {
+      responseCondition.wait(guard);
     }
-    {
-      std::string batchFolder;
-      volatile bool batchFolderSet = false;
-      std::mutex responseMutex;
-      std::condition_variable responseCondition;
-      ::commands::BatchThread batchThread(
-        [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition](::commands::BatchResponse &&response) {
-          std::lock_guard<std::mutex> guard(responseMutex);
-          batchFolder = response.status->folder;
-          batchFolderSet = true;
-          responseCondition.notify_all();
-        }, statusFile);
-      batchThread.enqueue(std::make_unique<::commands::Command_Null>());
-      std::unique_lock<std::mutex> guard(responseMutex);
-      while (!batchFolderSet) {
-        responseCondition.wait(guard);
-      }
-      ASSERT_EQ(batchFolder, folder.getName());
-    }
-    boost::filesystem::remove(statusFile);
+    ASSERT_EQ(batchFolder, folder.getName());
   }
+  boost::filesystem::remove(statusFile);
+}
+
+TEST(Commands, Command_Folder_Console) {
+  ::test::UniqueFolder folder;
+  std::string statusFile = folder.getName()+"_status.xml";
+  {
+    std::string batchFolder;
+    volatile bool batchFolderSet = false;
+    std::mutex responseMutex;
+    std::condition_variable responseCondition;
+    batch::BatchThread batchThread(
+      [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
+        (batch::BatchResponse &&response) {
+        std::lock_guard<std::mutex> guard(responseMutex);
+        batchFolder = response.status->folder;
+        batchFolderSet = true;
+        responseCondition.notify_all();
+      }, statusFile);
+    batchThread.enqueue(commands::assembleFromString("folder "+folder.getName()));
+    std::unique_lock<std::mutex> guard(responseMutex);
+    while (!batchFolderSet) {
+      responseCondition.wait(guard);
+    }
+    ASSERT_EQ(batchFolder, folder.getName());
+  }
+  {
+    std::string batchFolder;
+    volatile bool batchFolderSet = false;
+    std::mutex responseMutex;
+    std::condition_variable responseCondition;
+    batch::BatchThread batchThread(
+      [&batchFolder, &batchFolderSet, &responseMutex, &responseCondition]
+        (batch::BatchResponse &&response) {
+        std::lock_guard<std::mutex> guard(responseMutex);
+        batchFolder = response.status->folder;
+        batchFolderSet = true;
+        responseCondition.notify_all();
+      }, statusFile);
+    batchThread.enqueue(std::make_unique<commands::Command_Null>());
+    std::unique_lock<std::mutex> guard(responseMutex);
+    while (!batchFolderSet) {
+      responseCondition.wait(guard);
+    }
+    ASSERT_EQ(batchFolder, folder.getName());
+  }
+  boost::filesystem::remove(statusFile);
 }

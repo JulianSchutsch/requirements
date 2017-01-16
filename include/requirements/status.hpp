@@ -10,7 +10,7 @@
 
 class TiXmlElement;
 
-namespace commands {
+namespace requirements {
   
   class Status {
   private:

@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "annotations/requirements.hpp"
-#include "annotations/exception.hpp"
+#include "requirements/annotations/requirements.hpp"
+#include "requirements/exception.hpp"
+
+using namespace requirements;
 
 static const char* testContent1 = "test content 1";
 static const char* testContent2 = "test content 2";
@@ -9,13 +11,13 @@ static const char* testContent3 = "test content 3";
 static const char* testContent4 = "test content 4";
 
 TEST(AnnotationRequirements, NoPrefix) {
-  ::annotations::Requirements requirements;
-  ::annotations::RequirementsBuilder builder(requirements);
+  annotations::Requirements requirements;
+  annotations::RequirementsBuilder builder(requirements);
   try {
-    ::annotations::RequirementsBuilderScope majorScope(builder, ::requirements::generateRandomId(), testContent1);
+    annotations::RequirementsBuilderScope majorScope(builder, ::requirements::generateRandomId(), testContent1);
     FAIL();
   }
-  catch(::annotations::Exception& e) {
+  catch(Exception& e) {
     // pass
   }
   catch(...) {
@@ -24,19 +26,19 @@ TEST(AnnotationRequirements, NoPrefix) {
 }
 
 TEST(AnnotationRequirements, SimpleTree) {
-  ::annotations::Requirements requirements;
-  ::annotations::RequirementsBuilder builder(requirements);
-  ::requirements::Id testId1 = ::requirements::generateRandomId();
-  ::requirements::Id testId2 = ::requirements::generateRandomId();
-  ::requirements::Id testId3 = ::requirements::generateRandomId();
+  annotations::Requirements requirements;
+  annotations::RequirementsBuilder builder(requirements);
+  Id testId1 = generateRandomId();
+  Id testId2 = generateRandomId();
+  Id testId3 = generateRandomId();
   builder.setMajorPrefix("TAB");
   {
-    ::annotations::RequirementsBuilderScope majorScope(builder, testId1, testContent1);
+    annotations::RequirementsBuilderScope majorScope(builder, testId1, testContent1);
     {
-      ::annotations::RequirementsBuilderScope minorScope1(builder, testId2, testContent2);
+      annotations::RequirementsBuilderScope minorScope1(builder, testId2, testContent2);
     }
     {
-      ::annotations::RequirementsBuilderScope minorScope2(builder, testId3, testContent3);
+      annotations::RequirementsBuilderScope minorScope2(builder, testId3, testContent3);
     }
   }
   ASSERT_EQ(requirements.has(::requirements::generateRandomId()), false);
@@ -61,42 +63,42 @@ TEST(AnnotationRequirements, SimpleTree) {
 }
 
 TEST(AnnotationRequirements, NestedRequirements) {
-  ::annotations::Requirements requirements;
-  ::annotations::RequirementsBuilder builder(requirements);
-  ::requirements::Id testId1 = ::requirements::generateRandomId();
-  ::requirements::Id testId2 = ::requirements::generateRandomId();
-  ::requirements::Id testId3 = ::requirements::generateRandomId();
-  ::requirements::Id testId4 = ::requirements::generateRandomId();
-  ::requirements::Id testId5 = ::requirements::generateRandomId();
-  ::requirements::Id testId6 = ::requirements::generateRandomId();
-  ::requirements::Id testId7 = ::requirements::generateRandomId();
-  ::requirements::Id testId8 = ::requirements::generateRandomId();
-  ::requirements::Id testId9 = ::requirements::generateRandomId();
+  annotations::Requirements requirements;
+  annotations::RequirementsBuilder builder(requirements);
+  Id testId1 = generateRandomId();
+  Id testId2 = generateRandomId();
+  Id testId3 = generateRandomId();
+  Id testId4 = generateRandomId();
+  Id testId5 = generateRandomId();
+  Id testId6 = generateRandomId();
+  Id testId7 = generateRandomId();
+  Id testId8 = generateRandomId();
+  Id testId9 = generateRandomId();
   builder.setMajorPrefix("TAB");
   {
-    ::annotations::RequirementsBuilderScope majorScope(builder, testId1, testContent1);
+    annotations::RequirementsBuilderScope majorScope(builder, testId1, testContent1);
     {
-      ::annotations::RequirementsBuilderScope minorScope(builder, testId2, testContent2);
+      annotations::RequirementsBuilderScope minorScope(builder, testId2, testContent2);
       {
-        ::annotations::RequirementsBuilderScope patchScope(builder, testId3, testContent3);
+        annotations::RequirementsBuilderScope patchScope(builder, testId3, testContent3);
       }
     }
   }
   {
-    ::annotations::RequirementsBuilderScope majorScope(builder, testId4, testContent1);
+    annotations::RequirementsBuilderScope majorScope(builder, testId4, testContent1);
     {
-      ::annotations::RequirementsBuilderScope minorScope(builder, testId5, testContent2);
+      annotations::RequirementsBuilderScope minorScope(builder, testId5, testContent2);
       {
-        ::annotations::RequirementsBuilderScope patchScope(builder, testId6, testContent3);
+        annotations::RequirementsBuilderScope patchScope(builder, testId6, testContent3);
       }
       {
-        ::annotations::RequirementsBuilderScope patchScope(builder, testId7, testContent1);
+        annotations::RequirementsBuilderScope patchScope(builder, testId7, testContent1);
       }
     }
     {
-      ::annotations::RequirementsBuilderScope minorScope(builder, testId8, testContent2);
+      annotations::RequirementsBuilderScope minorScope(builder, testId8, testContent2);
       {
-        ::annotations::RequirementsBuilderScope patchScope(builder, testId9, testContent1);
+        annotations::RequirementsBuilderScope patchScope(builder, testId9, testContent1);
       }
     }
   }
