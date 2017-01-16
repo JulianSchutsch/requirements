@@ -4,9 +4,9 @@
 
 namespace commands {
   
-  void Command_FirstOf_Operation(::requirements::Id element, ::requirements::Id anchor) {
+  void Command_FirstOf_Operation(::requirements::NodePtr element, ::requirements::NodePtr anchor) {
     element->setFirstOf(anchor);
-  };
+  }
   
   using Command_FirstOf = AnchoredMove<&Command_FirstOf_Operation>;
   
