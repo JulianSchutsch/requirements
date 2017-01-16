@@ -10,6 +10,7 @@
 namespace commands {
    
   class Status;
+  class Parser;
   
   template<void operation(::requirements::NodePtr)>
   class Move : public ICommand {

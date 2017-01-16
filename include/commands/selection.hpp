@@ -24,6 +24,7 @@ namespace commands {
     std::vector<::requirements::Id> ids;
     std::vector<std::string> patterns;
   public:
+    Selection();
     Selection(Parser& parser);
     Selection(::requirements::Id id);
     Selection(std::vector<::requirements::Id> id);

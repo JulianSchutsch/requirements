@@ -9,6 +9,10 @@
 
 namespace commands {
   
+  Selection::Selection() {
+    selectionKind = SelectionKind::ByIds;
+  }
+  
   Selection::Selection(Parser& parser) {
     selectionKind = SelectionKind::ByPatterns;
     while(parser.nextSimple()) {
