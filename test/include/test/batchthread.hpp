@@ -41,8 +41,12 @@ namespace test {
       boost::filesystem::remove(statusFile);
     }
     commands::BatchResponse wait() {
+      batch->waitForEmptyQueue();
       std::unique_lock<std::mutex> guard(responseMutex);
       if(!responseQueue.empty()) {
+        while(responseQueue.size()!=1) {
+          responseQueue.pop();
+        }
         auto result = std::move(responseQueue.front());
         responseQueue.pop();
         return std::move(result);
@@ -50,6 +54,9 @@ namespace test {
       do {
         responseCondition.wait(guard);
       } while(responseQueue.empty());
+      while(responseQueue.size()!=1) {
+        responseQueue.pop();
+      }
       auto result = std::move(responseQueue.front());
       responseQueue.pop();
       return std::move(result);

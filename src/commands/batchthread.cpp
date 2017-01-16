@@ -1,5 +1,7 @@
 #include "commands/batchthread.hpp"
 
+#include <chrono>
+
 #include "annotations/parser.hpp"
 
 #include "commands/status.hpp"
@@ -7,6 +9,18 @@
 #include "commands/batchresponse.hpp"
 
 namespace commands {
+  
+  void BatchThread::waitForEmptyQueue() {
+    for(;;) {
+      {
+        std::lock_guard<std::mutex> guard(queueMutex);
+        if(queue.empty()) {
+          break;
+        }
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+  }
   
   void BatchThread::enqueue(std::unique_ptr<ICommand> command) {
     std::lock_guard<std::mutex> guard(queueMutex);

@@ -79,7 +79,7 @@ namespace requirements {
           if(!node) {
             throw Exception(Exception::Reason::ReferenceToUnknownId);
           }
-          node->setParent(parent);
+          node->setLastOf(parent);
         }
       }
       

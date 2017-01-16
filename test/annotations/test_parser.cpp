@@ -8,7 +8,7 @@
 
 static ::requirements::NodePtr parentCreate(::requirements::NodeCollection& collection, ::requirements::NodePtr parent, const std::string& text) {
   auto node = collection.createNode(text);
-  node->setParent(parent);
+  node->setLastOf(parent);
   return node;
 }
 

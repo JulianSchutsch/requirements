@@ -4,7 +4,7 @@
 #include <string>
 
 #include "commands/icommand.hpp"
-#include "requirements/id.hpp"
+#include "commands/selection.hpp"
 
 namespace commands {
 
@@ -12,13 +12,7 @@ namespace commands {
 
   class Command_Select final : public ICommand {
   private:
-    enum class SelectionKind {
-      ByIds,
-      ByPatterns
-    };
-    SelectionKind selectionKind;
-    std::vector<::requirements::Id> ids;
-    std::vector<std::string> patterns;
+    Selection selection;
   public:
     void execute(Status& status) override;
     Command_Select(std::vector<::requirements::Id> a_ids);

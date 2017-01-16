@@ -7,7 +7,7 @@ namespace requirements {
     NodePtr n=new Node(a_collection, id, std::move(cp_content));
     for(auto& child: children) {
       auto nChild = child->clone(a_collection);
-      nChild->setParent(n);
+      nChild->setLastOf(n);
     }
     return std::move(n);
   }
@@ -60,7 +60,17 @@ namespace requirements {
     return false;
   }
   
-  void Node::setParent(NodePtr node) {
+  void Node::setFirstOf(NodePtr node) {
+    if(parent!=nullptr) {
+      parent->children.remove_if([this](const NodePtr& item){return item==this;});
+    }
+    parent = node.get();
+    if(parent!=nullptr) {
+      parent->children.emplace_front(NodePtr(this));
+    }
+  }
+  
+  void Node::setLastOf(NodePtr node) {
     if(parent!=nullptr) {
       parent->children.remove_if([this](const NodePtr& item){return item==this;});
     }

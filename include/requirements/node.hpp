@@ -35,7 +35,8 @@ namespace requirements {
     inline NodePtr getParent() const noexcept { return parent; }
     const ChildList getChildren() const noexcept { return children; }
     const Id getId() const noexcept { return id; }
-    void setParent(NodePtr node);
+    void setFirstOf(NodePtr node);
+    void setLastOf(NodePtr node);
     explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content);
     void up();
     void down();

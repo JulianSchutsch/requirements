@@ -44,7 +44,7 @@ TEST(Node, SetParent) {
     auto childNode = collection.createNode(testContent2);
     parentId = parentNode->getId();
     childId = childNode->getId();
-    childNode->setParent(parentNode);
+    childNode->setLastOf(parentNode);
   }
   {
     ::requirements::storage::Text storage(folder.getName(), false);
@@ -99,7 +99,7 @@ TEST(Node, Recursive_Delete) {
     ASSERT_NE(parent->getId(), collection.getRootNode()->getId());
     ASSERT_EQ(parent->getId(), parent->getId());
     auto child = collection.createNode(testContent2);
-    child->setParent(parent);
+    child->setLastOf(parent);
     ASSERT_EQ(child->getParent(), parent);
     parentId = parent->getId();
   }
@@ -135,9 +135,9 @@ TEST(Node, Reparent) {
     parent2Id = parent2->getId();
     auto child = collection.createNode(testContent3);
     childId = child->getId();
-    child->setParent(parent1);
+    child->setLastOf(parent1);
     ASSERT_EQ(child->getParent(), parent1);
-    child->setParent(parent2);
+    child->setLastOf(parent2);
     ASSERT_EQ(child->getParent(), parent2);
   }
   {

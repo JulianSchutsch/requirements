@@ -147,7 +147,7 @@ void MainWindow::on_ctrl_right(){
           --brother;
           //So, erst mal Schluck Glühwein nehmen
           //Jetzt gehts eklig weiter, jetzt wird nämlich der große Bruder zum Vater
-          node->setParent(*brother);
+          node->setLastOf(*brother);
           printtree(requirements::id_to_string(node->getId()));
         }
         break;
@@ -171,7 +171,7 @@ void MainWindow::on_ctrl_left(){
     if(parent_node!=nullptr){
       requirements::NodePtr grandparent_node=parent_node->getParent();
       if(grandparent_node!=nullptr){
-        node->setParent(grandparent_node);
+        node->setLastOf(grandparent_node);
         //Jetzt Baum neu malen mit Springen zur UUID
         printtree(uuid);
       }

@@ -27,7 +27,7 @@ namespace req {
       }
       for(auto node:nodes) {
         std::cout<<"Set Parent for "<<requirements::id_to_string(node->getId())<<" : "<<requirements::id_to_string(parent->getId())<<std::endl;
-        node->setParent(parent);
+        node->setLastOf(parent);
       }
     }
   }

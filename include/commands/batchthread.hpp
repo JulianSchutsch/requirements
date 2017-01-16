@@ -25,6 +25,7 @@ namespace commands {
     void parse(Status& status);
     void processQueue(Status& status, std::unique_lock<std::mutex>& guard);
   public:
+    void waitForEmptyQueue();
     void enqueue(std::unique_ptr<ICommand> command);
     BatchThread(ResponseFunction a_responseFunction, const std::string& a_statusFilename="");
     ~BatchThread();
