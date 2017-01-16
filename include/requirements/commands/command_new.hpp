@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/icommand.hpp"
+#include "icommand.hpp"
 #include "requirements/id.hpp"
 
 namespace commands {

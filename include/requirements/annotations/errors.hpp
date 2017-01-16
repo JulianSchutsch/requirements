@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "annotations/common.hpp"
+#include "common.hpp"
 
 namespace annotations {
   

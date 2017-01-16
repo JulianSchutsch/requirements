@@ -4,7 +4,7 @@
 
 #include "requirements/node.hpp"
 
-#include "commands/parser.hpp"
+#include "parser.hpp"
 
 namespace requirements {
   class IStorage;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "commands/icommand.hpp"
-#include "commands/selection.hpp"
+#include "icommand.hpp"
+#include "selection.hpp"
 
 namespace commands {
   

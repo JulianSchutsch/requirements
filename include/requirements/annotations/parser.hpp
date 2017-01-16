@@ -5,10 +5,10 @@
 #include "requirements/id.hpp"
 #include "requirements/istorage.hpp"
 
-#include "annotations/sections.hpp"
-#include "annotations/errors.hpp"
-#include "annotations/shortcuts.hpp"
-#include "annotations/requirements.hpp"
+#include "sections.hpp"
+#include "errors.hpp"
+#include "shortcuts.hpp"
+#include "requirements.hpp"
 
 namespace annotations {
   

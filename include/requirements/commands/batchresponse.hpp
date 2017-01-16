@@ -7,7 +7,7 @@
 #include "annotations/sections.hpp"
 #include "annotations/requirements.hpp"
 
-#include "commands/status.hpp"
+#include "status.hpp"
 
 namespace commands {
   struct BatchResponse final {

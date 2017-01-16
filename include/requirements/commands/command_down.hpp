@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/move.hpp"
+#include "move.hpp"
 
 namespace commands {
   

@@ -3,9 +3,9 @@
 #include "requirements/istorage.hpp"
 #include "requirements/node.hpp"
 
-#include "commands/icommand.hpp"
-#include "commands/selection.hpp"
-#include "commands/status.hpp"
+#include "icommand.hpp"
+#include "selection.hpp"
+#include "status.hpp"
 
 namespace commands {
    
