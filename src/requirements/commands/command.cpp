@@ -19,6 +19,8 @@
 #include "requirements/commands/touch.hpp"
 #include "requirements/commands/showfolder.hpp"
 #include "requirements/commands/print.hpp"
+#include "requirements/commands/newblob.hpp"
+#include "requirements/commands/listblobs.hpp"
 
 namespace requirements {
   namespace commands {
@@ -38,7 +40,9 @@ namespace requirements {
       {"tree", [](Parser& parser) { return new Tree(parser); }},
       {"touch", [](Parser& parser) { return new Touch(parser); }},
       {"showfolder", [](Parser& parser) { return new ShowFolder(parser); }},
-      {"print", [](Parser& parser) { return new Print(parser); }}
+      {"print", [](Parser& parser) { return new Print(parser); }},
+      {"newblob", [](Parser& parser) { return new NewBlob(parser); }},
+      {"listblobs", [](Parser& parser) { return new ListBlobs(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {
