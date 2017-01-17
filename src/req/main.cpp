@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 
+#include "util/path.hpp"
+
 #include "requirements/batch/thread.hpp"
 #include "requirements/commands/command.hpp"
 
@@ -25,7 +27,8 @@ int main(int argc, char** args) {
     },
     [](NodePtr) {
       std::cout<<"Attempt to edit"<<std::endl;
-    });
+    },
+    util::getConfigPath()+"/.req_status.xml");
   
   batchThread.enqueue(commands::assembleFromString(commandStr));
   

@@ -3,6 +3,9 @@
 #include "requirements/status.hpp"
 #include "requirements/select.hpp"
 #include "requirements/console/printtree.hpp"
+#include "requirements/nodecollection.hpp"
+
+#include <iostream>
 
 namespace requirements {
   namespace commands {
@@ -10,6 +13,9 @@ namespace requirements {
       auto storage = status.openStorage();
   
       auto selected = selection.extractNodes(*storage);
+      if(selected.size()==0) {
+        selected = {storage->getNodeCollection().getRootNode()};
+      }
   
       bool first = true;
       for(auto& element: selected) {

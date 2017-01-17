@@ -18,9 +18,9 @@ namespace requirements {
       auto& children = node->getChildren();
       if(node->getParent()) {
         if(requirements::isSelected(node, selected)) {
-          p("["+firstIndent+bold()+id_to_string(node->getId())+reset()+"]");
+          p(firstIndent+"["+bold()+id_to_string(node->getId())+reset()+"]");
         } else {
-          p("["+firstIndent+id_to_string(node->getId())+"]");
+          p(firstIndent+"["+id_to_string(node->getId())+"]");
         }
         std::vector<std::string> parts;
         boost::algorithm::split(parts, node->getContent(), boost::is_any_of("\n"));

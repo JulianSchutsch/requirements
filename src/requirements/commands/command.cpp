@@ -18,6 +18,7 @@
 #include "requirements/commands/tree.hpp"
 #include "requirements/commands/touch.hpp"
 #include "requirements/commands/showfolder.hpp"
+#include "requirements/commands/print.hpp"
 
 namespace requirements {
   namespace commands {
@@ -36,7 +37,8 @@ namespace requirements {
       {"edit", [](Parser& parser) { return new Edit(parser); }},
       {"tree", [](Parser& parser) { return new Tree(parser); }},
       {"touch", [](Parser& parser) { return new Touch(parser); }},
-      {"showfolder", [](Parser& parser) { return new ShowFolder(parser); }}
+      {"showfolder", [](Parser& parser) { return new ShowFolder(parser); }},
+      {"print", [](Parser& parser) { return new Print(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {
