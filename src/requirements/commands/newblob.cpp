@@ -5,8 +5,6 @@
 #include "requirements/blob.hpp"
 #include "requirements/commands/parser.hpp"
 
-#include <iostream>
-
 namespace requirements {
   namespace commands {
     
