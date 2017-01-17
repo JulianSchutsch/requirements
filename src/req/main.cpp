@@ -1,31 +1,33 @@
+#include <string>
 #include <iostream>
-#include <vector>
 
-#include "requirements/id.hpp"
-#include "requirements/node.hpp"
-#include "requirements/nodecollection.hpp"
-#include "requirements/storage/text.hpp"
+#include "requirements/batch/thread.hpp"
+#include "requirements/commands/command.hpp"
 
-#include "req/status.hpp"
-#include "req/command.hpp"
+using namespace ::requirements;
 
 int main(int argc, char** args) {
   (void)argc;
   (void)args;
   
-  req::Status status;
-
-  status.load();
-
-  std::vector<std::string> commands;
-  commands.reserve(argc-1);
+  std::string commandStr;
   for(int i=1;i<argc;++i) {
-    commands.push_back(args[i]);
+    if(!commandStr.empty()) {
+      commandStr+=" ";
+    }
+    commandStr+=args[i];
   }
 
-  req::processCommand(status, commands);
-
-  status.save();
+  batch::Thread batchThread(
+    [](batch::Response&&){},
+    [](Status::MessageKind kind, const std::string& msg) {
+      std::cout<<msg<<std::endl;
+    },
+    [](NodePtr) {
+      std::cout<<"Attempt to edit"<<std::endl;
+    });
+  
+  batchThread.enqueue(commands::assembleFromString(commandStr));
   
   return 0;
 }

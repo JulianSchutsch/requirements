@@ -23,6 +23,7 @@ namespace requirements {
   public:
     enum MessageKind {
       Error,
+      Message,
       Content
     };
     using MessageFunction = std::function<void(MessageKind, const std::string&)>;

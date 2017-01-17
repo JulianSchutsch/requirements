@@ -14,6 +14,10 @@
 #include "requirements/commands/lastof.hpp"
 #include "requirements/commands/delete.hpp"
 #include "requirements/commands/folder.hpp"
+#include "requirements/commands/edit.hpp"
+#include "requirements/commands/tree.hpp"
+#include "requirements/commands/touch.hpp"
+#include "requirements/commands/showfolder.hpp"
 
 namespace requirements {
   namespace commands {
@@ -28,7 +32,11 @@ namespace requirements {
       {"firstof", [](Parser &parser) { return new FirstOf(parser); }},
       {"lastof",  [](Parser &parser) { return new LastOf(parser); }},
       {"delete",  [](Parser &parser) { return new Delete(parser); }},
-      {"folder",  [](Parser &parser) { return new Folder(parser); }}
+      {"folder",  [](Parser &parser) { return new Folder(parser); }},
+      {"edit", [](Parser& parser) { return new Edit(parser); }},
+      {"tree", [](Parser& parser) { return new Tree(parser); }},
+      {"touch", [](Parser& parser) { return new Touch(parser); }},
+      {"showfolder", [](Parser& parser) { return new ShowFolder(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {
