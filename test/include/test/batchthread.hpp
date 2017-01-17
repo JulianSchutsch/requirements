@@ -11,6 +11,7 @@
 #include "requirements/batch/thread.hpp"
 #include "requirements/batch/response.hpp"
 #include "requirements/status.hpp"
+#include "requirements/node.hpp"
 
 namespace test {
 
@@ -28,7 +29,17 @@ namespace test {
       responseQueue.emplace(std::move(r));
       responseCondition.notify_all();
     }
+    void processMessage(Status::MessageKind kind, const std::string& msg) {
+      switch(kind) {
+        case Status::MessageKind::Content:
+          msg_content(msg);
+          break;
+        default:
+          break;
+      }
+    }
   public:
+    std::function<void(const std::string& content)> msg_content;
     std::unique_ptr<batch::Thread> batch;
     BatchThread() {
       statusFile = folder.getName() + "_status.xml";
@@ -39,7 +50,7 @@ namespace test {
       }
       batch.reset(new batch::Thread(
         std::bind(&BatchThread::responseFunction, this, std::placeholders::_1),
-        [](Status::MessageKind, const std::string&){},
+        std::bind(&BatchThread::processMessage, this, std::placeholders::_1, std::placeholders::_2),
         [](NodePtr){},
         statusFile));
     }
