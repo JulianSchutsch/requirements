@@ -14,7 +14,7 @@ namespace requirements {
         throw Exception("BlobAliases requires exactly one blob to be selected");
       }
       auto node = selected[0];
-      storage->setBlobAliases(node, node+" "+aliases);
+      storage->setBlobAliases(node, aliases);
     }
     
     BlobAliases::BlobAliases(const std::string &a_id, const std::string &a_aliases)

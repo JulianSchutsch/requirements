@@ -23,7 +23,6 @@ namespace test {
     std::mutex responseMutex;
     std::condition_variable responseCondition;
     std::string statusFile;
-    ::test::UniqueFolder folder;
     void responseFunction(batch::Response&& r) {
       std::lock_guard<std::mutex> guard(responseMutex);
       responseQueue.emplace(std::move(r));
@@ -39,6 +38,7 @@ namespace test {
       }
     }
   public:
+    ::test::UniqueFolder folder;
     std::function<void(const std::string& content)> msg_content;
     std::unique_ptr<batch::Thread> batch;
     BatchThread() {

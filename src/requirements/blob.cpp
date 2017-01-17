@@ -42,6 +42,7 @@ namespace requirements {
     }
     auto id = storage.createBlob(suffix);
     auto targetFile = storage.getBlobFilename(id);
+    boost::filesystem::remove(targetFile);
     boost::filesystem::copy_file(sourceFile, targetFile);
     return id;
   }

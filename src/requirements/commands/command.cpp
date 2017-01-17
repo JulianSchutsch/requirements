@@ -21,6 +21,8 @@
 #include "requirements/commands/print.hpp"
 #include "requirements/commands/newblob.hpp"
 #include "requirements/commands/listblobs.hpp"
+#include "requirements/commands/nextto.hpp"
+#include "requirements/commands/previousto.hpp"
 
 namespace requirements {
   namespace commands {
@@ -42,7 +44,9 @@ namespace requirements {
       {"showfolder", [](Parser& parser) { return new ShowFolder(parser); }},
       {"print", [](Parser& parser) { return new Print(parser); }},
       {"newblob", [](Parser& parser) { return new NewBlob(parser); }},
-      {"listblobs", [](Parser& parser) { return new ListBlobs(parser); }}
+      {"listblobs", [](Parser& parser) { return new ListBlobs(parser); }},
+      {"nextto", [](Parser& parser) { return new NextTo(parser); }},
+      {"previousto", [](Parser& parser) { return new PreviousTo(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {

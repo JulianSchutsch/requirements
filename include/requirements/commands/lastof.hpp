@@ -5,7 +5,7 @@
 namespace requirements {
   namespace commands {
     
-    void LastOf_Operation(::requirements::NodePtr element, ::requirements::NodePtr anchor) {
+    void LastOf_Operation(NodePtr element, NodePtr anchor) {
       element->setLastOf(anchor);
     }
     

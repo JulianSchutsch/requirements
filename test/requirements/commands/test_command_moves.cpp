@@ -8,6 +8,8 @@
 #include "requirements/commands/down.hpp"
 #include "requirements/commands/firstof.hpp"
 #include "requirements/commands/lastof.hpp"
+#include "requirements/commands/nextto.hpp"
+#include "requirements/commands/previousto.hpp"
 
 using namespace requirements;
 
@@ -125,4 +127,33 @@ TEST(Commands, Command_FirstOf_Console) {
   ASSERT_EQ(subChildren.size(), 2);
   ASSERT_EQ(subChildren.front()->getId(), id3);
   ASSERT_EQ(subChildren.back()->getId(), id2);
+}
+
+TEST(Commnds, Command_NextTo) {
+  THREEELEMENTS;
+  b.batch->enqueue(std::make_unique<commands::NextTo>(id1, id3));
+  auto response = b.wait();
+  auto children = response.nodeCollection->getRootNode()->getChildren();
+  ASSERT_EQ(children.size(), 3);
+  auto it = children.begin();
+  ASSERT_EQ((*it)->getId(), id2);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id3);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id1);
+}
+
+TEST(Commnds, Command_NextTo_Console) {
+  THREEELEMENTS;
+  b.batch->enqueue(commands::assembleFromString("select "+id_to_string(id1)));
+  b.batch->enqueue(commands::assembleFromString("nextto "+id_to_string(id3)));
+  auto response = b.wait();
+  auto children = response.nodeCollection->getRootNode()->getChildren();
+  ASSERT_EQ(children.size(), 3);
+  auto it = children.begin();
+  ASSERT_EQ((*it)->getId(), id2);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id3);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id1);
 }
