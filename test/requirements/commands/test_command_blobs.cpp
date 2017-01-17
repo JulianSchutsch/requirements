@@ -16,6 +16,7 @@ using namespace requirements;
 
 static const char* blobData = "Some data for the blob;";
 static const char* blobAlias = "blobAlias1";
+static const char* blobAlias2 = "blobAlias2";
 
 static std::vector<std::string> listBlobs(::test::BatchThread& b) {
   std::vector<std::string> listResult;
@@ -77,5 +78,10 @@ TEST(Commands, BlobAlias) {
   listResult = listBlobs(b);
   ASSERT_EQ(listResult.size(), 1);
   ASSERT_EQ(boost::algorithm::trim_copy(listResult[0]), defaultLine);
+  b.batch->enqueue(commands::assembleFromString("blobaliases "+id+" "+blobAlias2));
+  b.wait();
+  listResult = listBlobs(b);
+  ASSERT_EQ(listResult.size(), 1);
+  ASSERT_EQ(std::regex_search(listResult[0], std::regex(blobAlias2)), true);
   boost::filesystem::remove(fileName);
 }
