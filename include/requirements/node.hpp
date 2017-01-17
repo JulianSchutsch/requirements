@@ -28,6 +28,8 @@ namespace requirements {
     friend void intrusive_ptr_add_ref(Node* node);
     friend void intrusive_ptr_release(Node* node);
     friend class NodeCollection;
+    
+    void clearFromParent();
   public:
     bool hasParent(const NodePtr& node) const;
     const std::string& getContent() const { return content; }
@@ -37,6 +39,8 @@ namespace requirements {
     const Id getId() const noexcept { return id; }
     void setFirstOf(NodePtr node);
     void setLastOf(NodePtr node);
+    void setNextTo(NodePtr node);
+    void setPreviousTo(NodePtr node);
     explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content);
     void up();
     void down();

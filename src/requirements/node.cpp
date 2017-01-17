@@ -60,23 +60,43 @@ namespace requirements {
     return false;
   }
   
-  void Node::setFirstOf(NodePtr node) {
+  void Node::clearFromParent() {
     if(parent!=nullptr) {
       parent->children.remove_if([this](const NodePtr& item){return item==this;});
     }
+  }
+  
+  void Node::setNextTo(NodePtr node) {
+    clearFromParent();
+    parent = node->parent;
+    auto it = parent->findChild(node);
+    ++it;
+    parent->children.emplace(it, this);
+  }
+  
+  void Node::setPreviousTo(NodePtr node) {
+    clearFromParent();
+    parent = node->parent;
+    auto it = parent->findChild(node);
+    parent->children.emplace(it, this);
+  }
+  
+  void Node::setFirstOf(NodePtr node) {
+    clearFromParent();
     parent = node.get();
     if(parent!=nullptr) {
-      parent->children.emplace_front(NodePtr(this));
+      parent->children.emplace_front(this);
     }
   }
   
   void Node::setLastOf(NodePtr node) {
+    clearFromParent();
     if(parent!=nullptr) {
       parent->children.remove_if([this](const NodePtr& item){return item==this;});
     }
     parent = node.get();
     if(parent!=nullptr) {
-      parent->children.emplace_back(NodePtr(this));
+      parent->children.emplace_back(this);
     }
   }
 

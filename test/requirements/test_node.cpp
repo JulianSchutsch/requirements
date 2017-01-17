@@ -33,7 +33,7 @@ TEST(Node, Create) {
   }
 }
 
-TEST(Node, SetParent) {
+TEST(Node, LastOf) {
   test::UniqueFolder folder;
   ::requirements::Id parentId;
   ::requirements::Id childId;
@@ -61,6 +61,45 @@ TEST(Node, SetParent) {
     ASSERT_EQ(childNode->getId(), childId);
     ASSERT_EQ(childNode->getContent(), testContent2);
     ASSERT_EQ(childNode->getParent(), parentNode);
+  }
+}
+
+TEST(Node, FirstOf) {
+  test::UniqueFolder folder;
+  ::requirements::Id parentId;
+  ::requirements::Id childId1;
+  ::requirements::Id childId2;
+  {
+    ::requirements::storage::Text storage(folder.getName(), true);
+    auto& collection = storage.getNodeCollection();
+    auto parentNode = collection.createNode(testContent1);
+    auto childNode1 = collection.createNode(testContent2);
+    auto childNode2 = collection.createNode(testContent3);
+    parentId = parentNode->getId();
+    childId1 = childNode1->getId();
+    childId2 = childNode2->getId();
+    childNode1->setFirstOf(parentNode);
+    childNode2->setFirstOf(parentNode);
+  }
+  {
+    ::requirements::storage::Text storage(folder.getName(), false);
+    auto& collection = storage.getNodeCollection();
+    auto rootNode = collection.getRootNode();
+    auto topLevel = rootNode->getChildren();
+    ASSERT_EQ(topLevel.size(), 1);
+    auto parentNode = topLevel.front();
+    ASSERT_EQ(parentNode->getId(), parentId);
+    ASSERT_EQ(parentNode->getContent(), testContent1);
+    auto children = parentNode->getChildren();
+    ASSERT_EQ(children.size(), 2);
+    auto childNode2 = children.front();
+    ASSERT_EQ(childNode2->getId(), childId2);
+    ASSERT_EQ(childNode2->getContent(), testContent3);
+    ASSERT_EQ(childNode2->getParent(), parentNode);
+    auto childNode1 = children.back();
+    ASSERT_EQ(childNode1->getId(), childId1);
+    ASSERT_EQ(childNode1->getContent(), testContent2);
+    ASSERT_EQ(childNode1->getParent(), parentNode);
   }
 }
 
@@ -187,5 +226,77 @@ TEST(Node, Up) {
     auto children = root->getChildren();
     ASSERT_EQ(children.front(), node1);
     ASSERT_EQ(children.back(), node2);
+  }
+}
+
+TEST(Node, NextTo) {
+  ::requirements::NodeCollection collection;
+  auto node1 = collection.createNode(testContent1);
+  auto node2 = collection.createNode(testContent2);
+  auto node3 = collection.createNode(testContent3);
+  auto root = collection.getRootNode();
+  node1->setNextTo(node3);
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.size(), 3);
+    auto it = children.begin();
+    ASSERT_EQ((*it), node2);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node3);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node1);
+    ASSERT_EQ((*it)->getParent(), root);
+  }
+  node1->setNextTo(node2);
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.size(), 3);
+    auto it = children.begin();
+    ASSERT_EQ((*it), node2);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node1);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node3);
+    ASSERT_EQ((*it)->getParent(), root);
+  }
+}
+
+TEST(Node, PreviousTo) {
+  ::requirements::NodeCollection collection;
+  auto node1 = collection.createNode(testContent1);
+  auto node2 = collection.createNode(testContent2);
+  auto node3 = collection.createNode(testContent3);
+  auto root = collection.getRootNode();
+  node3->setPreviousTo(node1);
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.size(), 3);
+    auto it = children.begin();
+    ASSERT_EQ((*it), node3);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node1);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node2);
+    ASSERT_EQ((*it)->getParent(), root);
+  }
+  node3->setPreviousTo(node2);
+  {
+    auto children = root->getChildren();
+    ASSERT_EQ(children.size(), 3);
+    auto it = children.begin();
+    ASSERT_EQ((*it), node1);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node3);
+    ASSERT_EQ((*it)->getParent(), root);
+    ++it;
+    ASSERT_EQ((*it), node2);
+    ASSERT_EQ((*it)->getParent(), root);
   }
 }
