@@ -5,6 +5,8 @@
 #include "requirements/blob.hpp"
 #include "requirements/commands/parser.hpp"
 
+#include <iostream>
+
 namespace requirements {
   namespace commands {
     
@@ -20,8 +22,9 @@ namespace requirements {
       : filename(a_filename) {}
     NewBlob::NewBlob(Parser &parser) {
       if(!parser.nextSimple()) {
-        filename = parser.getTokenString();
+        throw Exception("Missing filename");
       }
+      filename = parser.getTokenString();
       if(parser.nextSimple()) {
         throw Exception("Only one filename expected");
       }

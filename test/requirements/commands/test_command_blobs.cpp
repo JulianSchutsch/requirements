@@ -51,6 +51,27 @@ TEST(Commands, NewBlob) {
   boost::filesystem::remove(fileName);
 }
 
+TEST(Commands, NewBlob_Console) {
+  ::test::BatchThread b;
+  ::test::UniqueFolder fileFolder;
+  std::string fileName = fileFolder.getName() + "_test.txt";
+  {
+    std::fstream f(fileName, std::fstream::out);
+    f << blobData;
+  }
+  b.batch->enqueue(commands::assembleFromString("newblob "+fileName));
+  b.wait();
+  auto listResult = listBlobs(b);
+  ASSERT_EQ(listResult.size(), 1);
+  for(auto result: listResult) {
+    auto it = result.find("->");
+    ASSERT_NE(it, std::string::npos);
+    auto blobFile = b.folder.getName()+"/blob/"+std::string(result, 0, it);
+    ASSERT_EQ(util::readFileToString(blobFile), blobData);
+  }
+  boost::filesystem::remove(fileName);
+}
+
 TEST(Commands, BlobAlias) {
   ::test::BatchThread b;
   ::test::UniqueFolder fileFolder;
