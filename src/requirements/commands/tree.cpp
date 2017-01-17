@@ -5,8 +5,6 @@
 #include "requirements/console/printtree.hpp"
 #include "requirements/nodecollection.hpp"
 
-#include <iostream>
-
 namespace requirements {
   namespace commands {
     void Tree::execute(Status &status) {
