@@ -2,10 +2,16 @@
 
 namespace requirements {
 
+  std::unique_ptr<NodeCollection> NodeCollection::clone() {
+    std::unique_ptr<NodeCollection> collection(new NodeCollection());
+    collection->rootNode = rootNode->clone(*collection);
+    return std::move(collection);
+  }
+
   void NodeCollection::deleteNode(NodePtr node) {
     auto id = node->getId();
     nodes.erase(id);
-    node->setParent(nullptr);
+    node->setLastOf(nullptr);
     auto children = node->getChildren();
     for(auto& child:children) {
       deleteNode(child);
@@ -46,7 +52,7 @@ namespace requirements {
       throw 1;
     }
     nodes.emplace(id, newNode);
-    newNode->setParent(rootNode);
+    newNode->setLastOf(rootNode);
     return newNode;
   }
   

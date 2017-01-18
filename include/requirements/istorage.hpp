@@ -22,6 +22,7 @@ namespace requirements {
     virtual void save(const std::string& folder) = 0;
     virtual void save() = 0;
     virtual void setBlobAliases(const std::string& blob, const std::string& aliases) = 0;
+    virtual ~IStorage() {}
   };
   
 }

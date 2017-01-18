@@ -1,31 +1,54 @@
+#include <string>
+#include <fstream>
 #include <iostream>
-#include <vector>
+#include <boost/filesystem.hpp>
 
-#include "requirements/id.hpp"
-#include "requirements/node.hpp"
-#include "requirements/nodecollection.hpp"
-#include "requirements/storage/text.hpp"
+#include "util/path.hpp"
+#include "util/process.hpp"
+#include "util/stringfile.hpp"
 
-#include "req/status.hpp"
-#include "req/command.hpp"
+#include "requirements/batch/thread.hpp"
+#include "requirements/commands/command.hpp"
+#include "requirements/exception.hpp"
+
+using namespace ::requirements;
+
+void editCallback(NodePtr node) {
+  boost::filesystem::path tempFilename = boost::filesystem::unique_path();
+  {
+    std::fstream f(tempFilename.native(), std::fstream::out);
+    f<<node->getContent();
+  }
+  if(util::runProcess("/bin/nano", {tempFilename.native()})) {
+    node->updateContent(util::readFileToString(tempFilename.native()));
+  } else {
+    throw ::requirements::Exception("Failed to run editor");
+  }
+  boost::filesystem::remove_all(tempFilename);
+}
 
 int main(int argc, char** args) {
   (void)argc;
   (void)args;
   
-  req::Status status;
-
-  status.load();
-
-  std::vector<std::string> commands;
-  commands.reserve(argc-1);
+  std::string commandStr;
   for(int i=1;i<argc;++i) {
-    commands.push_back(args[i]);
+    if(!commandStr.empty()) {
+      commandStr+=" ";
+    }
+    commandStr+=args[i];
   }
 
-  req::processCommand(status, commands);
-
-  status.save();
+  batch::Thread batchThread(
+    [](batch::Response&&){},
+    [](Status::MessageKind kind, const std::string& msg) {
+      (void)kind;
+      std::cout<<msg<<std::endl;
+    },
+    &editCallback,
+    util::getConfigPath()+"/.req_status.xml");
+  
+  batchThread.enqueue(commands::assembleFromString(commandStr));
   
   return 0;
 }

@@ -2,6 +2,16 @@
 
 namespace requirements {
 
+  NodePtr Node::clone(NodeCollection& a_collection) {
+    auto cp_content = content;
+    NodePtr n=new Node(a_collection, id, std::move(cp_content));
+    for(auto& child: children) {
+      auto nChild = child->clone(a_collection);
+      nChild->setLastOf(n);
+    }
+    return std::move(n);
+  }
+
   Node::ChildList::iterator Node::findChild(NodePtr node) {
     for(auto it=children.begin();it!=children.end();++it) {
       if(node==*it) {
@@ -50,13 +60,43 @@ namespace requirements {
     return false;
   }
   
-  void Node::setParent(NodePtr node) {
+  void Node::clearFromParent() {
+    if(parent!=nullptr) {
+      parent->children.remove_if([this](const NodePtr& item){return item==this;});
+    }
+  }
+  
+  void Node::setNextTo(NodePtr node) {
+    clearFromParent();
+    parent = node->parent;
+    auto it = parent->findChild(node);
+    ++it;
+    parent->children.emplace(it, this);
+  }
+  
+  void Node::setPreviousTo(NodePtr node) {
+    clearFromParent();
+    parent = node->parent;
+    auto it = parent->findChild(node);
+    parent->children.emplace(it, this);
+  }
+  
+  void Node::setFirstOf(NodePtr node) {
+    clearFromParent();
+    parent = node.get();
+    if(parent!=nullptr) {
+      parent->children.emplace_front(this);
+    }
+  }
+  
+  void Node::setLastOf(NodePtr node) {
+    clearFromParent();
     if(parent!=nullptr) {
       parent->children.remove_if([this](const NodePtr& item){return item==this;});
     }
     parent = node.get();
     if(parent!=nullptr) {
-      parent->children.emplace_back(NodePtr(this));
+      parent->children.emplace_back(this);
     }
   }
 

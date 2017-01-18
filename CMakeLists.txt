@@ -67,4 +67,4 @@ add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS})
 target_link_libraries (qreq "requirements" Qt5::Widgets Qt5::Gui)
 
 add_executable(t ${TEST_SOURCES})
-target_link_libraries(t "requirements" ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(t "requirements" ${LIB_TINYXML} ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES})
