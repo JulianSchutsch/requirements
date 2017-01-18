@@ -1,4 +1,5 @@
 #include "qreq/mainwindow.hpp"
+#include "qreq/keycodewindow.hpp"
 
 #include <QApplication>
 
@@ -7,6 +8,8 @@
 namespace qreq{
 
 void MainWindow::on_f1button_clicked(){
+  KeyCodeWindow kcw(this);
+  kcw.exec();
 }
 
 void MainWindow::on_f2button_clicked(){
