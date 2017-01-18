@@ -117,7 +117,7 @@ void MainWindow::add_new_brother_for(std::string const& uuid){
   auto& collection = _currentStorage->getNodeCollection();
   auto newnode = collection.createNode("");
   //Jetzt Knoten unter den parent bammeln
-  newnode->setParent(parent);
+  newnode->setLastOf(parent);
 }
 
 void MainWindow::new_node(bool copy_content){
@@ -135,7 +135,7 @@ void MainWindow::new_node(bool copy_content){
     auto& collection = _currentStorage->getNodeCollection();
     auto newnode = collection.createNode("");
     //Jetzt Knoten unter den parent bammeln
-    newnode->setParent(parent);
+    newnode->setLastOf(parent);
     if(copy_content==true){
       newnode->updateContent(node->getContent());
     }

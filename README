@@ -1,1 +1,22 @@
-Readme for a simple requirement tool.
+Simple and fast requirement analysis tool. (In development)
+
+This tool was written for small software businesses with the need to
+collect requirements and related topics quickly.
+
+It can be used for:
+ * Editing requirements, acceptance criteria, cost estimates.
+ * Printing several documents required during the development phase.
+ * Automatic analysis of coverage, e.g. if functional requirements are
+   covered by acceptance criteria.
+ * Automatic collection of test results and integrating them
+   into reports.
+
+There is a console tool and a graphical tool available. Each suited
+for different phases of the project.
+
+The content is stored as plain text files, therefore can be managed by
+all kinds of source code version control systems (e.g. git, svn).
+
+Further information:
+  BUILD   -> Contains information on how to build the tools
+  LICENSE -> License for all source code files of this project

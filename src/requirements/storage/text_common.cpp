@@ -20,7 +20,6 @@ namespace requirements {
     }
     
     void text_ensureFolder(const std::string& folder) {
-      // Ensure root folder exists
       ensureSubFolder(folder);
       ensureSubFolder(folder + text_requirementsFolder);
       ensureSubFolder(folder + text_blobFolder);
