@@ -63,8 +63,8 @@ target_link_libraries(req "requirements" ${LIB_TINYXML})
 add_executable(greq ${GREQ_SOURCES})
 target_link_libraries(greq "requirements" ${LIB_TINYXML} ${GTKMM_LIBRARIES})
 
-add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS})
-target_link_libraries (qreq "requirements" Qt5::Widgets Qt5::Gui)
+add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS} )
+target_link_libraries (qreq "requirements" Qt5::Widgets Qt5::Gui ${LIB_TINYXML})
 
 add_executable(t ${TEST_SOURCES})
 target_link_libraries(t "requirements" ${LIB_TINYXML} ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES})
