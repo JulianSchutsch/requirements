@@ -137,6 +137,7 @@ void MainWindow::generate_menu(){
 void MainWindow::generate_menu_recent(){
   //Menu erzeugen
   QMenu *recentmenu=new QMenu("Recent");
+  QMenuBar *menubar=new QMenuBar();
   QSignalMapper* signalMapper = new QSignalMapper (this) ;
   for(auto filename : Settings::getInstance().last_projects()){
     std::cout << "adding " << filename << std::endl;
@@ -146,7 +147,8 @@ void MainWindow::generate_menu_recent(){
     recentmenu->addAction(openact);
   }
   connect (signalMapper, SIGNAL(mapped(QString)), this, SLOT(on_openact_triggered(QString const&))) ;
-  menuBar()->addMenu(recentmenu);
+  menubar->addMenu(recentmenu);
+  setMenuBar(menubar);
   //Und jetzt gleich das letzte Projekt laden
   if(Settings::getInstance().current_project!="") load_current_project();
 }

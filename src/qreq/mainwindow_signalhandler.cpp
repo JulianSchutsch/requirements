@@ -1,7 +1,9 @@
 #include "qreq/mainwindow.hpp"
 #include "qreq/keycodewindow.hpp"
+#include "qreq/settings.hpp"
 
 #include <QApplication>
+#include <QFileDialog>
 
 #include <iostream>
 
@@ -16,6 +18,14 @@ void MainWindow::on_f2button_clicked(){
 }
 
 void MainWindow::on_f3button_clicked(){
+  //Open Directory
+  QString dirname=QFileDialog::getExistingDirectory(this,tr("Select project"));
+  if(!(dirname.isEmpty())){
+    Settings::getInstance().add_project(dirname.toStdString());
+    set_current_project(dirname.toStdString());
+    generate_menu_recent();
+  }
+
 }
 
 void MainWindow::on_f4button_clicked(){
