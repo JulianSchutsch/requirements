@@ -147,5 +147,16 @@ void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
   std::cout << "on_reqtree_ctrl_down" << std::endl;
 }
 
+void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
+  //copy id to commandline
+  std::string id=get_uuid_by_modelindex(i);
+  QString commandtext=_commandline->text();
+  commandtext+=id.c_str();
+  _commandline->setText(commandtext);
+}
+
+void MainWindow::on_commandline_return(std::string const& command){
+  std::cout << "command entered: " << command << std::endl;
+}
 
 }

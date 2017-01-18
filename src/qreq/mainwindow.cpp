@@ -52,7 +52,11 @@ void MainWindow::generate_elements(){
   connect(_reqtree,SIGNAL(ctrl_right_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_right(QModelIndex)));
   connect(_reqtree,SIGNAL(ctrl_up_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_up(QModelIndex)));
   connect(_reqtree,SIGNAL(ctrl_down_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_down(QModelIndex)));
+  connect(_reqtree,SIGNAL(alt_return_pressed(QModelIndex)),this,SLOT(on_reqtree_alt_return(QModelIndex)));
   connect(_reqmodel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_reqmodel_item_changed(QStandardItem*)));
+
+  _commandline=new CommandLine(this);
+  connect(_commandline,SIGNAL(fire_command(std::string)),this,SLOT(on_commandline_return(std::string)));
 }
 
 void MainWindow::generate_view(){
@@ -107,9 +111,13 @@ void MainWindow::generate_view(){
   leftbuttonbox->addWidget(linkblob_button);
   leftbuttonbox->addStretch();
 
+  QVBoxLayout *rightbox=new QVBoxLayout();
+  rightbox->addWidget(_reqtree);
+  rightbox->addWidget(_commandline);
   QHBoxLayout *hbox=new QHBoxLayout();
   hbox->addLayout(leftbuttonbox);
-  hbox->addWidget(_reqtree);
+  hbox->addLayout(rightbox);
+
   QVBoxLayout *vbox=new QVBoxLayout();
   vbox->addLayout(hbox);
   vbox->addLayout(bottombuttonbox);

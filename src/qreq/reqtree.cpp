@@ -37,6 +37,16 @@ void ReqTree::keyPressEvent(QKeyEvent *event){
       break;
     }
   }
+  else if(event->modifiers()==Qt::AltModifier){
+    switch(event->key()){
+    case Qt::Key_Return:
+      emit alt_return_pressed(currentIndex());
+      break;
+    default:
+      QTreeView::keyPressEvent(event);
+      break;
+    }
+  }
   //if(event->key() == Qt::Key_A && e->modifiers() == Qt::ControlModifier){
   //  e->ignore();
   //  QWidget::keyPressEvent(e); // Not sure about this. Please try and report!

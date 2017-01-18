@@ -7,8 +7,10 @@
 #include <QStandardItem>
 #include <QString>
 #include <QModelIndex>
+#include <QLineEdit>
 
 #include "qreq/reqtree.hpp"
+#include "qreq/commandline.hpp"
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
@@ -28,6 +30,7 @@ class MainWindow : public QMainWindow{
 Q_OBJECT
   ReqTree *_reqtree;
   QStandardItemModel *_reqmodel;
+  CommandLine *_commandline;
 
   void generate_elements();
   void generate_view();
@@ -75,6 +78,9 @@ private slots:
   void on_reqtree_ctrl_right(const QModelIndex& i);
   void on_reqtree_ctrl_up(const QModelIndex& i);
   void on_reqtree_ctrl_down(const QModelIndex& i);
+  void on_reqtree_alt_return(const QModelIndex& i);
+  void on_commandline_return(std::string const& command);
+
 protected:
   void keyPressEvent(QKeyEvent *event);
   //bool eventFilter(QObject *object, QEvent *event);
