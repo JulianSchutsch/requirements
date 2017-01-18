@@ -157,3 +157,32 @@ TEST(Commnds, Command_NextTo_Console) {
   ++it;
   ASSERT_EQ((*it)->getId(), id1);
 }
+
+TEST(Commnds, Command_PreviousTo) {
+  THREEELEMENTS;
+  b.batch->enqueue(std::make_unique<commands::PreviousTo>(id3, id1));
+  auto response = b.wait();
+  auto children = response.nodeCollection->getRootNode()->getChildren();
+  ASSERT_EQ(children.size(), 3);
+  auto it = children.begin();
+  ASSERT_EQ((*it)->getId(), id3);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id1);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id2);
+}
+
+TEST(Commnds, Command_PreviousTo_Console) {
+  THREEELEMENTS;
+  b.batch->enqueue(commands::assembleFromString("select "+id_to_string(id3)));
+  b.batch->enqueue(commands::assembleFromString("previousto "+id_to_string(id1)));
+  auto response = b.wait();
+  auto children = response.nodeCollection->getRootNode()->getChildren();
+  ASSERT_EQ(children.size(), 3);
+  auto it = children.begin();
+  ASSERT_EQ((*it)->getId(), id3);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id1);
+  ++it;
+  ASSERT_EQ((*it)->getId(), id2);
+}

@@ -5,9 +5,9 @@
 namespace requirements {
   namespace commands {
     void PreviousTo_Operation(NodePtr element, NodePtr anchor) {
-      element->setNextTo(anchor);
+      element->setPreviousTo(anchor);
     }
     
-    using PreviousTo = internal::AnchoredMove<&NextTo_Operation>;
+    using PreviousTo = internal::AnchoredMove<&PreviousTo_Operation>;
   }
 }
