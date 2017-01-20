@@ -47,10 +47,6 @@ namespace requirements {
   
   NodePtr NodeCollection::createNode(Id id, std::string&& content) {
     NodePtr newNode(new Node(*this, id, std::move(content)));
-    if(id!=newNode->getId())
-    {
-      throw 1;
-    }
     nodes.emplace(id, newNode);
     newNode->setLastOf(rootNode);
     return newNode;
