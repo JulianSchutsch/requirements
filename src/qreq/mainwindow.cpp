@@ -59,6 +59,7 @@ void MainWindow::generate_elements(){
 
   _commandline=new CommandLine(this);
   connect(_commandline,SIGNAL(fire_command(std::string)),this,SLOT(on_commandline_return(std::string)));
+  _threadconnector.init();
 }
 
 void MainWindow::generate_view(){

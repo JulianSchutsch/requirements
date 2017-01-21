@@ -11,6 +11,7 @@
 
 #include "qreq/reqtree.hpp"
 #include "qreq/commandline.hpp"
+#include "qreq/threadconnector.hpp"
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
@@ -32,6 +33,7 @@ Q_OBJECT
   QStandardItemModel *_reqmodel;
   CommandLine *_commandline;
 
+  ThreadConnector _threadconnector;
   void generate_elements();
   void generate_view();
   void generate_menu();

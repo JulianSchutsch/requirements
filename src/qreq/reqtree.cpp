@@ -1,4 +1,5 @@
 #include "qreq/reqtree.hpp"
+#include "qreq/texteditdelegate.hpp"
 
 #include <iostream>
 
@@ -31,6 +32,14 @@ void ReqTree::keyPressEvent(QKeyEvent *event){
     case Qt::Key_Down:
       std::cout << "Ctrl+Down" << std::endl;
       emit ctrl_down_pressed(currentIndex());
+      break;
+    case Qt::Key_Return:{
+      std::cout << "Ctrl+Return" << std::endl;
+      QAbstractItemDelegate *delegate=itemDelegate(currentIndex());
+      //TextEditDelegate *delegate=itemDelegate(currentIndex());
+      //closeEditor(0,QAbstractItemDelegate::EditNextItem);
+      //emit ctrl_down_pressed(currentIndex());
+    }
       break;
     default:
       QTreeView::keyPressEvent(event);

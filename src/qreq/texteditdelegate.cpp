@@ -7,28 +7,20 @@ TextEditDelegate::TextEditDelegate(QObject *parent)
 }
 
 QWidget *TextEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const{
-   QTextEdit *editor = new QTextEdit(parent);
-   //editor->addItem("A");
-   //editor->addItem("B");
-   //editor->addItem("C");
-   //editor->addItem("D");
+  QTextEdit *editor = new QTextEdit(parent);
 
-   return editor;
+  return editor;
 }
 
 void TextEditDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
-   QString value = index.model()->data(index, Qt::EditRole).toString();
+  QString value = index.model()->data(index, Qt::EditRole).toString();
 
-   QTextEdit *textedit=static_cast<QTextEdit*>(editor);
-   textedit->setPlainText(value);
-   //QComboBox *cBox = static_cast<QComboBox*>(editor);
-   //cBox->setCurrentIndex(cBox->findText(value));
+  QTextEdit *textedit=static_cast<QTextEdit*>(editor);
+  textedit->setPlainText(value);
 }
 
 void TextEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const{
   QTextEdit *textedit=static_cast<QTextEdit*>(editor);
-
-  //QComboBox *cBox = static_cast<QComboBox*>(editor);
 
   QString value = textedit->toPlainText();
 
@@ -40,3 +32,5 @@ void TextEditDelegate::updateEditorGeometry(QWidget *editor,const QStyleOptionVi
 }
 
 }
+//TODO KeyPressEvent überschreiben, Ctrl+Return rausfischen und dann closeEditor Oder doch irgendwie anders?
+//An welcher Stelle wäre es denn richtig? QTreeView? QStandardItemModel? QStandardItem? QItemDelegate?
