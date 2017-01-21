@@ -44,6 +44,18 @@ void MainWindow::on_f7button_clicked(){
 
 void MainWindow::on_f8button_clicked(){
   //Delete the selected node
+  QModelIndex index=_reqtree->currentIndex();
+  std::string uuid=get_uuid_by_modelindex(index);
+  if(uuid!=""){
+    //Lösche den Knoten in der Collection
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    _currentStorage->getNodeCollection().deleteNode(node);
+    //Lösche den Knoten im TreeModel
+    QStandardItem *item_parent=get_parent_item_by_modelindex(index);
+    if(item_parent!=nullptr){
+      _reqmodel->removeRow(index.row(),index.parent());
+    }
+  }
 }
 
 void MainWindow::on_f9button_clicked(){
