@@ -1,5 +1,9 @@
 #include "qreq/texteditdelegate.hpp"
 
+#include <QKeyEvent>
+
+#include <iostream>
+
 namespace qreq{
 
 TextEditDelegate::TextEditDelegate(QObject *parent)
@@ -8,6 +12,7 @@ TextEditDelegate::TextEditDelegate(QObject *parent)
 
 QWidget *TextEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const{
   QTextEdit *editor = new QTextEdit(parent);
+  //_editor = new QTextEdit(parent);
 
   return editor;
 }
@@ -31,6 +36,20 @@ void TextEditDelegate::updateEditorGeometry(QWidget *editor,const QStyleOptionVi
   editor->setGeometry(option.rect);
 }
 
+bool TextEditDelegate::eventFilter(QObject *editor, QEvent *event){
+  if (event->type() == QEvent::KeyPress) {
+    QKeyEvent* key_event = static_cast<QKeyEvent*>(event);
+    if(key_event->modifiers()==Qt::ControlModifier){
+      if(key_event->key()==Qt::Key_Return){
+        std::cout << "eventFilter delegate" << std::endl;
+        emit commitData(static_cast<QWidget*>(editor));
+        emit closeEditor(static_cast<QWidget*>(editor),QAbstractItemDelegate::EditNextItem);
+        return true;
+      }
+    }
+  }
+
+  return QItemDelegate::eventFilter(editor,event);
 }
-//TODO KeyPressEvent überschreiben, Ctrl+Return rausfischen und dann closeEditor Oder doch irgendwie anders?
-//An welcher Stelle wäre es denn richtig? QTreeView? QStandardItemModel? QStandardItem? QItemDelegate?
+
+}

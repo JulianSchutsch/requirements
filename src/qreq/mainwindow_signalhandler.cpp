@@ -30,6 +30,7 @@ void MainWindow::on_f3button_clicked(){
 
 void MainWindow::on_f4button_clicked(){
   //versetzen des aktuellen Knotens in den Edit-Mode
+  _reqtree->edit(_reqtree->currentIndex());
   //mal im QTreeView nachschauen und die methode aufrufen, die bei Doppelklick aufgerufen wird.
 }
 
