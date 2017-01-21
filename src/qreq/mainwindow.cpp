@@ -149,7 +149,7 @@ void MainWindow::generate_menu_recent(){
     signalMapper -> setMapping (openact, filename.c_str()) ;
     recentmenu->addAction(openact);
   }
-  connect (signalMapper, SIGNAL(mapped(QString)), this, SLOT(on_openact_triggered(QString const&))) ;
+  connect (signalMapper, SIGNAL(mapped(QString)), this, SLOT(on_openact_triggered(QString const&)));
   menubar->addMenu(recentmenu);
   setMenuBar(menubar);
   //Und jetzt gleich das letzte Projekt laden

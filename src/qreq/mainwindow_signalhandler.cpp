@@ -15,6 +15,7 @@ void MainWindow::on_f1button_clicked(){
 }
 
 void MainWindow::on_f2button_clicked(){
+  store_collection();
 }
 
 void MainWindow::on_f3button_clicked(){
@@ -25,19 +26,24 @@ void MainWindow::on_f3button_clicked(){
     set_current_project(dirname.toStdString());
     generate_menu_recent();
   }
-
 }
 
 void MainWindow::on_f4button_clicked(){
+  //versetzen des aktuellen Knotens in den Edit-Mode
+  //mal im QTreeView nachschauen und die methode aufrufen, die bei Doppelklick aufgerufen wird.
 }
 
 void MainWindow::on_f5button_clicked(){
+  //Create new node and copy content of old node into new node
+  new_node(true);
 }
 
 void MainWindow::on_f7button_clicked(){
+  new_node(false);
 }
 
 void MainWindow::on_f8button_clicked(){
+  //Delete the selected node
 }
 
 void MainWindow::on_f9button_clicked(){
