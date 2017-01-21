@@ -30,7 +30,7 @@ limiting the dependencies on libraries,
 You can pass to cmake, additionally to the ".." for the CMakeLists.txt
 folder,
 
--DDISABLE_REQ=OFF   Disable console requirements tool
--DDISABLE_GREQ=OFF  Disable graphical requirements tool
--DDISABLE_QREQ=OFF  Disable new graphical requirements tool
--DDISABLE_GTEST=OFF Disable test binary
+-DDISABLE_REQ=1   Disable console requirements tool
+-DDISABLE_GREQ=1  Disable graphical requirements tool
+-DDISABLE_QREQ=1  Disable new graphical requirements tool
+-DDISABLE_GTEST=1 Disable test binary
