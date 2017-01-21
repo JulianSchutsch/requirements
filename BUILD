@@ -19,6 +19,18 @@ You can also limit building to certain targets:
 
  make req     Only build console requirement tool
  make greq    Only build graphical requirement tool
+ make qreq    Only build new graphical requirement tool
  make t       Only build tests
 
 All three are based on the requirements library, librequirements.
+
+There is also a way to limit what CMAKE compiles into the makefile, hence
+limiting the dependencies on libraries,
+
+You can pass to cmake, additionally to the ".." for the CMakeLists.txt
+folder,
+
+-DDISABLE_REQ=OFF   Disable console requirements tool
+-DDISABLE_GREQ=OFF  Disable graphical requirements tool
+-DDISABLE_QREQ=OFF  Disable new graphical requirements tool
+-DDISABLE_GTEST=OFF Disable test binary
