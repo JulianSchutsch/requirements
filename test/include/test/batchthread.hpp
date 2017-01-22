@@ -62,7 +62,7 @@ namespace test {
       batch->waitForEmptyQueue();
       std::unique_lock<std::mutex> guard(responseMutex);
       if(!responseQueue.empty()) {
-        while(responseQueue.size()!=1) {
+        while(responseQueue.size()>1) {
           responseQueue.pop();
         }
         auto result = std::move(responseQueue.front());
@@ -72,7 +72,7 @@ namespace test {
       do {
         responseCondition.wait(guard);
       } while(responseQueue.empty());
-      while(responseQueue.size()!=1) {
+      while(responseQueue.size()>1) {
         responseQueue.pop();
       }
       auto result = std::move(responseQueue.front());
