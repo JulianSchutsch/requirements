@@ -1,4 +1,5 @@
 #include "qreq/reqtree.hpp"
+#include "qreq/texteditdelegate.hpp"
 
 #include <iostream>
 

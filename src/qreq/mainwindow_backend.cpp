@@ -63,5 +63,43 @@ void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements
   //--_changed_signal_ignore;   //TODO anschließen
 }
 
+requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
+
+  std::vector<std::string> parameters;
+  parameters.push_back(uuid);
+  std::vector<requirements::NodePtr> selections;
+  auto& collection = _currentStorage->getNodeCollection();
+  selections = requirements::select(collection, parameters);
+  requirements::NodePtr node = selections[0];
+
+  return node;
+}
+
+void MainWindow::new_node(bool copy_content){
+  //Erst mal die UUID des aktuellen Knotens herausfinden
+  QModelIndex index=_reqtree->currentIndex();
+  std::string uuid=get_uuid_by_modelindex(index);
+  if(uuid!=""){
+    //Der neue Knoten wird ein Bruder des aktuellen Knotens.
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    //Dazu brauchen wir also den Parent
+    requirements::NodePtr parent=node->getParent();
+    //Jetzt neuen Knoten erzeugen
+    auto& collection = _currentStorage->getNodeCollection();
+    auto newnode = collection.createNode("");
+    //Jetzt Knoten unter den parent bammeln
+    newnode->setLastOf(parent);
+    if(copy_content==true){
+      newnode->updateContent(node->getContent());
+    }
+    //Jetzt den Knoten in das Treemodel einfügen
+    //hinter dem letzten child von parent
+    QStandardItem* item_parent=get_parent_item_by_modelindex(index);
+    add_child_to_tree(item_parent,newnode);
+    //Focus dorthin
+    set_focus_to_uuid(item_parent,requirements::id_to_string(newnode->getId()).c_str());
+  }
+}
+
 
 }

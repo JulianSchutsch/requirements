@@ -9,7 +9,8 @@ namespace qreq{
 
 class TextEditDelegate : public QItemDelegate{
   Q_OBJECT
-
+protected:
+  bool eventFilter(QObject *editor, QEvent *event);
 public:
   TextEditDelegate(QObject *parent = 0);
 
