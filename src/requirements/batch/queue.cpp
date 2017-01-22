@@ -70,11 +70,9 @@ namespace requirements {
     
     void Queue::wait() {
       std::unique_lock<std::mutex> guard(queueMutex);
-      if(processQueue(status, guard)) {
-        return;
+      if(!processQueue(status, guard)) {
+        queueCondition.wait(guard);
       }
-      queueCondition.wait(guard);
-      processQueue(status, guard);
     }
     
     void Queue::notify() {
