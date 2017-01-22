@@ -101,5 +101,24 @@ void MainWindow::new_node(bool copy_content){
   }
 }
 
+void MainWindow::commit_to_collection(std::string const& uuid, std::string const& content){
+  std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
+  parameters.push_back(uuid);
+  std::vector<requirements::NodePtr> selections;
+  auto& collection = _currentStorage->getNodeCollection();
+  selections = requirements::select(collection, parameters);
+  //Und, haben wir jetzt den passenden Knoten? Ein bisschen mehr Doku zum select()
+  //wäre hilfreich
+  if(selections.size()==1){
+    //Oh, das ging ja...
+    requirements::NodePtr node = selections[0];
+    node->updateContent(content);
+  }
+}
+
+std::string MainWindow::newblob(std::string sourcefilename){
+  std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
+  return id;
+}
 
 }

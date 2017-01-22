@@ -2,8 +2,6 @@
 
 #include <QKeyEvent>
 
-#include <iostream>
-
 namespace qreq{
 
 TextEditDelegate::TextEditDelegate(QObject *parent)
@@ -12,7 +10,6 @@ TextEditDelegate::TextEditDelegate(QObject *parent)
 
 QWidget *TextEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const{
   QTextEdit *editor = new QTextEdit(parent);
-  //_editor = new QTextEdit(parent);
 
   return editor;
 }
@@ -41,7 +38,6 @@ bool TextEditDelegate::eventFilter(QObject *editor, QEvent *event){
     QKeyEvent* key_event = static_cast<QKeyEvent*>(event);
     if(key_event->modifiers()==Qt::ControlModifier){
       if(key_event->key()==Qt::Key_Return){
-        std::cout << "eventFilter delegate" << std::endl;
         emit commitData(static_cast<QWidget*>(editor));
         emit closeEditor(static_cast<QWidget*>(editor),QAbstractItemDelegate::EditNextItem);
         return true;

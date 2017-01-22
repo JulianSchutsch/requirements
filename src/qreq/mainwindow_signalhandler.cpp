@@ -1,9 +1,11 @@
 #include "qreq/mainwindow.hpp"
 #include "qreq/keycodewindow.hpp"
 #include "qreq/settings.hpp"
+#include "qreq/blobselector.hpp"
 
 #include <QApplication>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include <iostream>
 
@@ -31,7 +33,6 @@ void MainWindow::on_f3button_clicked(){
 void MainWindow::on_f4button_clicked(){
   //versetzen des aktuellen Knotens in den Edit-Mode
   _reqtree->edit(_reqtree->currentIndex());
-  //mal im QTreeView nachschauen und die methode aufrufen, die bei Doppelklick aufgerufen wird.
 }
 
 void MainWindow::on_f5button_clicked(){
@@ -60,16 +61,39 @@ void MainWindow::on_f8button_clicked(){
 }
 
 void MainWindow::on_f9button_clicked(){
+  QMessageBox::about(this,"QReq","Authors:\nJulian Schutsch\nDirk Neumann\nWebsite: https://github.com/JulianSchutsch/requirements");
 }
 
 void MainWindow::on_f10button_clicked(){
   QApplication::exit(0);
 }
 
+//Adds a new blob to storage.
 void MainWindow::on_newblobbutton_clicked(){
+  if(_currentStorage){
+    QString filename=QFileDialog::getOpenFileName(this,tr("Select file to be a blob"));
+    std::string trblob=newblob(filename.toStdString());
+    add_blob_to_row(_reqtree->currentIndex(),trblob);
+  }
+  else{
+    //TODO: Print message
+  }
 }
 
 void MainWindow::on_linkblobbutton_clicked(){
+  if(_currentStorage){
+    std::vector<std::string> blobs=_currentStorage->getBlobs();
+    BlobSelector bs(this);
+    for(auto& elem: blobs){
+      bs.append(elem);
+    }
+    int result=bs.exec();
+    if(result==QDialog::Accepted){
+      std::string selected_name=bs.get_selected_blob();
+      add_blob_to_row(_reqtree->currentIndex(),selected_name);
+      //std::cout << "selected_name " << selected_name << std::endl;
+    }
+  }
 }
 
 //bool MainWindow::eventFilter(QObject *object, QEvent *event) {
@@ -157,26 +181,82 @@ void MainWindow::on_reqtree_expanded(const QModelIndex& i){
 }
 
 void MainWindow::on_reqmodel_item_changed(QStandardItem* item){
-  std::cout << "on_reqmodel_item_changed" << std::endl;
+  //Commit new data to collection
+  std::string model_node=get_uuid_by_modelindex(item->index());
+  std::string model_text=get_text_by_modelindex(item->index());
+  commit_to_collection(model_node,model_text);
+  //std::cout << "on_reqmodel_item_changed " << model_node << " " << model_text << std::endl;
 }
 
+//Move node up one level. New parent is parent of parent.
+//If there is no grandparent, we have the grandfather paradoxon ... not.
 void MainWindow::on_reqtree_ctrl_left(const QModelIndex& i){
-  std::cout << "on_reqtree_ctrl_left" << std::endl;
-  std::cout << get_uuid_by_modelindex(i) << std::endl;
-  std::cout << get_text_by_modelindex(i) << std::endl;
-
+  std::string uuid=get_uuid_by_modelindex(i);
+  if(uuid!=""){
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    requirements::NodePtr parent_node=node->getParent();
+    if(parent_node!=nullptr){
+      requirements::NodePtr grandparent_node=parent_node->getParent();
+      if(grandparent_node!=nullptr){
+        node->setLastOf(grandparent_node);
+        //Jetzt Baum neu malen mit Springen zur UUID
+        printtree(uuid);
+      }
+    }
+  }
 }
 
+//Move a node down one level. New parent is the older brother.
+//If there is no older brother, nothing changes.
 void MainWindow::on_reqtree_ctrl_right(const QModelIndex& i){
-  std::cout << "on_reqtree_ctrl_right" << std::endl;
+  std::string uuid=get_uuid_by_modelindex(i);
+  if(uuid!=""){
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    //wir brauchen die Liste aller Brüder
+    //dazu fragen wie mal beim Vater nach der Geburtsurkunde
+    //aber erst mal den Bengel nach seinem Vater fragen
+    requirements::NodePtr parent_node=node->getParent();
+    auto children=parent_node->getChildren();
+    for(auto it=children.begin();it!=children.end();++it) {
+      if(node==*it) {
+        //found.
+        if(it!=children.begin()){
+          //er hat auch einen großen bruder:
+          auto brother=it;
+          --brother;
+          //So, erst mal Schluck Glühwein nehmen
+          //Jetzt gehts eklig weiter, jetzt wird nämlich der große Bruder zum Vater
+          node->setLastOf(*brother);
+          printtree(requirements::id_to_string(node->getId()));
+        }
+        break;
+      }
+    }
+  }
 }
 
+//Move node up.
 void MainWindow::on_reqtree_ctrl_up(const QModelIndex& i){
-  std::cout << "on_reqtree_ctrl_up" << std::endl;
+  std::string uuid=get_uuid_by_modelindex(i);
+  if(uuid!=""){
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    node->up();
+    //Jetzt den Knoten mit dem Vorgängerknoten gleicher Ebene im TreeModel vertauschen
+    //brutale Methode: Printtree
+    printtree(requirements::id_to_string(node->getId()));
+  }
 }
 
+//Move node down
 void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
-  std::cout << "on_reqtree_ctrl_down" << std::endl;
+  std::string uuid=get_uuid_by_modelindex(i);
+  if(uuid!=""){
+    requirements::NodePtr node=get_node_for_uuid(uuid);
+    node->down();
+    //Jetzt den Knoten mit dem Vorgängerknoten gleicher Ebene im TreeModel vertauschen
+    //brutale Methode: Printtree
+    printtree(requirements::id_to_string(node->getId()));
+  }
 }
 
 void MainWindow::on_reqtree_alt_return(const QModelIndex& i){

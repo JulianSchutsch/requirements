@@ -18,6 +18,8 @@ namespace qreq{
   "Ctrl+up: Move node up\n"
   "Ctrl+down: Move node down\n"
   "Alt+Return: Copy UUID to command line\n"
+  "Ctrl+Return: Quit edit element\n"
+  "ESC: Quit edit mode\n"
   "+: Expand node\n"
   "-: Collapse node\n";
 
