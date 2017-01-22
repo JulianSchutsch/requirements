@@ -269,6 +269,7 @@ void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
 
 void MainWindow::on_commandline_return(std::string const& command){
   std::cout << "command entered: " << command << std::endl;
+  _threadconnector.send_command(command);
 }
 
 }

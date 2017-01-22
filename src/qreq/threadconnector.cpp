@@ -1,5 +1,4 @@
 #include "qreq/threadconnector.hpp"
-
 #include <functional>
 #include <iostream>
 
@@ -25,7 +24,10 @@ void ThreadConnector::send_command(std::string command){
 }
 
 void ThreadConnector::batch_ret(batch::Response&& bres){
-  (void) bres;
+  _conn_mutex.lock();
+  _nodeCollection=std::move(bres.nodeCollection);
+  _isnew=true;
+  _conn_mutex.unlock();
   std::cout << "batch_ret" << std::endl;
 }
 
@@ -33,6 +35,13 @@ void ThreadConnector::batch_message(Status::MessageKind kind, std::string const&
   (void)kind;
   (void)message;
   std::cout << "batch_message" << std::endl;
+}
+
+std::unique_ptr<NodeCollection> ThreadConnector::nodeCollection(){
+  _conn_mutex.lock();
+  _isnew=false;
+  _conn_mutex.unlock();
+  return std::move(_nodeCollection);
 }
 
 }

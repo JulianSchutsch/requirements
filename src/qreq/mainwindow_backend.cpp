@@ -80,6 +80,7 @@ void MainWindow::new_node(bool copy_content){
   QModelIndex index=_reqtree->currentIndex();
   std::string uuid=get_uuid_by_modelindex(index);
   if(uuid!=""){
+    add_new_brother_for(uuid);
     //Der neue Knoten wird ein Bruder des aktuellen Knotens.
     requirements::NodePtr node=get_node_for_uuid(uuid);
     //Dazu brauchen wir also den Parent
@@ -119,6 +120,16 @@ void MainWindow::commit_to_collection(std::string const& uuid, std::string const
 std::string MainWindow::newblob(std::string sourcefilename){
   std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
   return id;
+}
+
+void MainWindow::add_new_brother_for(std::string const& uuid){
+  //Also erst mal im Req-Baum finden
+  requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
+  //Jetzt neuen Knoten erzeugen
+  auto& collection = _currentStorage->getNodeCollection();
+  auto newnode = collection.createNode("");
+  //Jetzt Knoten unter den parent bammeln
+  newnode->setLastOf(parent);
 }
 
 }

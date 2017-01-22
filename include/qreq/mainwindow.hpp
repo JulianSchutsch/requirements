@@ -54,13 +54,13 @@ Q_OBJECT
   requirements::NodePtr get_node_for_uuid(std::string const& uuid);
   void commit_to_collection(std::string const& uuid, std::string const& content);
   std::string newblob(std::string sourcefilename);
+  void add_new_brother_for(std::string const& uuid);
 
   //Tree functions
   void set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid);
   std::string get_uuid_by_modelindex(const QModelIndex& index);
   std::string get_text_by_modelindex(const QModelIndex& index);
   QStandardItem* get_parent_item_by_modelindex(const QModelIndex& index);
-  //void add_new_brother_for(std::string const& uuid);
   void add_blob_to_row(QModelIndex const& index,std::string const& blobtext);
 
 private slots:
