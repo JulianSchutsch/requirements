@@ -1,6 +1,8 @@
 #pragma once
 
 #include <mutex>
+#include <string>
+#include <vector>
 
 #include "requirements/batch/thread.hpp"
 #include "requirements/batch/response.hpp"
@@ -24,7 +26,7 @@ public:
   void init();
   void send_command(std::string command);
   void batch_ret(batch::Response&& bres);
-  void batch_message(Status::MessageKind kind, std::string const& message);
+  void batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters);
   void batch_edit(NodePtr node){(void)node;}
   std::unique_ptr<NodeCollection> nodeCollection();
 };

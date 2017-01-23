@@ -13,9 +13,9 @@ ThreadConnector::~ThreadConnector(){
 }
 
 void ThreadConnector::init(){
-  std::function<void(batch::Response&&)> bret = std::bind(&ThreadConnector::batch_ret,this,std::placeholders::_1);
-  std::function<void(Status::MessageKind,std::string const&)> bmes = std::bind(&ThreadConnector::batch_message,this,std::placeholders::_1,std::placeholders::_2);
-  std::function<void(NodePtr)> efun = std::bind(&ThreadConnector::batch_edit,this,std::placeholders::_1);
+  auto bret = std::bind(&ThreadConnector::batch_ret,this,std::placeholders::_1);
+  auto bmes = std::bind(&ThreadConnector::batch_message,this,std::placeholders::_1,std::placeholders::_2, std::placeholders::_3);
+  auto efun = std::bind(&ThreadConnector::batch_edit,this,std::placeholders::_1);
   _batchthread=new batch::Thread(bret,bmes,efun);
 }
 
@@ -31,9 +31,10 @@ void ThreadConnector::batch_ret(batch::Response&& bres){
   std::cout << "batch_ret" << std::endl;
 }
 
-void ThreadConnector::batch_message(Status::MessageKind kind, std::string const& message){
+void ThreadConnector::batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters){
   (void)kind;
   (void)message;
+  (void)parameters;
   std::cout << "batch_message" << std::endl;
 }
 
