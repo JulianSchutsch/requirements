@@ -13,7 +13,7 @@ namespace requirements {
     
     void RequirementsBuilder::setMajorPrefix(const std::string &prefix) {
       if (currentScope != nullptr) {
-        throw Exception("Cannot change major prefix with current active scope");
+        throw Exception(Exception::Kind::Internal, "Cannot change major prefix with current active scope");
       }
       majorPrefixStates[majorPrefix] = majorNumber;
       majorPrefix = prefix;
@@ -29,7 +29,7 @@ namespace requirements {
       const std::string &text)
       : builder(a_builder) {
       if (builder.majorPrefix.empty()) {
-        throw Exception("Require major prefix");
+        throw Exception(Exception::Kind::Internal, "Require major prefix");
       }
       previousScope = builder.currentScope;
       builder.currentScope = this;

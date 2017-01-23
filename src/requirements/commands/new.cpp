@@ -26,7 +26,7 @@ namespace requirements {
     
     New::New(Parser &parser) {
       if (parser.getRemaining() != "") {
-        throw Exception("No parameters for new command expected");
+        throw Exception(Exception::Kind::User, "New does not have parameters.");
       }
     }
     

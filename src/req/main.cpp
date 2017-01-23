@@ -22,7 +22,7 @@ void editCallback(NodePtr node) {
   if(util::runProcess("/bin/nano", {tempFilename.native()})) {
     node->updateContent(util::readFileToString(tempFilename.native()));
   } else {
-    throw ::requirements::Exception("Failed to run editor");
+    throw ::requirements::Exception(Exception::Kind::Other, "Failed to run editor");
   }
   boost::filesystem::remove_all(tempFilename);
 }

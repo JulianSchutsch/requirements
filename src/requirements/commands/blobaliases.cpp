@@ -11,7 +11,7 @@ namespace requirements {
       auto storage = status.openStorage();
       auto selected = ::requirements::selectBlobs(*storage,{id});
       if(selected.size()!=1) {
-        throw Exception("BlobAliases requires exactly one blob to be selected");
+        throw Exception(Exception::Kind::User, "BlobAliases requires exactly one blob to be selected.");
       }
       auto node = selected[0];
       storage->setBlobAliases(node, aliases);
@@ -23,7 +23,7 @@ namespace requirements {
     
     BlobAliases::BlobAliases(Parser& parser) {
       if(!parser.nextSimple()) {
-        throw Exception("Expect blob id");
+        throw Exception(Exception::Kind::User, "BlobAliases expects blob id as first parameter.");
       }
       id = parser.getTokenString();
       aliases = parser.getRemaining();

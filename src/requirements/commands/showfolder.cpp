@@ -12,7 +12,7 @@ namespace requirements {
     
     ShowFolder::ShowFolder(Parser &parser) {
       if(parser.getRemaining()!="") {
-        throw Exception("showfolder does not accept any parameters");
+        throw Exception(Exception::Kind::User, "ShowFolder does not have parameters");
       }
     }
   }

@@ -21,7 +21,7 @@ namespace requirements {
   
   std::unique_ptr<::requirements::IStorage> Status::openStorage() {
     if (folder == "") {
-      throw Exception("No folder selected");
+      throw Exception(Exception::Kind::User, "No folder selected");
     }
     return std::make_unique<::requirements::storage::Text>(folder, true);
   }

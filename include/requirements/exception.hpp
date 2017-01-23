@@ -2,15 +2,33 @@
 
 #include <exception>
 #include <string>
+#include <vector>
+#include "util/formatstring.hpp"
 
 namespace requirements {
     
     class Exception : public std::exception {
-    private:
-      std::string reason;
     public:
-      Exception(const std::string &a_reason)
-        : reason(a_reason) {}
+      enum class Kind {
+        Internal,
+        User,
+        Other
+      };
+    private:
+      Kind kind;
+      std::string reason;
+      std::vector<std::string> parameters;
+    public:
+      Kind getKind() const { return kind; }
+      const std::string& getReason() const { return reason; }
+      const std::string& getParameters() const { return getParameters(); }
+      Exception(Kind a_kind, const std::string& a_reason)
+        : kind(a_kind)
+        , reason(a_reason) {}
+      Exception(Kind a_kind, const std::string& a_reason, const std::vector<std::string>& a_parameters)
+        : kind(a_kind)
+        , reason(a_reason)
+        , parameters(a_parameters) {}
       
       const char *what() const noexcept override { return reason.c_str(); }
     };

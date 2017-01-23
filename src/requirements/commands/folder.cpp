@@ -22,7 +22,7 @@ namespace requirements {
       }
       folder = parser.getTokenString();
       if (parser.nextSimple()) {
-        throw requirements::Exception("Unexpected second parameter");
+        throw requirements::Exception(Exception::Kind::User, "Unexpected second parameter.");
       }
     }
     

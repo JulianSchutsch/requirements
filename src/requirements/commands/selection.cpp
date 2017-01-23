@@ -38,7 +38,7 @@ namespace requirements {
           ::requirements::selectFromIds(storage.getNodeCollection(), status.selections[0], result);
         }
         if (result.size() != 1) {
-          throw Exception("Command requires exactly one node");
+          throw Exception(Exception::Kind::User, "Command requires exactly one node");
         }
         return result[0];
       }
@@ -46,7 +46,7 @@ namespace requirements {
       ::requirements::NodePtr Selection::extractNode(::requirements::IStorage &storage) const {
         auto result = extractNodes(storage);
         if (result.size() != 1) {
-          throw Exception("Command requires exactly one node");
+          throw Exception(Exception::Kind::User, "Command requires exactly one node");
         }
         return result[0];
       }

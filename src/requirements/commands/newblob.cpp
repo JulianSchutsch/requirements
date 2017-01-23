@@ -12,7 +12,7 @@ namespace requirements {
       auto storage = status.openStorage();
       std::string id = importBlob(*storage, filename);
       if(id.empty()) {
-        throw Exception("Failed to import blob: "+filename);
+        throw Exception(Exception::Kind::User, "Failed to import blob file %1%.", {filename});
       }
     }
     
@@ -20,11 +20,11 @@ namespace requirements {
       : filename(a_filename) {}
     NewBlob::NewBlob(Parser &parser) {
       if(!parser.nextSimple()) {
-        throw Exception("Missing filename");
+        throw Exception(Exception::Kind::User, "newblob requires filename as parameter.");
       }
       filename = parser.getTokenString();
       if(parser.nextSimple()) {
-        throw Exception("Only one filename expected");
+        throw Exception(Exception::Kind::User, "newblob can only accept a single filename parameter.");
       }
     }
   }

@@ -19,7 +19,7 @@ namespace requirements {
       builder.currentScope = this;
       if (previousScope) {
         if (previousScope->hasElements) {
-          throw Exception("Cannot add sections to a section with common elements");
+          throw Exception(Exception::Kind::Internal, "Cannot add sections to a section with common elements");
         }
       }
       
@@ -50,7 +50,7 @@ namespace requirements {
     
     void SectionsBuilderScope::addElement(::requirements::Id id) {
       if (latestChild != nullptr) {
-        throw Exception("Cannot add elements to a section with sub sections");
+        throw Exception(Exception::Kind::Internal, "Cannot add elements to a section with sub sections");
       }
       hasElements = true;
       section->elements.emplace_back(id);
@@ -58,7 +58,7 @@ namespace requirements {
     
     void SectionsBuilder::addElement(::requirements::Id id) {
       if (currentScope == nullptr) {
-        throw Exception("Cannot add element without active SectionsBuilderScope");
+        throw Exception(Exception::Kind::Internal, "Cannot add element without active SectionsBuilderScope");
       }
       currentScope->addElement(id);
     }

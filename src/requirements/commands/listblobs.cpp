@@ -9,7 +9,7 @@ namespace requirements {
   namespace commands {
     ListBlobs::ListBlobs(Parser &parser) {
       if(parser.getRemaining()!="") {
-        throw Exception("No parameters expected");
+        throw Exception(Exception::Kind::User, "Listblobs has no parameters.");
       }
     }
     void ListBlobs::execute(Status& status) {

@@ -1,6 +1,7 @@
 #include "requirements/commands/command.hpp"
 
 #include <map>
+#include <algorithm>
 
 #include "requirements/exception.hpp"
 
@@ -54,12 +55,13 @@ namespace requirements {
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {
       Parser parser(str);
       if (!parser.next() || parser.getTokenType() != Parser::TokenType::Symbol) {
-        throw Exception("Invalid or no command");
+        throw Exception(Exception::Kind::User, "Invalid or no command.");
       }
       auto cmdStr = parser.getTokenString();
+      std::transform(cmdStr.begin(), cmdStr.end(), cmdStr.begin(), ::tolower);
       auto it = commands.find(cmdStr);
       if (it == commands.end()) {
-        throw Exception("Command not found");
+        throw Exception(Exception::Kind::User, "Command %1% not found.", {cmdStr});
       }
       return std::unique_ptr<ICommand>(it->second(parser));
     }

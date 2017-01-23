@@ -14,11 +14,12 @@ namespace requirements {
       auto storage = status.openStorage();
       annotations::ParserResult parsed;
       if(!annotations::parse(*storage, parsed)) {
-        throw Exception("Issues during parsing, cannot print");
+        throw Exception(Exception::Kind::User, "Issues during parsing, cannot print");
       }
-      std::fstream file(status.folder+"/latex/requirements.tex", std::fstream::out);
+      std::string printFile = status.folder+"/latex/requirements.tex";
+      std::fstream file(printFile, std::fstream::out);
       if(!file) {
-        throw Exception("Could not open target file for print");
+        throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {printFile});
       }
       generators::latex::printRequirements(*parsed.sections, *parsed.requirements, file);
       status.messageFunction(Status::MessageKind::Message, "Generated requirements document in requirements "+status.folder+"/latex/requirements.tex");
@@ -29,7 +30,7 @@ namespace requirements {
     
     Print::Print(Parser& parser) {
       if(parser.getRemaining()!="") {
-        throw Exception("No parameters for print supported");
+        throw Exception(Exception::Kind::User, "Print has no parameters.");
       }
     }
   }
