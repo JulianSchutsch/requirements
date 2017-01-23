@@ -26,6 +26,11 @@ void ThreadConnector::send_command(std::string command){
 void ThreadConnector::batch_ret(batch::Response&& bres){
   _conn_mutex.lock();
   _nodeCollection=std::move(bres.nodeCollection);
+  _errors=std::move(bres.errors);
+  _status=std::move(bres.status);
+  _shortcuts=std::move(bres.shortcuts);
+  _sections=std::move(bres.sections);
+  _requirements=std::move(bres.requirements);
   _isnew=true;
   _conn_mutex.unlock();
   std::cout << "batch_ret" << std::endl;
@@ -38,11 +43,12 @@ void ThreadConnector::batch_message(Status::MessageKind kind, std::string const&
   std::cout << "batch_message" << std::endl;
 }
 
-std::unique_ptr<NodeCollection> ThreadConnector::nodeCollection(){
+bool ThreadConnector::is_new(){
   _conn_mutex.lock();
+  bool retval=_isnew;
   _isnew=false;
   _conn_mutex.unlock();
-  return std::move(_nodeCollection);
+  return retval;
 }
 
 }

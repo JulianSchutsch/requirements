@@ -36,12 +36,18 @@ void MainWindow::on_f4button_clicked(){
 }
 
 void MainWindow::on_f5button_clicked(){
-  //Create new node and copy content of old node into new node
-  new_node(true);
+  //Create new node as sibling and copy content of old node into new node
+  new_node(true,true);
+}
+
+void MainWindow::on_f6button_clicked(){
+  //Create new node as sibling without content
+  new_node(true,false);
 }
 
 void MainWindow::on_f7button_clicked(){
-  new_node(false);
+  //Create new node as child
+  new_node(false,false);
 }
 
 void MainWindow::on_f8button_clicked(){
@@ -152,6 +158,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
       break;
     case Qt::Key_F5:
       on_f5button_clicked();
+      break;
+    case Qt::Key_F6:
+      on_f6button_clicked();
       break;
     case Qt::Key_F7:
       on_f7button_clicked();

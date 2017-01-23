@@ -50,11 +50,10 @@ Q_OBJECT
   void printtree(std::string const& uuid_to_jump="");
   void add_children_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
   void add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
-  void new_node(bool copy_content=false);
+  void new_node(bool sibling=true,bool copy_content=false);
   requirements::NodePtr get_node_for_uuid(std::string const& uuid);
   void commit_to_collection(std::string const& uuid, std::string const& content);
   std::string newblob(std::string sourcefilename);
-  void add_new_brother_for(std::string const& uuid);
 
   //Tree functions
   void set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid);
@@ -69,6 +68,7 @@ private slots:
   void on_f3button_clicked();
   void on_f4button_clicked();
   void on_f5button_clicked();
+  void on_f6button_clicked();
   void on_f7button_clicked();
   void on_f8button_clicked();
   void on_f9button_clicked();

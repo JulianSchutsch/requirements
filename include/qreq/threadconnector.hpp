@@ -19,7 +19,14 @@ class ThreadConnector{
   bool _isnew;
   batch::Thread* _batchthread;
   std::mutex _conn_mutex;
+  //std::unique_ptr<NodeCollection> _nodeCollection;
+/*other*/ public:
   std::unique_ptr<NodeCollection> _nodeCollection;
+  std::unique_ptr<::requirements::Status> _status;
+  std::unique_ptr<::requirements::annotations::Errors> _errors;
+  std::unique_ptr<::requirements::annotations::Shortcuts> _shortcuts;
+  std::unique_ptr<::requirements::annotations::Sections> _sections;
+  std::unique_ptr<::requirements::annotations::Requirements> _requirements;
 public:
   ThreadConnector();
   ~ThreadConnector();
@@ -28,7 +35,8 @@ public:
   void batch_ret(batch::Response&& bres);
   void batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters);
   void batch_edit(NodePtr node){(void)node;}
-  std::unique_ptr<NodeCollection> nodeCollection();
+  bool is_new();
+  //std::unique_ptr<NodeCollection> nodeCollection();
 };
 
 }

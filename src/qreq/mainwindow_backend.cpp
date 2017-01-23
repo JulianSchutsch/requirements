@@ -75,30 +75,28 @@ requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
   return node;
 }
 
-void MainWindow::new_node(bool copy_content){
+void MainWindow::new_node(bool sibling,bool copy_content){
   //Erst mal die UUID des aktuellen Knotens herausfinden
   QModelIndex index=_reqtree->currentIndex();
   std::string uuid=get_uuid_by_modelindex(index);
   if(uuid!=""){
-    add_new_brother_for(uuid);
-    //Der neue Knoten wird ein Bruder des aktuellen Knotens.
-    requirements::NodePtr node=get_node_for_uuid(uuid);
-    //Dazu brauchen wir also den Parent
-    requirements::NodePtr parent=node->getParent();
     //Jetzt neuen Knoten erzeugen
     auto& collection = _currentStorage->getNodeCollection();
     auto newnode = collection.createNode("");
-    //Jetzt Knoten unter den parent bammeln
-    newnode->setLastOf(parent);
-    if(copy_content==true){
-      newnode->updateContent(node->getContent());
+    requirements::NodePtr oldnode=get_node_for_uuid(uuid);
+    if(sibling==true){
+      //Der neue Knoten wird ein Bruder des aktuellen Knotens
+      newnode->setNextTo(oldnode);
     }
-    //Jetzt den Knoten in das Treemodel einfügen
-    //hinter dem letzten child von parent
-    QStandardItem* item_parent=get_parent_item_by_modelindex(index);
-    add_child_to_tree(item_parent,newnode);
-    //Focus dorthin
-    set_focus_to_uuid(item_parent,requirements::id_to_string(newnode->getId()).c_str());
+    else{
+      //Der neue Knoten wird ein Kind des aktuellen Knotens
+      newnode->setLastOf(oldnode);
+    }
+    if(copy_content==true){
+      newnode->updateContent(oldnode->getContent());
+    }
+    //Und jetzt ab auf den Bildschirm
+    printtree(requirements::id_to_string(newnode->getId()).c_str());
   }
 }
 
@@ -120,16 +118,6 @@ void MainWindow::commit_to_collection(std::string const& uuid, std::string const
 std::string MainWindow::newblob(std::string sourcefilename){
   std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
   return id;
-}
-
-void MainWindow::add_new_brother_for(std::string const& uuid){
-  //Also erst mal im Req-Baum finden
-  requirements::NodePtr parent=get_node_for_uuid(uuid)->getParent();
-  //Jetzt neuen Knoten erzeugen
-  auto& collection = _currentStorage->getNodeCollection();
-  auto newnode = collection.createNode("");
-  //Jetzt Knoten unter den parent bammeln
-  newnode->setLastOf(parent);
 }
 
 }

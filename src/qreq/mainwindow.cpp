@@ -78,7 +78,10 @@ void MainWindow::generate_view(){
   QPushButton *f5_button=new QPushButton(tr("F5 Copy"));
   connect(f5_button,SIGNAL(clicked()),this,SLOT(on_f5button_clicked()));
   f5_button->setFocusPolicy(Qt::NoFocus);
-  QPushButton *f7_button=new QPushButton(tr("F7 New"));
+  QPushButton *f6_button=new QPushButton(tr("F6 New Sibling"));
+  connect(f6_button,SIGNAL(clicked()),this,SLOT(on_f6button_clicked()));
+  f6_button->setFocusPolicy(Qt::NoFocus);
+  QPushButton *f7_button=new QPushButton(tr("F7 New Child"));
   connect(f7_button,SIGNAL(clicked()),this,SLOT(on_f7button_clicked()));
   f7_button->setFocusPolicy(Qt::NoFocus);
   QPushButton *f8_button=new QPushButton(tr("F8 Delete"));
@@ -97,6 +100,7 @@ void MainWindow::generate_view(){
   bottombuttonbox->addWidget(f3_button);
   bottombuttonbox->addWidget(f4_button);
   bottombuttonbox->addWidget(f5_button);
+  bottombuttonbox->addWidget(f6_button);
   bottombuttonbox->addWidget(f7_button);
   bottombuttonbox->addWidget(f8_button);
   bottombuttonbox->addWidget(f9_button);
