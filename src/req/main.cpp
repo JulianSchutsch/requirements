@@ -44,7 +44,12 @@ int main(int argc, char** args) {
     [](batch::Response&&){},
     [](Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
       (void)kind;
-      std::cout<<util::formatString(msg, parameters)<<std::endl;
+      std::string result;
+      if(util::formatString(msg, parameters, result)) {
+        std::cout<<result<<std::endl;
+      } else {
+        std::cout<<"Failed format, format string is: "<<msg<<std::endl;
+      }
     },
     &editCallback,
     util::getConfigPath()+"/.req_status.xml");

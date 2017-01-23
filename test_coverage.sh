@@ -4,7 +4,7 @@ set -e
 
 mkdir -p test_build
 pushd test_build >/dev/null
-cmake .. -DCMAKE_BUILD_TYPE=GCOV -DDISABLE_GREQ=1 -DDISABLE_QREQ=1 -DDISABLE_REQ=1
+cmake .. -DCMAKE_BUILD_TYPE=GCOV -DDISABLE_QREQ=1 -DDISABLE_REQ=1
 make
 
 ROOTFOLDER=$(realpath ..)

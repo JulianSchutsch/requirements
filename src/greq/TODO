@@ -1,7 +1,0 @@
-Anzeigen, wenn etwas an der collection geändert wurde (* oder so)
----------------
-Ist es möglich, ein beliebiges anderes Widget in einen Gtk::TreeView zu stecken?
-Mit Qt hab ichs mal bei medigo3 hingekriegt.
-Vielleicht, indem man von einen Gtk::CellRenderer ableitet wie es 
-Gtk::CellRendererProgress und Gtk::CellRendererPixbuf tun...
----------------

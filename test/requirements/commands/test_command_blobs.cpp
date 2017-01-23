@@ -51,7 +51,6 @@ TEST(Commands, NewBlob) {
   ASSERT_EQ(listResult.size(), 2);
   for(auto result: listResult) {
     auto blobFile = b.folder.getName()+"/blob/"+result[0];
-    std::cout<<blobFile<<std::endl;
     ASSERT_EQ(util::readFileToString(blobFile), blobData);
   }
   boost::filesystem::remove(fileName);
