@@ -4,18 +4,17 @@
 
 namespace util {
   
-  bool formatString(const std::string& format, const std::vector<std::string>& parameters, std::string& result) {
+  std::string formatString(const std::string& format, const std::vector<std::string>& parameters) {
     try {
       auto s = boost::format(format);
       for (auto &parameter: parameters) {
         s = s % parameter;
       }
-      result = s.str();
+      return s.str();
     }
     catch(...) {
-      return false;
     }
-    return true;
+    return "(failed formatString:)"+format;
   }
   
 }

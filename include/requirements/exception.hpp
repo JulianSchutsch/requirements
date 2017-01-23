@@ -21,7 +21,7 @@ namespace requirements {
     public:
       Kind getKind() const { return kind; }
       const std::string& getReason() const { return reason; }
-      const std::string& getParameters() const { return getParameters(); }
+      const std::vector<std::string>& getParameters() const { return parameters; }
       Exception(Kind a_kind, const std::string& a_reason)
         : kind(a_kind)
         , reason(a_reason) {}

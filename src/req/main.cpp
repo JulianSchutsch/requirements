@@ -44,17 +44,27 @@ int main(int argc, char** args) {
     [](batch::Response&&){},
     [](Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
       (void)kind;
-      std::string result;
-      if(util::formatString(msg, parameters, result)) {
-        std::cout<<result<<std::endl;
-      } else {
-        std::cout<<"Failed format, format string is: "<<msg<<std::endl;
-      }
+      std::cout<<util::formatString(msg, parameters)<<std::endl;
     },
     &editCallback,
     util::getConfigPath()+"/.req_status.xml");
   
-  batchThread.enqueue(commands::assembleFromString(commandStr));
+  try {
+    batchThread.enqueue(commands::assembleFromString(commandStr));
+  } catch(::requirements::Exception& e) {
+    switch(e.getKind()) {
+      case Exception::Kind::Internal: {
+        std::cout<<"*** Internal error ***"<<std::endl;
+        std::cout<<"This kind of error is worth a bug report, it is not your fault."<<std::endl;
+        std::cout<<"Message: "<<util::formatString(e.getReason(), e.getParameters())<<std::endl;
+        break;
+      }
+      case Exception::Kind::User:
+        break;
+      case Exception::Kind::Other:
+        break;
+    }
+  }
   
   return 0;
 }

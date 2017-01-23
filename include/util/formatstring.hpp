@@ -5,6 +5,6 @@
 
 namespace util {
   
-  bool formatString(const std::string& format, const std::vector<std::string>& parameters, std::string& result);
+  std::string formatString(const std::string& format, const std::vector<std::string>& parameters);
   
 }
