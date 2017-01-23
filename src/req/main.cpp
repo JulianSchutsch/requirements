@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <include/requirements/batch/response.hpp>
 
 #include "util/path.hpp"
 #include "util/process.hpp"
@@ -56,7 +57,15 @@ int main(int argc, char** args) {
   auto commandStr = joinArgs(argc, args);
 
   batch::Thread batchThread(
-    [](batch::Response&&){},
+    [](batch::Response&& r){
+      if(!r.status->selections[0].empty()) {
+        std::cout<<"Selected: ";
+        for(auto selected: r.status->selections[0]) {
+          std::cout<<id_to_string(selected)<<" ";
+        }
+        std::cout<<std::endl;
+      }
+    },
     [](Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
       switch(kind)
       {

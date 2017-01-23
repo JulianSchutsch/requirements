@@ -1,6 +1,7 @@
 #include "requirements/batch/queue.hpp"
 
 #include <thread>
+#include <include/requirements/exception.hpp>
 
 #include "requirements/annotations/parser.hpp"
 
@@ -58,7 +59,21 @@ namespace requirements {
       while (!queue.empty()) {
         auto &top = queue.front();
         guard.unlock();
-        top->execute(status);
+        try {
+          top->execute(status);
+        } catch(::requirements::Exception& e) {
+          switch(e.getKind()) {
+            case Exception::Kind::Internal:
+              status.messageFunction(Status::MessageKind::InternalError, e.getReason(), e.getParameters());
+              break;
+            case Exception::Kind::User:
+              status.messageFunction(Status::MessageKind::UserError, e.getReason(), e.getParameters());
+              break;
+            case Exception::Kind::Other:
+              status.messageFunction(Status::MessageKind::OtherError, e.getReason(), e.getParameters());
+              break;
+          }
+        }
         guard.lock();
         queue.pop();
       }
