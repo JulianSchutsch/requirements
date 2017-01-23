@@ -26,7 +26,7 @@ namespace requirements {
       Message,
       Content
     };
-    using MessageFunction = std::function<void(MessageKind, const std::string&)>;
+    using MessageFunction = std::function<void(MessageKind, const std::string&, const std::vector<std::string>& parameters)>;
     using EditFunction = std::function<void(NodePtr)>;
     MessageFunction messageFunction;
     EditFunction editFunction;

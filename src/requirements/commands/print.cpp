@@ -22,7 +22,7 @@ namespace requirements {
         throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {printFile});
       }
       generators::latex::printRequirements(*parsed.sections, *parsed.requirements, file);
-      status.messageFunction(Status::MessageKind::Message, "Generated requirements document in requirements "+status.folder+"/latex/requirements.tex");
+      status.messageFunction(Status::MessageKind::Message, "Generated requirements document in requirements %1% ", {printFile});
   
     }
     

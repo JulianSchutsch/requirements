@@ -19,9 +19,15 @@ static const char* blobData = "Some data for the blob;";
 static const char* blobAlias = "blobAlias1";
 static const char* blobAlias2 = "blobAlias2";
 
-static std::vector<std::string> listBlobs(::test::BatchThread& b) {
-  std::vector<std::string> listResult;
-  b.msg_content = [&listResult](const std::string& msg) {listResult.emplace_back(msg);};
+using BlobListResult = std::vector<std::vector<std::string>>;
+
+static BlobListResult listBlobs(::test::BatchThread& b) {
+  BlobListResult listResult;
+  b.msg_content = [&listResult](const std::string& msg, const std::vector<std::string>& parameters) {
+    (void)msg;
+    ASSERT_EQ(parameters.size(), 2);
+    listResult.emplace_back(parameters);
+  };
   b.batch->enqueue(commands::assembleFromString("listblobs"));
   b.wait();
   return std::move(listResult);
@@ -44,9 +50,8 @@ TEST(Commands, NewBlob) {
   listResult = listBlobs(b);
   ASSERT_EQ(listResult.size(), 2);
   for(auto result: listResult) {
-    auto it = result.find("->");
-    ASSERT_NE(it, std::string::npos);
-    auto blobFile = b.folder.getName()+"/blob/"+std::string(result, 0, it);
+    auto blobFile = b.folder.getName()+"/blob/"+result[0];
+    std::cout<<blobFile<<std::endl;
     ASSERT_EQ(util::readFileToString(blobFile), blobData);
   }
   boost::filesystem::remove(fileName);
@@ -65,9 +70,7 @@ TEST(Commands, NewBlob_Console) {
   auto listResult = listBlobs(b);
   ASSERT_EQ(listResult.size(), 1);
   for(auto result: listResult) {
-    auto it = result.find("->");
-    ASSERT_NE(it, std::string::npos);
-    auto blobFile = b.folder.getName()+"/blob/"+std::string(result, 0, it);
+    auto blobFile = b.folder.getName()+"/blob/"+result[0];
     ASSERT_EQ(util::readFileToString(blobFile), blobData);
   }
   boost::filesystem::remove(fileName);
@@ -84,9 +87,9 @@ TEST(Commands, BlobAlias) {
   b.batch->enqueue(std::make_unique<commands::NewBlob>(fileName));
   b.wait();
   auto listResult = listBlobs(b);
-  auto defaultLine = listResult[0];
+  auto defaultLine = listResult[0][1];
   ASSERT_EQ(listResult.size(), 1);
-  auto result = listResult[0];
+  auto result = listResult[0][0];
   auto it = result.find(".");
   ASSERT_NE(it, std::string::npos);
   auto id = std::string(result, 0, it);
@@ -94,16 +97,16 @@ TEST(Commands, BlobAlias) {
   b.wait();
   listResult = listBlobs(b);
   ASSERT_EQ(listResult.size(), 1);
-  ASSERT_EQ(std::regex_search(listResult[0], std::regex(blobAlias)), true);
+  ASSERT_EQ(std::regex_search(listResult[0][1], std::regex(blobAlias)), true);
   b.batch->enqueue(std::make_unique<commands::BlobAliases>(id, ""));
   b.wait();
   listResult = listBlobs(b);
   ASSERT_EQ(listResult.size(), 1);
-  ASSERT_EQ(boost::algorithm::trim_copy(listResult[0]), defaultLine);
+  ASSERT_EQ(boost::algorithm::trim_copy(listResult[0][1]), defaultLine);
   b.batch->enqueue(commands::assembleFromString("blobaliases "+id+" "+blobAlias2));
   b.wait();
   listResult = listBlobs(b);
   ASSERT_EQ(listResult.size(), 1);
-  ASSERT_EQ(std::regex_search(listResult[0], std::regex(blobAlias2)), true);
+  ASSERT_EQ(std::regex_search(listResult[0][1], std::regex(blobAlias2)), true);
   boost::filesystem::remove(fileName);
 }

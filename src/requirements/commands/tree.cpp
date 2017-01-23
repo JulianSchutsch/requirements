@@ -19,9 +19,9 @@ namespace requirements {
       for(auto& element: selected) {
         if(!requirements::hasSelectedParent(element, selected)) {
           if(!first) {
-            status.messageFunction(Status::MessageKind::Content, "----------------------------------");
+            status.messageFunction(Status::MessageKind::Content, "----------------------------------", {});
           }
-          console::printTree([&status](const std::string& msg){status.messageFunction(Status::MessageKind::Content, msg);}, element, selected);
+          console::printTree([&status](const std::string& msg){status.messageFunction(Status::MessageKind::Content, msg, {});}, element, selected);
           first = false;
         }
       }

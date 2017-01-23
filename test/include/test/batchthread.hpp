@@ -28,10 +28,10 @@ namespace test {
       responseQueue.emplace(std::move(r));
       responseCondition.notify_all();
     }
-    void processMessage(Status::MessageKind kind, const std::string& msg) {
+    void processMessage(Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
       switch(kind) {
         case Status::MessageKind::Content:
-          msg_content(msg);
+          msg_content(msg, parameters);
           break;
         default:
           break;
@@ -39,7 +39,7 @@ namespace test {
     }
   public:
     ::test::UniqueFolder folder;
-    std::function<void(const std::string& content)> msg_content;
+    std::function<void(const std::string& content, const std::vector<std::string>& parameters)> msg_content;
     std::unique_ptr<batch::Thread> batch;
     BatchThread() {
       statusFile = folder.getName() + "_status.xml";
@@ -50,7 +50,7 @@ namespace test {
       }
       batch.reset(new batch::Thread(
         std::bind(&BatchThread::responseFunction, this, std::placeholders::_1),
-        std::bind(&BatchThread::processMessage, this, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&BatchThread::processMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
         [](NodePtr){},
         statusFile));
     }

@@ -6,6 +6,7 @@
 #include "util/path.hpp"
 #include "util/process.hpp"
 #include "util/stringfile.hpp"
+#include "util/formatstring.hpp"
 
 #include "requirements/batch/thread.hpp"
 #include "requirements/commands/command.hpp"
@@ -41,9 +42,9 @@ int main(int argc, char** args) {
 
   batch::Thread batchThread(
     [](batch::Response&&){},
-    [](Status::MessageKind kind, const std::string& msg) {
+    [](Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
       (void)kind;
-      std::cout<<msg<<std::endl;
+      std::cout<<util::formatString(msg, parameters)<<std::endl;
     },
     &editCallback,
     util::getConfigPath()+"/.req_status.xml");

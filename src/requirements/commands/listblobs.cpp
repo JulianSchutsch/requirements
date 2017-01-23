@@ -16,7 +16,7 @@ namespace requirements {
       auto storage = status.openStorage();
       auto list = storage->getBlobAliases();
       for(auto& pair: list) {
-        status.messageFunction(Status::MessageKind::Content, pair.first+"->"+pair.second);
+        status.messageFunction(Status::MessageKind::Content, "%1% -> %2%", {pair.first, pair.second});
       }
     }
   }

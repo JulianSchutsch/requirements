@@ -7,7 +7,7 @@
 namespace requirements {
   namespace commands {
     void ShowFolder::execute(Status &status) {
-      status.messageFunction(Status::MessageKind::Message, status.folder);
+      status.messageFunction(Status::MessageKind::Message, "%1%", {status.folder});
     }
     
     ShowFolder::ShowFolder(Parser &parser) {
