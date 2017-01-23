@@ -22,7 +22,9 @@ namespace requirements {
     void save_selections(TiXmlElement& root);
   public:
     enum MessageKind {
-      Error,
+      InternalError,
+      UserError,
+      OtherError,
       Message,
       Content
     };

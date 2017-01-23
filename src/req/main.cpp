@@ -28,10 +28,17 @@ void editCallback(NodePtr node) {
   boost::filesystem::remove_all(tempFilename);
 }
 
-int main(int argc, char** args) {
-  (void)argc;
-  (void)args;
-  
+void printInternalError(const std::string& format, const std::vector<std::string>& parameters) {
+  std::cout<<"*** Internal error ***"<<std::endl;
+  std::cout<<"This kind of error is worth a bug report, it is Not your fault."<<std::endl;
+  std::cout<<"Message: "<<util::formatString(format, parameters)<<std::endl;
+}
+
+void printUserError(const std::string& format, const std::vector<std::string>& parameters) {
+  std::cout<<"Error detected:"<<util::formatString(format, parameters)<<std::endl;
+}
+
+std::string joinArgs(int argc, char** args) {
   std::string commandStr;
   for(int i=1;i<argc;++i) {
     if(!commandStr.empty()) {
@@ -39,12 +46,32 @@ int main(int argc, char** args) {
     }
     commandStr+=args[i];
   }
+  return commandStr;
+}
+
+int main(int argc, char** args) {
+  (void)argc;
+  (void)args;
+  
+  auto commandStr = joinArgs(argc, args);
 
   batch::Thread batchThread(
     [](batch::Response&&){},
     [](Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
-      (void)kind;
-      std::cout<<util::formatString(msg, parameters)<<std::endl;
+      switch(kind)
+      {
+        case Status::MessageKind::InternalError:
+          printInternalError(msg, parameters);
+          break;
+        case Status::MessageKind::UserError:
+        case Status::MessageKind::OtherError:
+          printUserError(msg, parameters);
+          break;
+        case Status::MessageKind::Content:
+        case Status::MessageKind::Message:
+          std::cout<<util::formatString(msg, parameters)<<std::endl;
+          break;
+      }
     },
     &editCallback,
     util::getConfigPath()+"/.req_status.xml");
@@ -54,14 +81,12 @@ int main(int argc, char** args) {
   } catch(::requirements::Exception& e) {
     switch(e.getKind()) {
       case Exception::Kind::Internal: {
-        std::cout<<"*** Internal error ***"<<std::endl;
-        std::cout<<"This kind of error is worth a bug report, it is Not your fault."<<std::endl;
-        std::cout<<"Message: "<<util::formatString(e.getReason(), e.getParameters())<<std::endl;
+        printInternalError(e.getReason(), e.getParameters());
         break;
       }
       case Exception::Kind::User:
       case Exception::Kind::Other:
-        std::cout<<"Error detected:"<<util::formatString(e.getReason(), e.getParameters())<<std::endl;
+        printUserError(e.getReason(), e.getParameters());
         break;
     }
   }
