@@ -55,13 +55,13 @@ int main(int argc, char** args) {
     switch(e.getKind()) {
       case Exception::Kind::Internal: {
         std::cout<<"*** Internal error ***"<<std::endl;
-        std::cout<<"This kind of error is worth a bug report, it is not your fault."<<std::endl;
+        std::cout<<"This kind of error is worth a bug report, it is Not your fault."<<std::endl;
         std::cout<<"Message: "<<util::formatString(e.getReason(), e.getParameters())<<std::endl;
         break;
       }
       case Exception::Kind::User:
-        break;
       case Exception::Kind::Other:
+        std::cout<<"Error detected:"<<util::formatString(e.getReason(), e.getParameters())<<std::endl;
         break;
     }
   }
