@@ -23,7 +23,6 @@ namespace qreq{
 const int COLUMN_COUNT=2;
 const int COLUMN_TEXT=0;
 const int COLUMN_ID=1;
-
 ///
 /// Das Hauptfenster.
 ///

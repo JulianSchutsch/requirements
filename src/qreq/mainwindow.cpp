@@ -1,6 +1,7 @@
 #include "qreq/mainwindow.hpp"
 #include "qreq/settings.hpp"
 #include "qreq/texteditdelegate.hpp"
+#include "qreq/reqtextdelegate.hpp"
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -48,6 +49,8 @@ void MainWindow::generate_elements(){
   //_reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded
   _reqtree->setHeaderHidden(true);
   _reqtree->setItemDelegate(new TextEditDelegate(_reqtree));
+  //_reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
+  _reqtree->setAlternatingRowColors(true);
   connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
   connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
   connect(_reqtree,SIGNAL(ctrl_left_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_left(QModelIndex)));

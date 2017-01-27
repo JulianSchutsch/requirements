@@ -1,5 +1,6 @@
 #include "qreq/mainwindow.hpp"
 #include "qreq/settings.hpp"
+#include "qreq/modelroles.hpp"
 
 #include "requirements/storage/text.hpp"
 #include "requirements/select.hpp"
@@ -52,14 +53,19 @@ void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requireme
   }
 }
 
+//TODO: UUID nur noch aus ROLE_ID holen und irgendwann den item_id wegwerfen
 void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
   //++_changed_signal_ignore;   //TODO anschließen
-  QStandardItem *item_text=new QStandardItem(QString(node->getContent().c_str()));
+  QStandardItem *item_text=new QStandardItem(QString(node->getContent().c_str()));  //TODO irgendwann entfällt das und es gibt nur noch die USER_ROLES
+  item_text->setData(QVariant(QString(node->getContent().c_str())),Qt::UserRole + ROLE_TEXT);
+  item_text->setData(QVariant(QString(requirements::id_to_string(node->getId()).c_str())),Qt::UserRole + ROLE_ID);
+  item_text->setData(QVariant(QString("Einhornpfleger")),Qt::UserRole+ROLE_CAPTION);
   QStandardItem *item_id=new QStandardItem(QString(requirements::id_to_string(node->getId()).c_str()));
   QList<QStandardItem*> item;
   item << item_text << item_id;
   parent_item->appendRow(item);
   add_children_to_tree(item_text,node);
+  //std::cout << item_text->data(Qt::UserRole + ROLE_ID).toString().toStdString() << std::endl;
   //--_changed_signal_ignore;   //TODO anschließen
 }
 
