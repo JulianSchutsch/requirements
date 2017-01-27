@@ -23,6 +23,10 @@ namespace qreq{
 const int COLUMN_COUNT=2;
 const int COLUMN_TEXT=0;
 const int COLUMN_ID=1;
+//Roles for QStandardItem
+const int ROLE_TEXT=1000;
+const int ROLE_ID=1001;
+const int ROLE_CAPTION=1002;
 
 ///
 /// Das Hauptfenster.
