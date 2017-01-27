@@ -9,6 +9,7 @@ namespace requirements {
 
   class NodeCollection final {
   private:
+    
     using Nodes = std::map<Id, NodePtr>;
     Nodes nodes;
     NodePtr rootNode; // Root-Node always exists
