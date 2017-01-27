@@ -37,7 +37,9 @@ namespace requirements {
       {"lastof",
         {"LastOf assigns the currently selected node as the last child of the specified one."}},
       {"firstof",
-        {"FirstOf assigns the currently selected node as the first child of the specified one."}}
+        {"FirstOf assigns the currently selected node as the first child of the specified one."}},
+      {"tree",
+        {"Tree shows a tree of nodes. With no parameters, all nodes are shown. With parameters only the selected nodes and their children are shown."}}
     };
     
     void Help::execute(Status& status) {
