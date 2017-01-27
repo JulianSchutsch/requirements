@@ -29,7 +29,7 @@ static void compareRequirement(::requirements::Id id, const std::string& key, co
   auto& requirements = *result.requirements;
   ASSERT_EQ(requirements.has(id), true);
   auto& requirement = requirements.get(id);
-  ASSERT_EQ(requirement.getRequirementKey(), key);
+  ASSERT_EQ(requirement.getKey(), key);
   ASSERT_EQ(requirement.getText(), text);
   ASSERT_EQ(result.errors->has(id), false);
   ASSERT_EQ(result.shortcuts->has(id), true);

@@ -13,8 +13,6 @@ namespace requirements {
       class Common {
       protected:
         std::map<::requirements::Id, Entry> entries;
-    
-        friend class CommonBuilder<Entry>;
   
       public:
         bool has(::requirements::Id id) const {
@@ -23,6 +21,13 @@ namespace requirements {
     
         const Entry &get(::requirements::Id id) const {
           return entries.at(id);
+        }
+        
+        void insert(::requirements::Id id, Entry&& entry) {
+          entries.emplace(id, std::move(entry));
+        }
+        void insert(::requirements::Id id, const Entry& entry) {
+          entries.emplace(id, entry);
         }
       };
   
@@ -34,8 +39,12 @@ namespace requirements {
         CommonBuilder(Common<Entry> &a_common)
           : common(a_common) {}
     
-        void set(::requirements::Id id, const Entry &entry) {
-          common.entries.emplace(id, entry);
+        void set(::requirements::Id id, Entry&& entry) {
+          common.insert(id, std::move(entry));
+        }
+        
+        void set(::requirements::Id id, const Entry& entry) {
+          common.insert(id, entry);
         }
       };
     }
