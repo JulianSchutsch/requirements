@@ -1,5 +1,6 @@
 #include "qreq/reqtextdelegate.hpp"
 #include "qreq/reqtextitemwidget.hpp"
+#include "qreq/modelroles.hpp"
 
 #include <QKeyEvent>
 #include <QPainter>
@@ -29,14 +30,10 @@ void ReqTextDelegate::paint(QPainter *painter,const QStyleOptionViewItem &option
   // creating local QWidget (that's why i think it should be fasted, cause we
   // don't touch the heap and don't deal with a QWidget except painting)
   ReqTextItemWidget *item_widget=new ReqTextItemWidget();
-  // Setting some parameters for widget for example
-  //QStringList valuelist=index.data().toStringList();
-  QString value=index.data().toString();
-  // spec. params
-  //item_widget->set_caption(valuelist[0].toStdString());
-  //item_widget->set_maintext(valuelist[1].toStdString());
-  item_widget->set_caption("Einhornanstreicher");
-  item_widget->set_maintext(value.toStdString());
+  QString maintext=index.data(Qt::UserRole + ROLE_TEXT).toString();
+  QString caption=index.data(Qt::UserRole + ROLE_CAPTION).toString();
+  item_widget->set_caption(caption.toStdString());
+  item_widget->set_maintext(maintext.toStdString());
 
   // geometry
   item_widget->setGeometry(option.rect);
@@ -64,10 +61,13 @@ void ReqTextDelegate::paint(QPainter *painter,const QStyleOptionViewItem &option
 }
 
 QSize ReqTextDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const{
+  //TODO die Höhe ist irgendwie viel zu groß
   ReqTextItemWidget *item_widget=new ReqTextItemWidget();
-  QString value=index.data().toString();
-  item_widget->set_caption("Einhornanstreicher");
-  item_widget->set_maintext(value.toStdString());
+  //QString value=index.data().toString();
+  QString maintext=index.data(Qt::UserRole + ROLE_TEXT).toString();
+  QString caption=index.data(Qt::UserRole + ROLE_CAPTION).toString();
+  item_widget->set_caption(caption.toStdString());
+  item_widget->set_maintext(maintext.toStdString());
   item_widget->setGeometry(option.rect);
   return item_widget->sizeHint();
 }
@@ -80,13 +80,16 @@ QWidget *ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
 }
 
 void ReqTextDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
-  QString value = index.model()->data(index, Qt::EditRole).toString();
+  //QString value = index.model()->data(index, Qt::EditRole).toString();
 
   //QTextEdit *textedit=static_cast<QTextEdit*>(editor);
-  ReqTextItemWidget *widget=static_cast<ReqTextItemWidget*>(editor);
-  //textedit->setPlainText(value);
-  widget->set_caption("Einhornversteher");
-  widget->set_maintext(value.toStdString());
+  ReqTextItemWidget *item_widget=static_cast<ReqTextItemWidget*>(editor);
+  QString maintext=index.data(Qt::UserRole + ROLE_TEXT).toString();
+  QString caption=index.data(Qt::UserRole + ROLE_CAPTION).toString();
+  item_widget->set_caption(caption.toStdString());
+  item_widget->set_maintext(maintext.toStdString());
+  //widget->set_caption("Einhornversteher");
+  //widget->set_maintext(value.toStdString());
 }
 
 void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const{
@@ -96,7 +99,8 @@ void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
   ReqTextItemWidget *widget=static_cast<ReqTextItemWidget*>(editor);
   QString value=widget->get_maintext().c_str();
 
-  model->setData(index, value, Qt::EditRole);
+  model->setData(index, value, Qt::EditRole);  //TODO das kann entfallen, wenn wir endgültig auf dieses Delegate wechseln
+  model->setData(index, value, Qt::UserRole+ROLE_TEXT);
 }
 
 void ReqTextDelegate::updateEditorGeometry(QWidget *editor,const QStyleOptionViewItem &option, const QModelIndex &) const{

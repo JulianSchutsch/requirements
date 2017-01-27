@@ -20,21 +20,30 @@ ReqTextItemWidget::~ReqTextItemWidget(){
 
 void ReqTextItemWidget::set_caption(std::string const& caption){
   _captionlabel->setText(caption.c_str());
+  //_captionlabel->setText("Rosenheiz");
 }
 
 void ReqTextItemWidget::set_maintext(std::string const& maintext){
   _textedit->setPlainText(maintext.c_str());
 }
 
-std::string const& ReqTextItemWidget::get_caption()const{
+std::string ReqTextItemWidget::get_caption()const{
   std::string retval=_captionlabel->text().toStdString();
   return retval;
 }
 
-std::string const& ReqTextItemWidget::get_maintext()const{
+std::string ReqTextItemWidget::get_maintext()const{
   std::string retval = _textedit->toPlainText().toStdString();
 
   return retval;
 }
+
+//void ReqTextItemWidget::paintEvent(QPaintEvent *)
+//{
+//    QPainter painter(this);
+//    _textedit->paint(&painter, rect(), this->palette(),
+//                       StarRating::Editable);
+//
+//}
 
 }
