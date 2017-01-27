@@ -25,6 +25,7 @@
 #include "requirements/commands/nextto.hpp"
 #include "requirements/commands/previousto.hpp"
 #include "requirements/commands/blobaliases.hpp"
+#include "requirements/commands/help.hpp"
 
 namespace requirements {
   namespace commands {
@@ -49,7 +50,8 @@ namespace requirements {
       {"listblobs", [](Parser& parser) { return new ListBlobs(parser); }},
       {"nextto", [](Parser& parser) { return new NextTo(parser); }},
       {"previousto", [](Parser& parser) { return new PreviousTo(parser); }},
-      {"blobaliases", [](Parser& parser) { return new BlobAliases(parser); }}
+      {"blobaliases", [](Parser& parser) { return new BlobAliases(parser); }},
+      {"help", [](Parser& parser) { return new Help(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {
