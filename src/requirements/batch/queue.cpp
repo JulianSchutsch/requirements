@@ -1,10 +1,9 @@
 #include "requirements/batch/queue.hpp"
 
 #include <thread>
-#include <include/requirements/exception.hpp>
 
+#include <requirements/exception.hpp>
 #include "requirements/annotations/parser.hpp"
-
 #include "requirements/status.hpp"
 #include "requirements/icommand.hpp"
 #include "requirements/batch/response.hpp"
