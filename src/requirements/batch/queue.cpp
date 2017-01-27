@@ -82,8 +82,11 @@ namespace requirements {
       return requiredParse;
     }
     
-    void Queue::wait() {
+    void Queue::wait(volatile bool& terminated) {
       std::unique_lock<std::mutex> guard(queueMutex);
+      if(terminated) {
+        return;
+      }
       if(!processQueue(status, guard)) {
         queueCondition.wait(guard);
       }

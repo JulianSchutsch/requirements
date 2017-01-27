@@ -40,8 +40,13 @@ namespace requirements {
   
       void enqueue(std::unique_ptr<ICommand> command);
       
+      // Wakeup the Queue-Thread
       void notify();
-      void wait();
+      // The wait function waits for new commands being inserted into the queue.
+      // The terminated flag has to be passed since the locking mechanism is controlled by the queue and therefore
+      // there is a rare chance of terminated being set just before wait expects a condition and just after
+      // the condition has been triggered (and is therefore now lost)
+      void wait(volatile bool& terminated);
       void finish();
       
       Queue(ResponseFunction a_responseFunction,
