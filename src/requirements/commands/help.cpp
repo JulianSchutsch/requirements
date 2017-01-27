@@ -54,6 +54,7 @@ namespace requirements {
         for(auto& e:helpTexts) {
           status.messageFunction(Status::MessageKind::Content, e.first, {});
         }
+        status.messageFunction(Status::MessageKind::Content, "To learn more, give help a command as parameter.", {});
       }
     }
   
