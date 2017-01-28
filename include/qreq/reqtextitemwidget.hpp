@@ -14,8 +14,6 @@ class ReqTextItemWidget : public QWidget{
   QLabel *_captionlabel;
   QTextEdit *_textedit;
   std::string _reqid;
-//protected:
-//  void paintEvent(QPaintEvent *event) override;
 public:
   ReqTextItemWidget(QWidget *parent=nullptr);
   ~ReqTextItemWidget();

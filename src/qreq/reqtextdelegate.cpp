@@ -7,6 +7,9 @@
 
 #include <iostream>
 
+//TODO: Signal-Handling verbessern: F4 aus dem Hauptfenster muss direkt im TextEdit landen.
+//Dort drin muss ctrl+Return abgefangen werden. Jetzt wird das noch auf der Ebene des ReqTextItemWidget gemacht
+
 namespace qreq{
 
 ReqTextDelegate::ReqTextDelegate(QObject *parent)
@@ -36,6 +39,8 @@ void ReqTextDelegate::paint(QPainter *painter,const QStyleOptionViewItem &option
   item_widget->set_maintext(maintext.toStdString());
 
   // geometry
+  //QRect sizeRect=option.rect;
+  //sizeRect.setHeight(5);
   item_widget->setGeometry(option.rect);
 
   // here we have to finish the painting of provided painter, cause
@@ -46,8 +51,8 @@ void ReqTextDelegate::paint(QPainter *painter,const QStyleOptionViewItem &option
   painter->end();
   // rendering of QWidget itself
   //region liegt relativ zu option.rect
-  int region_x=-100;  //TODO Wert automatisch bestimmen
-  int region_y=-25;   //TODO Wert automatisch bestimmen
+  int region_x=-94;  //TODO Wert automatisch bestimmen
+  int region_y=-27;   //TODO Wert automatisch bestimmen
   int region_w=option.rect.width()-region_x;
   int region_h=option.rect.height()-region_y;
   //std::cout << "(" << region_x << "," << region_y << "," << region_w << "," << region_h << std::endl;
@@ -60,16 +65,31 @@ void ReqTextDelegate::paint(QPainter *painter,const QStyleOptionViewItem &option
 
 }
 
-QSize ReqTextDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const{
-  //TODO die Höhe ist irgendwie viel zu groß
+/*QSize ReqTextDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const{
+  //TODO die Höhe ist irgendwie viel zu groß, kann man die Höhe eine QTextEdit vom Inhalt anhängig machen?
+  //Vielleicht auch mal über Spaltenüberschriften nachdenken (bringt natürlich nur was, wenn es mehrere Spalten gibt)
   ReqTextItemWidget *item_widget=new ReqTextItemWidget();
   //QString value=index.data().toString();
   QString maintext=index.data(Qt::UserRole + ROLE_TEXT).toString();
   QString caption=index.data(Qt::UserRole + ROLE_CAPTION).toString();
   item_widget->set_caption(caption.toStdString());
   item_widget->set_maintext(maintext.toStdString());
+
+  //QRect sizeRect=option.rect;
+  //sizeRect.setHeight(5);
   item_widget->setGeometry(option.rect);
   return item_widget->sizeHint();
+}*/
+
+QSize ReqTextDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const{
+  //return QSize(20,100); //Aha, so wirds recht klein. Jetzt doch noch ein bisschen automatische Größenanpassung machen...
+  QSize retval=QStyledItemDelegate::sizeHint(option,index);
+  //Jetzt noch die Größe auf das neue Widget anpassen, d.h. die Höhe des oberen Labels berücksichtigen
+  //Vielleicht kann man das noch automatischer berechnen, d.h. die Label-Höhe vom Widget bekommen...
+  //Oder überhaupt die Größen aller Subwidget...
+  retval.setHeight(retval.height()+60);
+  retval.setWidth(retval.width()-20);
+  return retval;
 }
 
 QWidget *ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const{
@@ -88,8 +108,7 @@ void ReqTextDelegate::setEditorData(QWidget *editor, const QModelIndex &index) c
   QString caption=index.data(Qt::UserRole + ROLE_CAPTION).toString();
   item_widget->set_caption(caption.toStdString());
   item_widget->set_maintext(maintext.toStdString());
-  //widget->set_caption("Einhornversteher");
-  //widget->set_maintext(value.toStdString());
+
 }
 
 void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const{
@@ -99,6 +118,7 @@ void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
   ReqTextItemWidget *widget=static_cast<ReqTextItemWidget*>(editor);
   QString value=widget->get_maintext().c_str();
 
+  //Das führt zu mehrfachen itemChanged()-Signalen. Kann man das vielleicht in einen Aufruf stecken?
   model->setData(index, value, Qt::EditRole);  //TODO das kann entfallen, wenn wir endgültig auf dieses Delegate wechseln
   model->setData(index, value, Qt::UserRole+ROLE_TEXT);
 }

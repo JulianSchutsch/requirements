@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QVBoxLayout>
+#include <QEvent>
 
 namespace qreq{
 
@@ -9,6 +10,11 @@ namespace qreq{
 ReqTextItemWidget::ReqTextItemWidget(QWidget *parent) : QWidget(parent){
   _captionlabel=new QLabel();
   _textedit=new QTextEdit();
+  _textedit->setMinimumHeight(20);
+  setMinimumHeight(20);
+
+  //Hier wird der Focus, wenn er kommt, ans textedit übertragen
+  setFocusProxy(_textedit);
   QVBoxLayout *vbox=new QVBoxLayout();
   vbox->addWidget(_captionlabel);
   vbox->addWidget(_textedit);
@@ -20,11 +26,13 @@ ReqTextItemWidget::~ReqTextItemWidget(){
 
 void ReqTextItemWidget::set_caption(std::string const& caption){
   _captionlabel->setText(caption.c_str());
-  //_captionlabel->setText("Rosenheiz");
 }
 
 void ReqTextItemWidget::set_maintext(std::string const& maintext){
   _textedit->setPlainText(maintext.c_str());
+  QSize oldsize=_textedit->size();
+  oldsize.setHeight(0);
+  _textedit->resize(oldsize);
 }
 
 std::string ReqTextItemWidget::get_caption()const{
@@ -37,13 +45,5 @@ std::string ReqTextItemWidget::get_maintext()const{
 
   return retval;
 }
-
-//void ReqTextItemWidget::paintEvent(QPaintEvent *)
-//{
-//    QPainter painter(this);
-//    _textedit->paint(&painter, rect(), this->palette(),
-//                       StarRating::Editable);
-//
-//}
 
 }

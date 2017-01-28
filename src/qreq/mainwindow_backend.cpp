@@ -54,6 +54,7 @@ void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requireme
 }
 
 //TODO: UUID nur noch aus ROLE_ID holen und irgendwann den item_id wegwerfen
+//das würde auch zum setIndexWidget passen
 void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
   //++_changed_signal_ignore;   //TODO anschließen
   QStandardItem *item_text=new QStandardItem(QString(node->getContent().c_str()));  //TODO irgendwann entfällt das und es gibt nur noch die USER_ROLES
