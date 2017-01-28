@@ -31,7 +31,7 @@ namespace requirements {
             output << R"(\requirementsbegintable)" << std::endl;
             for (auto &element: elements) {
               auto &requirement = requirements.get(element);
-              output << R"(\requirementstableline{)" << requirement.getRequirementKey() << "}{" << requirement.getText()
+              output << R"(\requirementstableline{)" << requirement.getKey() << "}{" << requirement.getText()
                      << "}" << std::endl;
             }
             output << R"(\requirementsendtable)" << std::endl;

@@ -1,10 +1,9 @@
 #include "requirements/batch/queue.hpp"
 
 #include <thread>
-#include <include/requirements/exception.hpp>
 
+#include <requirements/exception.hpp>
 #include "requirements/annotations/parser.hpp"
-
 #include "requirements/status.hpp"
 #include "requirements/icommand.hpp"
 #include "requirements/batch/response.hpp"
@@ -83,8 +82,11 @@ namespace requirements {
       return requiredParse;
     }
     
-    void Queue::wait() {
+    void Queue::wait(volatile bool& terminated) {
       std::unique_lock<std::mutex> guard(queueMutex);
+      if(terminated) {
+        return;
+      }
       if(!processQueue(status, guard)) {
         queueCondition.wait(guard);
       }

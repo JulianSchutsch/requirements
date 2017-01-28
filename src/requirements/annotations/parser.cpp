@@ -1,5 +1,7 @@
 #include "requirements/annotations/parser.hpp"
 
+#include <sstream>
+
 #include <boost/algorithm/string.hpp>
 
 #include "util/lineparser.hpp"
@@ -16,10 +18,11 @@ namespace requirements {
         ErrorsBuilder errors;
         ShortcutsBuilder shortcuts;
         RequirementsBuilder requirements;
+        AcceptancesBuilder acceptances;
         
         Builders(ParserResult &result)
           : sections(*result.sections), errors(*result.errors), shortcuts(*result.shortcuts),
-            requirements(*result.requirements) {}
+            requirements(*result.requirements), acceptances(*result.acceptances) {}
       };
     }
     
@@ -60,8 +63,62 @@ namespace requirements {
       return success;
     }
     
-    static bool
-    parseSection(::requirements::NodePtr node, ParserResult &result, Builders &builders, util::LineParser &parser,
+    static bool parseAcceptance(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+      ::util::LineParser parser(node->getContent());
+      std::stringstream text;
+      std::vector<::requirements::Id> accepts;
+      for(;;) {
+        static std::regex acceptsRegex(R"(accepts\s*(\w+)\s*)");
+        std::smatch matches;
+        if(parser.consume(acceptsRegex, matches)) {
+          auto idStr = matches[1];
+          ::requirements::Id id;
+          if(!string_to_id(idStr, id)) {
+            builders.errors.set(node->getId(), "Accepts must have valid uuid as parameter (node pointer)");
+            return false;
+          }
+          accepts.emplace_back(id);
+          continue;
+        }
+        std::string line;
+        if(!parser.consume(line)) {
+          break;
+        }
+        text<<line;
+      }
+      AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), accepts);
+  
+      bool success = true;
+      for(auto& child: node->getChildren()) {
+        success = success && parseAcceptance(child, result, builders);
+      }
+      return success;
+    }
+    
+    static bool parseAcceptanceSection(::requirements::NodePtr node, ParserResult& result, Builders& builders,
+                                       util::LineParser& parser, const std::string& parameters) {
+      static std::regex acceptanceTitle(R"(\s*(\w+)\s*(.*))");
+      std::smatch matches;
+      if(!std::regex_match(parameters, matches, acceptanceTitle)) {
+        builders.errors.set(node->getId(), "An acceptance title must be a shortcut followed by an arbitrary title string");
+        return false;
+      }
+      const std::string& shortcut = matches[1];
+      const std::string& title = matches[2];
+      
+      builders.shortcuts.set(node->getId(), title);
+      builders.acceptances.setMajorPrefix(shortcut);
+      
+      SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+      
+      bool success = true;
+      for(auto& child: node->getChildren()) {
+        success = success && parseAcceptance(child, result, builders);
+      }
+      return success;
+    }
+    
+    static bool parseSection(::requirements::NodePtr node, ParserResult &result, Builders &builders, util::LineParser &parser,
                  const std::string &parameters) {
       bool success = true;
       auto title = boost::algorithm::trim_copy(parameters);
@@ -87,7 +144,8 @@ namespace requirements {
                                             util::LineParser &parser,
                                             const std::string &parameters)> sectionContextTags = {
         {"section",      parseSection},
-        {"requirements", parseRequirementSection}
+        {"requirements", parseRequirementSection},
+        {"acceptance",  parseAcceptanceSection}
       };
       auto tagIt = sectionContextTags.find(matches[1]);
       if (tagIt == sectionContextTags.end()) {

@@ -39,7 +39,7 @@ TEST(Commands, Command_Folder) {
     while (!batchFolderSet) {
       responseCondition.wait(guard);
     }
-    ASSERT_EQ(batchFolder, folder.getName());
+    ASSERT_EQ(batchFolder, boost::filesystem::absolute(folder.getName()));
   }
   {
     std::string batchFolder;
@@ -62,7 +62,7 @@ TEST(Commands, Command_Folder) {
     while (!batchFolderSet) {
       responseCondition.wait(guard);
     }
-    ASSERT_EQ(batchFolder, folder.getName());
+    ASSERT_EQ(batchFolder, boost::filesystem::absolute(folder.getName()));
   }
   boost::filesystem::remove(statusFile);
 }
@@ -91,7 +91,7 @@ TEST(Commands, Command_Folder_Console) {
     while (!batchFolderSet) {
       responseCondition.wait(guard);
     }
-    ASSERT_EQ(batchFolder, folder.getName());
+    ASSERT_EQ(batchFolder, boost::filesystem::absolute(folder.getName()));
   }
   {
     std::string batchFolder;
@@ -114,7 +114,7 @@ TEST(Commands, Command_Folder_Console) {
     while (!batchFolderSet) {
       responseCondition.wait(guard);
     }
-    ASSERT_EQ(batchFolder, folder.getName());
+    ASSERT_EQ(batchFolder, boost::filesystem::absolute(folder.getName()));
   }
   boost::filesystem::remove(statusFile);
 }

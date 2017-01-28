@@ -48,17 +48,17 @@ TEST(AnnotationRequirements, SimpleTree) {
   ASSERT_EQ(requirements.has(testId3), true);
   {
     auto& r1 = requirements.get(testId1);
-    ASSERT_EQ(r1.getRequirementKey(), "TAB1");
+    ASSERT_EQ(r1.getKey(), "TAB1");
     ASSERT_EQ(r1.getText(), testContent1);
   }
   {
     auto& r2 = requirements.get(testId2);
-    ASSERT_EQ(r2.getRequirementKey(), "TAB1.1");
+    ASSERT_EQ(r2.getKey(), "TAB1.1");
     ASSERT_EQ(r2.getText(), testContent2);
   }
   {
     auto& r3 = requirements.get(testId3);
-    ASSERT_EQ(r3.getRequirementKey(), "TAB1.2");
+    ASSERT_EQ(r3.getKey(), "TAB1.2");
     ASSERT_EQ(r3.getText(), testContent3);
   }
 }
@@ -115,47 +115,47 @@ TEST(AnnotationRequirements, NestedRequirements) {
   ASSERT_EQ(requirements.has(testId9), true);
   {
     auto& r1 = requirements.get(testId1);
-    ASSERT_EQ(r1.getRequirementKey(), "TAB1");
+    ASSERT_EQ(r1.getKey(), "TAB1");
     ASSERT_EQ(r1.getText(), testContent1);
   }
   {
     auto& r2 = requirements.get(testId2);
-    ASSERT_EQ(r2.getRequirementKey(), "TAB1.1");
+    ASSERT_EQ(r2.getKey(), "TAB1.1");
     ASSERT_EQ(r2.getText(), testContent2);
   }
   {
     auto& r3 = requirements.get(testId3);
-    ASSERT_EQ(r3.getRequirementKey(), "TAB1.1.1");
+    ASSERT_EQ(r3.getKey(), "TAB1.1.1");
     ASSERT_EQ(r3.getText(), testContent3);
   }
   {
     auto& r4 = requirements.get(testId4);
-    ASSERT_EQ(r4.getRequirementKey(), "TAB2");
+    ASSERT_EQ(r4.getKey(), "TAB2");
     ASSERT_EQ(r4.getText(), testContent1);
   }
   {
     auto& r5 = requirements.get(testId5);
-    ASSERT_EQ(r5.getRequirementKey(), "TAB2.1");
+    ASSERT_EQ(r5.getKey(), "TAB2.1");
     ASSERT_EQ(r5.getText(), testContent2);
   }
   {
     auto& r6 = requirements.get(testId6);
-    ASSERT_EQ(r6.getRequirementKey(), "TAB2.1.1");
+    ASSERT_EQ(r6.getKey(), "TAB2.1.1");
     ASSERT_EQ(r6.getText(), testContent3);
   }
   {
     auto& r7 = requirements.get(testId7);
-    ASSERT_EQ(r7.getRequirementKey(), "TAB2.1.2");
+    ASSERT_EQ(r7.getKey(), "TAB2.1.2");
     ASSERT_EQ(r7.getText(), testContent1);
   }
   {
     auto& r8 = requirements.get(testId8);
-    ASSERT_EQ(r8.getRequirementKey(), "TAB2.2");
+    ASSERT_EQ(r8.getKey(), "TAB2.2");
     ASSERT_EQ(r8.getText(), testContent2);
   }
   {
     auto& r9 = requirements.get(testId9);
-    ASSERT_EQ(r9.getRequirementKey(), "TAB2.2.1");
+    ASSERT_EQ(r9.getKey(), "TAB2.2.1");
     ASSERT_EQ(r9.getText(), testContent1);
   }
 }
@@ -189,22 +189,22 @@ TEST(AnnotationRequirements, Continuation) {
   ASSERT_EQ(requirements.has(testId4), true);
   {
     auto& r1 = requirements.get(testId1);
-    ASSERT_EQ(r1.getRequirementKey(), "TABA1");
+    ASSERT_EQ(r1.getKey(), "TABA1");
     ASSERT_EQ(r1.getText(), testContent1);
   }
   {
     auto& r2 = requirements.get(testId2);
-    ASSERT_EQ(r2.getRequirementKey(), "TABB1");
+    ASSERT_EQ(r2.getKey(), "TABB1");
     ASSERT_EQ(r2.getText(), testContent2);
   }
   {
     auto& r3 = requirements.get(testId3);
-    ASSERT_EQ(r3.getRequirementKey(), "TABA2");
+    ASSERT_EQ(r3.getKey(), "TABA2");
     ASSERT_EQ(r3.getText(), testContent3);
   }
   {
     auto& r4 = requirements.get(testId4);
-    ASSERT_EQ(r4.getRequirementKey(), "TABB2");
+    ASSERT_EQ(r4.getKey(), "TABB2");
     ASSERT_EQ(r4.getText(), testContent4);
   }
 }

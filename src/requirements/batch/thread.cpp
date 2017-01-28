@@ -18,7 +18,7 @@ namespace requirements {
      
      void Thread::mainloop() {
        while(!terminated) {
-         queue.wait();
+         queue.wait(terminated);
        }
        queue.finish();
      }
