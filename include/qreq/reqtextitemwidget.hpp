@@ -4,6 +4,8 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QLabel>
+#include <QSize>
+#include <QPoint>
 
 #include <string>
 
@@ -23,6 +25,11 @@ public:
   std::string get_caption()const;
   std::string get_maintext()const;
   std::string get_reqid()const {return _reqid;}
+  //Jetzt noch die Größe auf das neue Widget anpassen, d.h. die Höhe des oberen Labels berücksichtigen
+  //Vielleicht kann man das noch automatischer berechnen, d.h. die Label-Höhe vom Widget bekommen...
+  //Oder überhaupt die Größen aller Subwidget...
+  static QSize size_hint_for_delegate_modifier(){return QSize(-20,60);}  //TODO diese Zahlen müssen automatisch bestimmt werden
+  static QPoint region_for_delegate_modifier(){return QPoint(-94,-27);}  //TODO diese Zahlen müssen automatisch bestimmt werden
 };
 
 }

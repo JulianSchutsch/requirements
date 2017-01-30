@@ -16,7 +16,7 @@ ReqTextItemWidget::ReqTextItemWidget(QWidget *parent) : QWidget(parent){
   //Hier wird der Focus, wenn er kommt, ans textedit übertragen
   setFocusProxy(_textedit);
   QVBoxLayout *vbox=new QVBoxLayout();
-  vbox->addWidget(_captionlabel);
+  //vbox->addWidget(_captionlabel);  //TODO: zum Testen mal raus
   vbox->addWidget(_textedit);
   setLayout(vbox);
 }
