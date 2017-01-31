@@ -1,38 +1,34 @@
 #include "qreq/threadconnector.hpp"
 #include <functional>
 #include <iostream>
+#include <memory>
+
+#include "util/path.hpp"
+#include "util/formatstring.hpp"
+
+#include "requirements/commands/null.hpp"
 
 namespace qreq{
 
-ThreadConnector::ThreadConnector(){
-  _isnew=false;
-  _batchthread=nullptr;
-}
-
-ThreadConnector::~ThreadConnector(){
-}
-
-void ThreadConnector::init(){
-  auto bret = std::bind(&ThreadConnector::batch_ret,this,std::placeholders::_1);
-  auto bmes = std::bind(&ThreadConnector::batch_message,this,std::placeholders::_1,std::placeholders::_2, std::placeholders::_3);
-  auto efun = std::bind(&ThreadConnector::batch_edit,this,std::placeholders::_1);
-  _batchthread=new batch::Thread(bret,bmes,efun);
+ThreadConnector::ThreadConnector()
+  : _batchthread(
+    std::bind(&ThreadConnector::batch_ret,this,std::placeholders::_1),
+    std::bind(&ThreadConnector::batch_message,this,std::placeholders::_1,std::placeholders::_2, std::placeholders::_3),
+    std::bind(&ThreadConnector::batch_edit,this,std::placeholders::_1),
+    util::getConfigPath()+".req_status.xml") {
+  _batchthread.enqueue(std::make_unique<::requirements::commands::Null>());
 }
 
 void ThreadConnector::send_command(std::string command){
-  _batchthread->enqueue(commands::assembleFromString(command));
+  _batchthread.enqueue(commands::assembleFromString(command));
 }
 
 void ThreadConnector::batch_ret(batch::Response&& bres){
-  _conn_mutex.lock();
-  _nodeCollection=std::move(bres.nodeCollection);
-  _errors=std::move(bres.errors);
-  _status=std::move(bres.status);
-  _shortcuts=std::move(bres.shortcuts);
-  _sections=std::move(bres.sections);
-  _requirements=std::move(bres.requirements);
-  _isnew=true;
-  _conn_mutex.unlock();
+  {
+    std::lock_guard<std::mutex> guard(_conn_mutex);
+    _response = std::move(bres);
+    newResponse = true;
+  }
   std::cout << "batch_ret" << std::endl;
 }
 
@@ -40,15 +36,16 @@ void ThreadConnector::batch_message(Status::MessageKind kind, std::string const&
   (void)kind;
   (void)message;
   (void)parameters;
-  std::cout << "batch_message" << std::endl;
+  std::cout << "batch_message:" << util::formatString(message, parameters) << std::endl;
 }
 
-bool ThreadConnector::is_new(){
-  _conn_mutex.lock();
-  bool retval=_isnew;
-  _isnew=false;
-  _conn_mutex.unlock();
-  return retval;
+bool ThreadConnector::consumeResponse(::requirements::batch::Response& target){
+  std::lock_guard<std::mutex> guard(_conn_mutex);
+  if(newResponse) {
+    target = std::move(_response);
+    return true;
+  }
+  return false;
 }
 
 }

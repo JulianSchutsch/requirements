@@ -13,6 +13,9 @@
 #include "qreq/commandline.hpp"
 #include "qreq/threadconnector.hpp"
 
+#include "requirements/batch/thread.hpp"
+#include "requirements/batch/response.hpp"
+
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 #include "requirements/istorage.hpp"
@@ -42,6 +45,7 @@ Q_OBJECT
   void load_current_project();
 
   //Backend functions
+
   std::unique_ptr<::requirements::storage::Text> _currentStorage;
   void init_project();
   //void init_collection();

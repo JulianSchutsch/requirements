@@ -7,6 +7,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 message("Build type now ${CMAKE_BUILD_TYPE}")
 
+set(CMAKE_CXX_STANDARD 14)
 set(COMMON_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++14 -Wextra -pedantic -Wall -DBOOST_NO_CXX11_SCOPED_ENUMS")
 set(COMMON_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 

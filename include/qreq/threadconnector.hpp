@@ -3,6 +3,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "requirements/batch/thread.hpp"
 #include "requirements/batch/response.hpp"
@@ -14,29 +15,22 @@ using namespace ::requirements;
 
 namespace qreq{
 
-class ThreadConnector{
-  //batch::Response _response;
-  bool _isnew;
-  batch::Thread* _batchthread;
+class ThreadConnector final {
+private:
+  batch::Thread _batchthread;
   std::mutex _conn_mutex;
-  //std::unique_ptr<NodeCollection> _nodeCollection;
-/*other*/ public:
-  std::unique_ptr<NodeCollection> _nodeCollection;
-  std::unique_ptr<::requirements::Status> _status;
-  std::unique_ptr<::requirements::annotations::Errors> _errors;
-  std::unique_ptr<::requirements::annotations::Shortcuts> _shortcuts;
-  std::unique_ptr<::requirements::annotations::Sections> _sections;
-  std::unique_ptr<::requirements::annotations::Requirements> _requirements;
-public:
-  ThreadConnector();
-  ~ThreadConnector();
-  void init();
-  void send_command(std::string command);
+  // The response contains all possible results from the batch thread
+  bool newResponse = false;
+  batch::Response _response;
   void batch_ret(batch::Response&& bres);
   void batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters);
   void batch_edit(NodePtr node){(void)node;}
-  bool is_new();
-  //std::unique_ptr<NodeCollection> nodeCollection();
+public:
+  ThreadConnector();
+  void send_command(std::string command);
+  // If new data has been received from the batch thread, this function returns true and moves all
+  // data to the "target". Otherwise returns false.
+  bool consumeResponse(batch::Response& target);
 };
 
 }
