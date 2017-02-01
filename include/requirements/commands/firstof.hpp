@@ -5,7 +5,7 @@
 namespace requirements {
   namespace commands {
     
-    void FirstOf_Operation(NodePtr element, NodePtr anchor) {
+    inline void FirstOf_Operation(NodePtr element, NodePtr anchor) {
       element->setFirstOf(anchor);
     }
     

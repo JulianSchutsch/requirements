@@ -4,7 +4,8 @@
 
 namespace requirements {
   namespace commands {
-    void PreviousTo_Operation(NodePtr element, NodePtr anchor) {
+
+    inline void PreviousTo_Operation(NodePtr element, NodePtr anchor) {
       element->setPreviousTo(anchor);
     }
     

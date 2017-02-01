@@ -1,5 +1,9 @@
 #pragma once
 
+#include <functional>
+
+#include "requirements/node.hpp"
+
 #include <QModelIndex>
 
 namespace qreq {
@@ -10,6 +14,7 @@ namespace qreq {
   private:
     Model& model;
   public:
+    void metaManipulator(const QModelIndex& index, std::function<void(::requirements::NodePtr)> generator);
     ModelManipulator(Model& model);
     void newSibling(const QModelIndex& index);
     void newChild(const QModelIndex& index);

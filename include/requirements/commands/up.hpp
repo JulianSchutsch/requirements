@@ -5,7 +5,7 @@
 namespace requirements {
   namespace commands {
     
-    void Up_Operation(::requirements::NodePtr node) {
+    inline void Up_Operation(::requirements::NodePtr node) {
       node->up();
     }
     

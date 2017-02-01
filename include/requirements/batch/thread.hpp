@@ -26,7 +26,7 @@ namespace requirements {
       void waitForEmptyQueue() { queue.waitForEmptyQueue(); }
       
       void enqueue(std::unique_ptr<ICommand> command) { queue.enqueue(std::move(command)); }
-      void enqueue(std::vector<std::unique_ptr<ICommand>> commands) { queue.enqueue(std::move(commands)); }
+      void enqueue(std::vector<std::unique_ptr<ICommand>>&& commands) { queue.enqueue(std::move(commands)); }
       
       Thread(Queue::ResponseFunction a_responseFunction,
              Status::MessageFunction a_messageFunction,

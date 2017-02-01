@@ -6,7 +6,7 @@ namespace requirements {
   namespace commands {
     
     
-    void Down_Operation(::requirements::NodePtr node) {
+    inline void Down_Operation(::requirements::NodePtr node) {
       node->down();
     }
     

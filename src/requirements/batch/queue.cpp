@@ -23,7 +23,7 @@ namespace requirements {
       }
     }
 
-    void Queue::enqueue(std::vector<std::unique_ptr<ICommand>> commands) {
+    void Queue::enqueue(std::vector<std::unique_ptr<ICommand>>&& commands) {
       std::lock_guard<std::mutex> guard(queueMutex);
       for(auto& command: commands) {
         queue.emplace(std::move(command));
