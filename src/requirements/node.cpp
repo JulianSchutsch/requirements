@@ -14,6 +14,19 @@ namespace requirements {
     return n;
   }
 
+  int Node::childIndex() const {
+    if(!parent) {
+      return 0;
+    }
+    int pos=0;
+    for(auto sibling:parent->children) {
+      if(sibling==this) {
+        return pos;
+      }
+      ++pos;
+    }
+  }
+
   Node::ChildList::iterator Node::findChild(NodePtr node) {
     for(auto it=children.begin();it!=children.end();++it) {
       if(node==*it) {

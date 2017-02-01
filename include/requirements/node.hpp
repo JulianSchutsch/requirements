@@ -31,6 +31,8 @@ namespace requirements {
     
     void clearFromParent();
   public:
+    // Counts the number of siblings before this one.
+    int childIndex() const;
     bool hasParent(const NodePtr& node) const;
     const std::string& getContent() const { return content; }
     void updateContent(const std::string& newContent) { content = newContent; }

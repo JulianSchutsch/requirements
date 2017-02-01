@@ -301,6 +301,18 @@ TEST(Node, PreviousTo) {
   }
 }
 
+TEST(Node, ChildIndex) {
+  ::requirements::NodeCollection collection;
+  auto node1 = collection.createNode(testContent1);
+  auto node2 = collection.createNode(testContent2);
+  auto node3 = collection.createNode(testContent3);
+  auto root = collection.getRootNode();
+  ASSERT_EQ(root->childIndex(), 0);
+  ASSERT_EQ(node1->childIndex(), 0);
+  ASSERT_EQ(node2->childIndex(), 1);
+  ASSERT_EQ(node3->childIndex(), 2);
+}
+
 TEST(Node, Clone) {
   ::requirements::NodeCollection collection;
   auto node = collection.createNode(testContent1);
