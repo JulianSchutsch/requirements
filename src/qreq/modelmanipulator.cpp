@@ -6,6 +6,8 @@
 #include "requirements/commands/new.hpp"
 #include "requirements/commands/nextto.hpp"
 #include "requirements/commands/lastof.hpp"
+#include "requirements/commands/levelup.hpp"
+#include "requirements/commands/leveldown.hpp"
 
 #include "qreq/model.hpp"
 
@@ -48,6 +50,14 @@ namespace qreq {
 
   void ModelManipulator::down(const QModelIndex& index) {
     metaManipulator(index, [this](::requirements::NodePtr node){model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::Down>(node->getId())); });
+  }
+
+  void ModelManipulator::levelUp(const QModelIndex &index) {
+    metaManipulator(index, [this](::requirements::NodePtr node){model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::LevelUp>(node->getId())); });
+  }
+
+  void ModelManipulator::levelDown(const QModelIndex& index) {
+    metaManipulator(index, [this](::requirements::NodePtr node){model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::LevelDown>(node->getId())); });
   }
 
   void ModelManipulator::deleteNode(const QModelIndex& index) {

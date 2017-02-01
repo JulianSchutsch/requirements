@@ -119,6 +119,20 @@ namespace requirements {
       parent->children.remove_if([this](const NodePtr& item){return item==this;});
     }
   }
+
+  void Node::levelUp() {
+    setNextTo(parent);
+  }
+
+  void Node::levelDown() {
+    auto it = parent->findChild(this);
+    assert(it!=parent->children.end());
+    if(it==parent->children.begin()) {
+      return;
+    }
+    --it;
+    setLastOf(*it);
+  }
   
   void Node::setNextTo(NodePtr node) {
     clearFromParent();

@@ -139,17 +139,12 @@ void MainWindow::on_reqtree_expanded(const QModelIndex& i){
   _reqtree->resizeColumnToContents(i.column());
 }
 
-//Move node up one level. New parent is parent of parent.
-//If there is no grandparent, we have the grandfather paradoxon ... not.
 void MainWindow::on_reqtree_ctrl_left(const QModelIndex& i){
-    // Reimplement this once the proper command is available
+    manipulator.levelUp(i);
 }
 
-//Move a node down one level. New parent is the older brother.
-//If there is no older brother, nothing changes.
 void MainWindow::on_reqtree_ctrl_right(const QModelIndex& i){
-    // Wasn das hier? Ernsthaft? Ok, ich werd wohl entsprechende Funktionalität anbieten müssen.
-    // Erstmal raus.
+    manipulator.levelDown(i);
 }
 
 //Move node up.

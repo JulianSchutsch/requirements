@@ -50,6 +50,8 @@ namespace requirements {
     explicit Node(NodeCollection& a_collection, Id a_id, std::string&& content);
     void up();
     void down();
+    void levelUp();
+    void levelDown();
     Node& operator = (const Node&) = delete;
     Node(const Node&) = delete;
   };
