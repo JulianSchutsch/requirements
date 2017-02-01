@@ -34,48 +34,56 @@ namespace qreq {
     if(!index.isValid()) {
       return nullptr;
     }
-    return static_cast<::requirements::Node*>(index.internalPointer());
+    auto it = lookup.find(index.internalId());
+    if(it==lookup.end()) {
+      return nullptr;
+    }
+    return it->second;
   }
 
   void Model::checkResponses() {
     ::requirements::batch::Response intermediate;
     if(connector.consumeResponse(intermediate)) {
-      emit beginResetModel();
       model = std::move(intermediate);
-      emit endResetModel();
+      lookup.clear();
+      emit layoutChanged();
     }
+  }
+
+  qint64 Model::insertLookup(const ::requirements::NodePtr& node) const {
+    auto index = lookupIndex++;
+    lookup[index] = node.get();
+    return index;
   }
 
   QModelIndex Model::index(int row, int column, const QModelIndex &parentModelIndex) const {
     if(column!=0) {
       return QModelIndex();
     }
-    ::requirements::Node* parentNode;
-    if(parentModelIndex.isValid()) {
-      parentNode = static_cast<::requirements::Node *>(parentModelIndex.internalPointer());
-    } else {
+    auto parentNode = getNodeFromModelIndex(parentModelIndex);
+    if(!parentNode) {
       if(!model.nodeCollection) {
         return QModelIndex();
       }
-      parentNode = model.nodeCollection->getRootNode().get();
+      parentNode = model.nodeCollection->getRootNode();
     }
     auto node = parentNode->getChildNr(row);
     if (!node) {
       return QModelIndex();
     }
-    return createIndex(row, 0, static_cast<void *>(node.get()));
+    return createIndex(row, 0, insertLookup(node));
   }
 
   QModelIndex Model::parent(const QModelIndex &nodeModelIndex) const {
-    if(!nodeModelIndex.isValid()) {
+    auto node = getNodeFromModelIndex(nodeModelIndex);
+    if(!node) {
       return QModelIndex();
     }
-    auto *node = static_cast<::requirements::Node *>(nodeModelIndex.internalPointer());
     auto parent = node->getParent();
     if (!parent) {
       return QModelIndex();
     }
-    return createIndex(parent->childIndex(), 0, static_cast<void *>(parent.get()));
+    return createIndex(parent->childIndex(), 0, insertLookup(parent));
   }
 
   int Model::rootRowCount() const {
@@ -86,12 +94,10 @@ namespace qreq {
   }
 
   int Model::rowCount(const QModelIndex &nodeModelIndex) const {
-    // Whats the exact meaning?
-    if(!nodeModelIndex.isValid()) {
-      std::cout<<"Root Row Count:"<<rootRowCount()<<std::endl;
+    auto node = getNodeFromModelIndex(nodeModelIndex);
+    if(!node) {
       return rootRowCount();
     }
-    auto node = static_cast<::requirements::Node *>(nodeModelIndex.internalPointer());
     return node->getChildren().size();
   }
 

@@ -18,6 +18,12 @@ namespace qreq {
     ::requirements::batch::Response model;
     int rootRowCount() const;
     friend class ModelManipulator;
+
+    mutable qint64 lookupIndex;
+    mutable std::map<qint64, Node*> lookup;
+
+    qint64 insertLookup(const ::requirements::NodePtr& node) const;
+
   public:
     // This function is supposed to the connection between the batch thread and the main thread. It must be called in regular intervals to collect changes in the model.
     void checkResponses();
