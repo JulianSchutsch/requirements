@@ -1,23 +1,29 @@
 #pragma once
 
+#include <mutex>
+
 #include <QString>
 #include <QStandardItem>
 
 #include "requirements/id.hpp"
 #include "requirements/batch/response.hpp"
 
-#include <iostream>
+#include "qreq/threadconnector.hpp"
 
 namespace qreq {
 
   class Model : public QAbstractItemModel {
   private:
+    ThreadConnector connector;
     ::requirements::batch::Response model;
     int rootRowCount() const;
+    friend class ModelManipulator;
   public:
+    // This function is supposed to the connection between the batch thread and the main thread. It must be called in regular intervals to collect changes in the model.
+    void checkResponses();
+
     static Model& getModel(const QModelIndex& index);
     ::requirements::NodePtr getNodeFromModelIndex(const QModelIndex& index) const;
-    void consumeModel(::requirements::batch::Response&& a_model);
 
     QModelIndex index(int row, int column, const QModelIndex& parentModelIndex) const override;
     QModelIndex parent(const QModelIndex& nodeModelIndex) const override;

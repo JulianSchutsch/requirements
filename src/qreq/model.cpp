@@ -1,5 +1,7 @@
 #include "qreq/model.hpp"
 
+#include <iostream>
+
 namespace qreq {
 
   Qt::ItemFlags Model::flags(const QModelIndex& index) const {
@@ -22,10 +24,10 @@ namespace qreq {
     return static_cast<::requirements::Node*>(index.internalPointer());
   }
 
-  void Model::consumeModel(::requirements::batch::Response &&a_model) {
-    model = std::move(a_model);
-    emit layoutChanged();
-    std::cout<<"Data Changed should be send"<<std::endl;
+  void Model::checkResponses() {
+    if(connector.consumeResponse(model)) {
+      emit layoutChanged();
+    }
   }
 
   QModelIndex Model::index(int row, int column, const QModelIndex &parentModelIndex) const {

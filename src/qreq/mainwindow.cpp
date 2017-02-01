@@ -17,7 +17,8 @@
 
 namespace qreq{
 
-MainWindow::MainWindow(){
+MainWindow::MainWindow()
+  : manipulator(model) {
   generate_elements();
   generate_view();
   generate_menu();
@@ -31,11 +32,7 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::updateTimer() {
-  std::cout<<"Timer called"<<std::endl;
-  ::requirements::batch::Response modelState;
-  if(_threadconnector.consumeResponse(modelState)) {
-    model.consumeModel(std::move(modelState));
-  }
+  model.checkResponses();
 }
 
 void MainWindow::generate_elements(){

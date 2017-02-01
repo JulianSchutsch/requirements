@@ -45,26 +45,18 @@ void MainWindow::on_f4button_clicked(){
 
 void MainWindow::on_f5button_clicked(){
   //Create new node as sibling and copy content of old node into new node
-  new_node(true,true);
 }
 
 void MainWindow::on_f6button_clicked(){
-  //Create new node as sibling without content
-  new_node(true,false);
+  manipulator.newSibling(_reqtree->currentIndex());
 }
 
 void MainWindow::on_f7button_clicked(){
-  //Create new node as child
-  new_node(false,false);
+  manipulator.newChild(_reqtree->currentIndex());
 }
 
 void MainWindow::on_f8button_clicked(){
-  QModelIndex index=_reqtree->currentIndex();
-  if(index.isValid()) {
-    auto& model = Model::getModel(index);
-    auto node = model.getNodeFromModelIndex(index);
-    _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Delete>(node->getId()));
-  }
+  manipulator.deleteNode(_reqtree->currentIndex());
 }
 
 void MainWindow::on_f9button_clicked(){
@@ -78,9 +70,9 @@ void MainWindow::on_f10button_clicked(){
 //Adds a new blob to storage.
 void MainWindow::on_newblobbutton_clicked(){
     // TODO: Seems an abort case for "nothing selected" is missing
-  QString filename=QFileDialog::getOpenFileName(this,tr("Select file to be a blob"));
+/*  QString filename=QFileDialog::getOpenFileName(this,tr("Select file to be a blob"));
   std::string trblob=newblob(filename.toStdString());
-  _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::NewBlob>(filename.toStdString()));
+  _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::NewBlob>(filename.toStdString()));*/
 }
 
 void MainWindow::on_linkblobbutton_clicked(){
@@ -176,20 +168,12 @@ void MainWindow::on_reqtree_ctrl_right(const QModelIndex& i){
 
 //Move node up.
 void MainWindow::on_reqtree_ctrl_up(const QModelIndex& i){
-    if(i.isValid()) {
-      auto& model = Model::getModel(i);
-      auto node = model.getNodeFromModelIndex(i);
-      _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Up>(node->getId()));
-    }
+    manipulator.up(i);
 }
 
 //Move node down
 void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
-    if(i.isValid()) {
-      auto& model = Model::getModel(i);
-      auto node = model.getNodeFromModelIndex(i);
-      _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Down>(node->getId()));
-    }
+    manipulator.down(i);
 }
 
 void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
@@ -199,7 +183,7 @@ void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
 
 void MainWindow::on_commandline_return(std::string const& command){
   std::cout << "command entered: " << command << std::endl;
-  _threadconnector.send_command(command);
+  manipulator.send_command(command);
 }
 
 }
