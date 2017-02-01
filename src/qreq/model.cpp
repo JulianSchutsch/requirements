@@ -47,9 +47,11 @@ namespace qreq {
     if(connector.consumeResponse(intermediate)) {
       if(!model.nodeCollection || *intermediate.nodeCollection!=*model.nodeCollection) {
         std::cout<<"Replace data"<<std::endl;
+        emit beginResetModel();
         model = std::move(intermediate);
         lookup.clear();
-        emit layoutChanged();
+        reverseLookup.clear();
+        emit endResetModel();
       } else {
         std::cout<<"Keep core collection, replace the rest"<<std::endl;
         // Trick to move everything but the nodecollection, this keeps the model stable.
@@ -60,9 +62,14 @@ namespace qreq {
     }
   }
 
-  qint64 Model::insertLookup(const ::requirements::NodePtr& node) const {
+  quintptr Model::insertLookup(const ::requirements::NodePtr& node) const {
+    auto it = reverseLookup.find(node.get());
+    if(it!=reverseLookup.end()) {
+      return it->second;
+    }
     auto index = lookupIndex++;
     lookup[index] = node.get();
+    reverseLookup[node.get()] = index;
     return index;
   }
 
@@ -81,6 +88,7 @@ namespace qreq {
     if (!node) {
       return QModelIndex();
     }
+    assert(node->childIndex()==row);
     return createIndex(row, 0, insertLookup(node));
   }
 
@@ -90,7 +98,7 @@ namespace qreq {
       return QModelIndex();
     }
     auto parent = node->getParent();
-    if (!parent) {
+    if (!parent || parent->getParent()==nullptr) {
       return QModelIndex();
     }
     return createIndex(parent->childIndex(), 0, insertLookup(parent));
