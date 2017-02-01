@@ -33,6 +33,7 @@ namespace requirements {
   public:
     // Counts the number of siblings before this one.
     int childIndex() const;
+    NodePtr getChildNr(int index);
     bool hasParent(const NodePtr& node) const;
     const std::string& getContent() const { return content; }
     void updateContent(const std::string& newContent) { content = newContent; }

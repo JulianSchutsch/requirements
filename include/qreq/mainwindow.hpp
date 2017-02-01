@@ -18,6 +18,7 @@
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
+#include "qreq/model.hpp"
 
 namespace qreq{
 
@@ -30,7 +31,6 @@ const int COLUMN_ID=1;
 class MainWindow : public QMainWindow{
 Q_OBJECT
   ReqTree *_reqtree;
-  QStandardItemModel *_reqmodel;
   CommandLine *_commandline;
   QTimer* timer;
 
@@ -45,20 +45,10 @@ Q_OBJECT
 
   //Backend functions
 
-  ::requirements::batch::Response modelState;
-  void printtree(std::string const& uuid_to_jump="");
-  void add_children_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
-  void add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
-  void new_node(bool sibling=true,bool copy_content=false);
-  void commit_to_collection(std::string const& uuid, std::string const& content);
-  std::string newblob(std::string sourcefilename);
+  Model model;
 
-  //Tree functions
-  void set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid);
-  std::string get_uuid_by_modelindex(const QModelIndex& index);
-  std::string get_text_by_modelindex(const QModelIndex& index);
-  QStandardItem* get_parent_item_by_modelindex(const QModelIndex& index);
-  void add_blob_to_row(QModelIndex const& index,std::string const& blobtext);
+  void new_node(bool sibling=true,bool copy_content=false);
+  std::string newblob(std::string sourcefilename);
 
 private slots:
   void updateTimer();

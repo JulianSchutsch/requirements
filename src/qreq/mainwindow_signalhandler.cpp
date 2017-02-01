@@ -59,14 +59,11 @@ void MainWindow::on_f7button_clicked(){
 }
 
 void MainWindow::on_f8button_clicked(){
-  //Delete the selected node
   QModelIndex index=_reqtree->currentIndex();
-  ModelItem mItem(index);
-  _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Delete>(mItem.getId()));
-  //Lösche den Knoten im TreeModel
-  QStandardItem *item_parent=get_parent_item_by_modelindex(index);
-  if(item_parent!=nullptr){
-    _reqmodel->removeRow(index.row(),index.parent());
+  if(index.isValid()) {
+    auto& model = Model::getModel(index);
+    auto node = model.getNodeFromModelIndex(index);
+    _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Delete>(node->getId()));
   }
 }
 
@@ -160,25 +157,14 @@ void MainWindow::on_reqtree_expanded(const QModelIndex& i){
 
 void MainWindow::on_reqmodel_item_changed(QStandardItem* item){
   //Commit new data to collection
-  std::string model_node=get_uuid_by_modelindex(item->index());
-  std::string model_text=get_text_by_modelindex(item->index());
-  commit_to_collection(model_node,model_text);
+  // TODO: This requires a setContent command, which requires a proper model again
   //std::cout << "on_reqmodel_item_changed " << model_node << " " << model_text << std::endl;
 }
 
 //Move node up one level. New parent is parent of parent.
 //If there is no grandparent, we have the grandfather paradoxon ... not.
 void MainWindow::on_reqtree_ctrl_left(const QModelIndex& i){
-    ModelItem mItem(i);
-    auto node = modelState.nodeCollection->getNodeById(mItem.getId());
-    if(!node) {
-      return;
-    }
-    auto parent = node->getParent();
-    if(!parent) {
-      return;
-    }
-    _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::NextTo>(mItem.getId(), parent->getId()));
+    // Reimplement this once the proper command is available
 }
 
 //Move a node down one level. New parent is the older brother.
@@ -190,21 +176,24 @@ void MainWindow::on_reqtree_ctrl_right(const QModelIndex& i){
 
 //Move node up.
 void MainWindow::on_reqtree_ctrl_up(const QModelIndex& i){
-    ModelItem mItem(i);
-    _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Up>(mItem.getId()));
+    if(i.isValid()) {
+      auto& model = Model::getModel(i);
+      auto node = model.getNodeFromModelIndex(i);
+      _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Up>(node->getId()));
+    }
 }
 
 //Move node down
 void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
-    ModelItem mItem(i);
-    _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Down>(mItem.getId()));
+    if(i.isValid()) {
+      auto& model = Model::getModel(i);
+      auto node = model.getNodeFromModelIndex(i);
+      _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::Down>(node->getId()));
+    }
 }
 
 void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
-  //copy id to commandline
-  std::string id=get_uuid_by_modelindex(i);
   QString commandtext=_commandline->text();
-  commandtext+=id.c_str();
   _commandline->setText(commandtext);
 }
 

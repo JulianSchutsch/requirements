@@ -18,9 +18,6 @@
 
 namespace qreq{
 
-///
-/// Konstruktor.
-///
 MainWindow::MainWindow(){
   generate_elements();
   generate_view();
@@ -30,23 +27,15 @@ MainWindow::MainWindow(){
   timer->start(1000);
 }
 
-///
-/// Destruktor.
-///
 MainWindow::~MainWindow(){
   Settings::getInstance().store();
 }
 
 void MainWindow::updateTimer() {
   std::cout<<"Timer called"<<std::endl;
+  ::requirements::batch::Response modelState;
   if(_threadconnector.consumeResponse(modelState)) {
-    std::cout<<"Update received"<<std::endl;
-    for(auto item: *(modelState.nodeCollection)) {
-      std::cout<<requirements::id_to_string(item->getId())<<std::endl;
-    }
-    std::cout<<"End of list"<<std::endl;
-    printtree("");
-    std::cout<<"Printed"<<std::endl;
+    model.consumeModel(std::move(modelState));
   }
 }
 
@@ -55,16 +44,9 @@ void MainWindow::generate_elements(){
   //Vorgeschlagene Standardgröße für das Hauptfenster: 800x600
   setMinimumWidth(800);
   setMinimumHeight(600);
-  //Das ist eine Alternative zu FocusPolicy. Mal sehen, was besser ist.
-  //QApplication::instance()->installEventFilter(this);
-  _reqmodel=new QStandardItemModel();
-  _reqmodel->setColumnCount(COLUMN_COUNT);
-  //_reqtree=new QTreeView(this);
   _reqtree=new ReqTree(this);
-  _reqtree->setModel(_reqmodel);
-  //_reqtree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);  //Check for Qt::ScrollBarAsNeeded
+  _reqtree->setModel(&model);
   _reqtree->setHeaderHidden(true);
-  //_reqtree->setItemDelegate(new TextEditDelegate(_reqtree));
   _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
   _reqtree->setAlternatingRowColors(true);
   connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
@@ -74,7 +56,9 @@ void MainWindow::generate_elements(){
   connect(_reqtree,SIGNAL(ctrl_up_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_up(QModelIndex)));
   connect(_reqtree,SIGNAL(ctrl_down_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_down(QModelIndex)));
   connect(_reqtree,SIGNAL(alt_return_pressed(QModelIndex)),this,SLOT(on_reqtree_alt_return(QModelIndex)));
-  connect(_reqmodel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_reqmodel_item_changed(QStandardItem*)));
+
+  // TODO: Connection between reqmodel and this mainapp, needs investigation, could be directly connected to view
+  //connect(_reqmodel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_reqmodel_item_changed(QStandardItem*)));
 
   _commandline=new CommandLine(this);
   connect(_commandline,SIGNAL(fire_command(std::string)),this,SLOT(on_commandline_return(std::string)));
@@ -184,79 +168,6 @@ void MainWindow::set_current_project(std::string const& filename){
 }
 
 void MainWindow::load_current_project(){
-  printtree();
-}
-
-void MainWindow::set_focus_to_uuid(QStandardItem *parent_item, std::string const& uuid){
-  for(int i=0;i<parent_item->rowCount();i++){
-    QStandardItem* item_id=parent_item->child(i,COLUMN_ID);
-    QStandardItem* item_text=parent_item->child(i,COLUMN_TEXT);
-    if(item_id->text().toStdString()==uuid){
-      //Gefunden, also hinspringen
-      _reqtree->setCurrentIndex(item_text->index());
-    }
-    else{
-      //War nicht dabei, vielleicht in den Kindern?
-      set_focus_to_uuid(item_text,uuid);
-    }
-  }
-}
-
-std::string MainWindow::get_uuid_by_modelindex(const QModelIndex& index){
-  std::string retval="";
-  QStandardItem* item_parent=get_parent_item_by_modelindex(index);
-  if(item_parent!=nullptr){
-    QStandardItem* item_id=item_parent->child(index.row(),COLUMN_ID);
-    if(item_id!=nullptr){
-      retval=item_id->text().toStdString();
-    }
-  }
-  return retval;
-}
-
-std::string MainWindow::get_text_by_modelindex(const QModelIndex& index){
-  std::string retval="";
-  QStandardItem* item_parent=get_parent_item_by_modelindex(index);
-  if(item_parent!=nullptr){
-    QStandardItem* item_text=item_parent->child(index.row(),COLUMN_TEXT);
-    if(item_text!=nullptr){
-      retval=item_text->text().toStdString();
-    }
-  }
-  return retval;
-}
-
-QStandardItem* MainWindow::get_parent_item_by_modelindex(const QModelIndex& index){
-  QStandardItem* retval=nullptr;
-  QStandardItem* item=_reqmodel->itemFromIndex(index);
-  if(item!=nullptr){
-    retval=item->parent();
-    if(retval==nullptr){
-      //vielleicht ist der parent ja das invisibleRootItem?
-      //Versuchen wirs mal
-      retval=_reqmodel->invisibleRootItem();
-    }
-  }
-  return retval;
-}
-
-void MainWindow::add_blob_to_row(QModelIndex const& index,std::string const& blobtext){
-  if(blobtext!=""){
-    QStandardItem* item_parent=get_parent_item_by_modelindex(index);
-    if(item_parent!=nullptr){
-      QStandardItem* item_text=item_parent->child(index.row(),COLUMN_TEXT);
-      if(item_text!=nullptr){
-        std::string content=item_text->text().toStdString();
-        content+="\n%(blob:";
-        content+=blobtext;
-        content+=")\n";
-        //In den Baum schreiben
-        item_text->setText(content.c_str());
-        //Jetzt in die collection committen
-        commit_to_collection(get_uuid_by_modelindex(index),content);
-      }
-    }
-  }
 }
 
 }

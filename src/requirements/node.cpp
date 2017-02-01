@@ -14,6 +14,16 @@ namespace requirements {
     return n;
   }
 
+  NodePtr Node::getChildNr(int index) {
+    for(auto child:children) {
+      if(index==0) {
+        return child;
+      }
+      --index;
+    }
+    return nullptr;
+  }
+
   int Node::childIndex() const {
     if(!parent) {
       return 0;

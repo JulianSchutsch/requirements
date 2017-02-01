@@ -9,7 +9,7 @@
 
 namespace qreq{
 
-class ReqTextDelegate : public QStyledItemDelegate{
+class ReqTextDelegate : public QAbstractItemDelegate{
   Q_OBJECT
 protected:
   bool eventFilter(QObject *editor, QEvent *event);
