@@ -129,7 +129,7 @@ TEST(Commands, Command_FirstOf_Console) {
   ASSERT_EQ(subChildren.back()->getId(), id2);
 }
 
-TEST(Commnds, Command_NextTo) {
+TEST(Commands, Command_NextTo) {
   THREEELEMENTS;
   b.batch->enqueue(std::make_unique<commands::NextTo>(id1, id3));
   auto response = b.wait();
@@ -143,7 +143,7 @@ TEST(Commnds, Command_NextTo) {
   ASSERT_EQ((*it)->getId(), id1);
 }
 
-TEST(Commnds, Command_NextTo_Console) {
+TEST(Commands, Command_NextTo_Console) {
   THREEELEMENTS;
   b.batch->enqueue(commands::assembleFromString("select "+id_to_string(id1)));
   b.batch->enqueue(commands::assembleFromString("nextto "+id_to_string(id3)));
@@ -158,7 +158,7 @@ TEST(Commnds, Command_NextTo_Console) {
   ASSERT_EQ((*it)->getId(), id1);
 }
 
-TEST(Commnds, Command_PreviousTo) {
+TEST(Commands, Command_PreviousTo) {
   THREEELEMENTS;
   b.batch->enqueue(std::make_unique<commands::PreviousTo>(id3, id1));
   auto response = b.wait();
@@ -172,7 +172,7 @@ TEST(Commnds, Command_PreviousTo) {
   ASSERT_EQ((*it)->getId(), id2);
 }
 
-TEST(Commnds, Command_PreviousTo_Console) {
+TEST(Commands, Command_PreviousTo_Console) {
   THREEELEMENTS;
   b.batch->enqueue(commands::assembleFromString("select "+id_to_string(id3)));
   b.batch->enqueue(commands::assembleFromString("previousto "+id_to_string(id1)));
