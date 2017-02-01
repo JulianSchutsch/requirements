@@ -14,6 +14,7 @@ namespace qreq {
     if(!node) {
       return;
     }
+    node->updateContent(content);
     connector._batchthread.enqueue(std::make_unique<::requirements::commands::SetContent>(node->getId(), content));
   }
 
@@ -44,9 +45,18 @@ namespace qreq {
   void Model::checkResponses() {
     ::requirements::batch::Response intermediate;
     if(connector.consumeResponse(intermediate)) {
-      model = std::move(intermediate);
-      lookup.clear();
-      emit layoutChanged();
+      if(!model.nodeCollection || *intermediate.nodeCollection!=*model.nodeCollection) {
+        std::cout<<"Replace data"<<std::endl;
+        model = std::move(intermediate);
+        lookup.clear();
+        emit layoutChanged();
+      } else {
+        std::cout<<"Keep core collection, replace the rest"<<std::endl;
+        // Trick to move everything but the nodecollection, this keeps the model stable.
+        auto keepCollection = std::move(model.nodeCollection);
+        model = std::move(intermediate);
+        model.nodeCollection = std::move(keepCollection);
+      }
     }
   }
 

@@ -30,7 +30,10 @@ namespace requirements {
     friend class NodeCollection;
     
     void clearFromParent();
+    bool compareChildren(const Node& other) const;
   public:
+    bool operator == (const Node& other) const;
+    bool operator != (const Node& other) const { return !this->operator==(other); }
     // Counts the number of siblings before this one.
     int childIndex() const;
     NodePtr getChildNr(int index);

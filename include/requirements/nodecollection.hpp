@@ -26,13 +26,15 @@ namespace requirements {
       Iterator& operator ++ () { ++it; return *this; }
       Iterator(Nodes::iterator a_it) : it(a_it) {}
     };
-    
+
+    bool operator == (const NodeCollection& other) const ;
+    bool operator != (const NodeCollection& other) const { return !this->operator==(other);}
     Iterator begin() { return Iterator(nodes.begin()); }
     Iterator end() { return Iterator(nodes.end()); }
     NodePtr createNode(Id id, std::string&& content);
     NodePtr createNode(const std::string& content);
     void deleteNode(NodePtr node);
-    inline NodePtr getRootNode() noexcept { return rootNode; }
+    inline NodePtr getRootNode() const noexcept { return rootNode; }
     NodePtr getNodeById(Id id);
     void clear();
     NodeCollection();

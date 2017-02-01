@@ -3,6 +3,34 @@
 
 namespace requirements {
 
+  bool Node::operator == (const Node& other) const {
+    if(id!=other.id) {
+      return false;
+    }
+    if(content!=other.content) {
+      return false;
+    }
+    return compareChildren(other);
+  }
+
+  bool Node::compareChildren(const Node &other) const {
+    if(children.size()!=other.children.size()) {
+      return false;
+    }
+    auto it1= children.begin();
+    auto it2 = other.children.begin();
+    while(it1!=children.end()) {
+      Node& n1 = **it1;
+      Node& n2 = **it2;
+      if(n1!=n2) {
+        return false;
+      }
+      ++it1;
+      ++it2;
+    }
+    return true;
+  }
+
   NodePtr Node::clone(NodeCollection& a_collection) {
     auto cp_content = content;
     NodePtr n=new Node(a_collection, id, std::move(cp_content));
@@ -35,6 +63,7 @@ namespace requirements {
       }
       ++pos;
     }
+    return 0;
   }
 
   Node::ChildList::iterator Node::findChild(NodePtr node) {

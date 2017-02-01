@@ -331,3 +331,16 @@ TEST(Node, Clone) {
   ASSERT_EQ(node2->getChildren().front()->getId(), node2p->getId());
   ASSERT_EQ(node2->getChildren().front()->getContent(), testContent2);
 }
+
+TEST(Node, Compare) {
+  {
+    ::requirements::NodeCollection collection;
+    auto parentNode = collection.createNode(testContent1);
+    auto childNode1 = collection.createNode(testContent2);
+    auto childNode2 = collection.createNode(testContent3);
+    auto collection2 = collection.clone();
+    ASSERT_EQ(collection==*collection2, true);
+    ASSERT_EQ(collection!=*collection2, false);
+  }
+
+}

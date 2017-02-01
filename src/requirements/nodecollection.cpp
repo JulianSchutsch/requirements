@@ -2,6 +2,10 @@
 
 namespace requirements {
 
+  bool NodeCollection::operator == (const NodeCollection& other) const {
+    return getRootNode()->compareChildren(*other.getRootNode());
+  }
+
   std::unique_ptr<NodeCollection> NodeCollection::clone() {
     std::unique_ptr<NodeCollection> collection(new NodeCollection());
     collection->rootNode = rootNode->clone(*collection);
