@@ -9,14 +9,6 @@
 
 #include <iostream>
 
-#include "requirements/commands/delete.hpp"
-#include "requirements/commands/newblob.hpp"
-#include "requirements/commands/nextto.hpp"
-#include "requirements/commands/up.hpp"
-#include "requirements/commands/down.hpp"
-
-#include "qreq/model.hpp"
-
 namespace qreq{
 
 void MainWindow::on_f1button_clicked(){
@@ -145,12 +137,6 @@ void MainWindow::on_openact_triggered(QString const& filename){
 
 void MainWindow::on_reqtree_expanded(const QModelIndex& i){
   _reqtree->resizeColumnToContents(i.column());
-}
-
-void MainWindow::on_reqmodel_item_changed(QStandardItem* item){
-  //Commit new data to collection
-  // TODO: This requires a setContent command, which requires a proper model again
-  //std::cout << "on_reqmodel_item_changed " << model_node << " " << model_text << std::endl;
 }
 
 //Move node up one level. New parent is parent of parent.

@@ -31,6 +31,8 @@ namespace qreq {
     int columnCount(const QModelIndex&) const override;
     QVariant data(const QModelIndex&, int) const override;
     Qt::ItemFlags flags(const QModelIndex& index) const;
+
+    void updateContent(const QModelIndex& index, const std::string& content);
   };
 
 }

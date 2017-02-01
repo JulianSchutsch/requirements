@@ -1,8 +1,21 @@
 #include "qreq/model.hpp"
 
+#include "requirements/commands/setcontent.hpp"
+
 #include <iostream>
 
 namespace qreq {
+
+  void Model::updateContent(const QModelIndex& index, const std::string& content) {
+    if(!index.isValid()) {
+      return;
+    }
+    auto node = getNodeFromModelIndex(index);
+    if(!node) {
+      return;
+    }
+    connector._batchthread.enqueue(std::make_unique<::requirements::commands::SetContent>(node->getId(), content));
+  }
 
   Qt::ItemFlags Model::flags(const QModelIndex& index) const {
     if(!index.isValid()) {
@@ -25,8 +38,11 @@ namespace qreq {
   }
 
   void Model::checkResponses() {
-    if(connector.consumeResponse(model)) {
-      emit layoutChanged();
+    ::requirements::batch::Response intermediate;
+    if(connector.consumeResponse(intermediate)) {
+      emit beginResetModel();
+      model = std::move(intermediate);
+      emit endResetModel();
     }
   }
 
@@ -51,6 +67,9 @@ namespace qreq {
   }
 
   QModelIndex Model::parent(const QModelIndex &nodeModelIndex) const {
+    if(!nodeModelIndex.isValid()) {
+      return QModelIndex();
+    }
     auto *node = static_cast<::requirements::Node *>(nodeModelIndex.internalPointer());
     auto parent = node->getParent();
     if (!parent) {

@@ -55,7 +55,6 @@ namespace qreq {
     void on_linkblobbutton_clicked();
     void on_openact_triggered(QString const &filename);
     void on_reqtree_expanded(const QModelIndex &i);
-    void on_reqmodel_item_changed(QStandardItem *item);
     void on_reqtree_ctrl_left(const QModelIndex &i);
     void on_reqtree_ctrl_right(const QModelIndex &i);
     void on_reqtree_ctrl_up(const QModelIndex &i);

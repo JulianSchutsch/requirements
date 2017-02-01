@@ -108,6 +108,8 @@ namespace qreq {
 
   void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
     auto *widget = static_cast<QTextEdit *>(editor);
+    auto& pmodel = Model::getModel(index);
+    pmodel.updateContent(index, widget->toPlainText().toStdString());
   }
 
   void ReqTextDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
