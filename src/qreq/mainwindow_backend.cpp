@@ -1,8 +1,7 @@
 #include "qreq/mainwindow.hpp"
 #include "qreq/settings.hpp"
-#include "qreq/modelroles.hpp"
+#include "qreq/model.hpp"
 
-#include "requirements/storage/text.hpp"
 #include "requirements/select.hpp"
 #include "requirements/blob.hpp"
 
@@ -10,32 +9,20 @@
 
 namespace qreq{
 
-void MainWindow::init_project(){
-  _currentStorage.reset(new ::requirements::storage::Text(Settings::getInstance().current_project, false));
-}
-
-void MainWindow::store_collection(){
-  if(_currentStorage){
-    _currentStorage->save(Settings::getInstance().current_project);
-  }
-}
-
 void MainWindow::printtree(std::string const& uuid_to_jump){
-  //Auf der Kommandozeile heißt das req folder
   using namespace ::requirements;
 
-  std::vector<std::string> parameters; //Hier kann noch was sinnvolles rein.
   //now ignore the changed()-Signal
   //++_changed_signal_ignore;  //TODO anschließen
   _reqmodel->clear();
 
-  auto& collection = _currentStorage->getNodeCollection();
-  auto selected = requirements::select(collection, parameters, collection.getRootNode());
+  if(modelState.nodeCollection==nullptr) {
+    return;
+  }
+  auto& collection = *modelState.nodeCollection;
 
   QStandardItem *parentItem=_reqmodel->invisibleRootItem();
-  for(auto& node: selected){
-    add_children_to_tree(parentItem,node);
-  }
+  add_children_to_tree(_reqmodel->invisibleRootItem(), collection.getRootNode());
   _reqtree->resizeColumnToContents(COLUMN_TEXT);
   _reqtree->hideColumn(COLUMN_ID);
 
@@ -49,6 +36,7 @@ void MainWindow::printtree(std::string const& uuid_to_jump){
 void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
   auto& children=node->getChildren();
   for(auto& elem: children){
+    std::cout<<"Child?"<<::requirements::id_to_string(elem->getId())<<std::endl;
     add_child_to_tree(parent_item,elem);
   }
 }
@@ -58,73 +46,61 @@ void MainWindow::add_children_to_tree(QStandardItem *parent_item,const requireme
 void MainWindow::add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node){
   //++_changed_signal_ignore;   //TODO anschließen
   QStandardItem *item_text=new QStandardItem(QString(node->getContent().c_str()));  //TODO irgendwann entfällt das und es gibt nur noch die USER_ROLES
-  item_text->setData(QVariant(QString(node->getContent().c_str())),Qt::UserRole + ROLE_TEXT);
-  item_text->setData(QVariant(QString(requirements::id_to_string(node->getId()).c_str())),Qt::UserRole + ROLE_ID);
-  item_text->setData(QVariant(QString("Einhornpfleger")),Qt::UserRole+ROLE_CAPTION);
-  QStandardItem *item_id=new QStandardItem(QString(requirements::id_to_string(node->getId()).c_str()));
+  ModelItem mItem(modelState, node->getId());
+  mItem.saveToQStandardItem(*item_text);
   QList<QStandardItem*> item;
-  item << item_text << item_id;
+  item << item_text;
   parent_item->appendRow(item);
   add_children_to_tree(item_text,node);
-  //std::cout << item_text->data(Qt::UserRole + ROLE_ID).toString().toStdString() << std::endl;
   //--_changed_signal_ignore;   //TODO anschließen
 }
 
-requirements::NodePtr MainWindow::get_node_for_uuid(std::string const& uuid){
-
-  std::vector<std::string> parameters;
-  parameters.push_back(uuid);
-  std::vector<requirements::NodePtr> selections;
-  auto& collection = _currentStorage->getNodeCollection();
-  selections = requirements::select(collection, parameters);
-  requirements::NodePtr node = selections[0];
-
-  return node;
-}
-
 void MainWindow::new_node(bool sibling,bool copy_content){
-  //Erst mal die UUID des aktuellen Knotens herausfinden
-  QModelIndex index=_reqtree->currentIndex();
-  std::string uuid=get_uuid_by_modelindex(index);
-  if(uuid!=""){
-    //Jetzt neuen Knoten erzeugen
-    auto& collection = _currentStorage->getNodeCollection();
-    auto newnode = collection.createNode("");
-    requirements::NodePtr oldnode=get_node_for_uuid(uuid);
-    if(sibling==true){
-      //Der neue Knoten wird ein Bruder des aktuellen Knotens
-      newnode->setNextTo(oldnode);
-    }
-    else{
-      //Der neue Knoten wird ein Kind des aktuellen Knotens
-      newnode->setLastOf(oldnode);
-    }
-    if(copy_content==true){
-      newnode->updateContent(oldnode->getContent());
-    }
-    //Und jetzt ab auf den Bildschirm
-    printtree(requirements::id_to_string(newnode->getId()).c_str());
+  if(modelState.nodeCollection==nullptr) {
+    return;
   }
+  QModelIndex index=_reqtree->currentIndex();
+  ModelItem mItem(index);
+  auto& collection = *modelState.nodeCollection;
+  auto newnode = collection.createNode("");
+  requirements::NodePtr oldnode=collection.getNodeById(mItem.getId());
+  if(sibling==true){
+    //Der neue Knoten wird ein Bruder des aktuellen Knotens
+    newnode->setNextTo(oldnode);
+  }
+  else{
+    //Der neue Knoten wird ein Kind des aktuellen Knotens
+    newnode->setLastOf(oldnode);
+  }
+  if(copy_content==true){
+    newnode->updateContent(oldnode->getContent());
+  }
+  //Und jetzt ab auf den Bildschirm
+  printtree(requirements::id_to_string(newnode->getId()).c_str());
 }
 
 void MainWindow::commit_to_collection(std::string const& uuid, std::string const& content){
   std::vector<std::string> parameters; //Hier kommt die ID rein, oder?
   parameters.push_back(uuid);
   std::vector<requirements::NodePtr> selections;
-  auto& collection = _currentStorage->getNodeCollection();
-  selections = requirements::select(collection, parameters);
-  //Und, haben wir jetzt den passenden Knoten? Ein bisschen mehr Doku zum select()
-  //wäre hilfreich
-  if(selections.size()==1){
-    //Oh, das ging ja...
-    requirements::NodePtr node = selections[0];
+  if(modelState.nodeCollection==nullptr) {
+    return;
+  }
+  auto& collection = *modelState.nodeCollection;
+  ::requirements::Id id;
+  if(!::requirements::string_to_id(uuid, id)) {
+    return;
+  }
+  auto node = collection.getNodeById(id);
+  if(node) {
     node->updateContent(content);
   }
 }
 
 std::string MainWindow::newblob(std::string sourcefilename){
-  std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
-  return id;
+  // TODO: Send Command instead
+  //std::string id = requirements::importBlob(*_currentStorage, sourcefilename);
+  return "";
 }
 
 }

@@ -43,6 +43,7 @@ bool ThreadConnector::consumeResponse(::requirements::batch::Response& target){
   std::lock_guard<std::mutex> guard(_conn_mutex);
   if(newResponse) {
     target = std::move(_response);
+    newResponse = false;
     return true;
   }
   return false;

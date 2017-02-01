@@ -4,6 +4,10 @@
 #include <QVBoxLayout>
 #include <QEvent>
 
+#include "qreq/model.hpp"
+
+#include <iostream>
+
 namespace qreq{
 
   //TODO: Rahmen drum malen
@@ -21,29 +25,27 @@ ReqTextItemWidget::ReqTextItemWidget(QWidget *parent) : QWidget(parent){
   setLayout(vbox);
 }
 
-ReqTextItemWidget::~ReqTextItemWidget(){
+void ReqTextItemWidget::saveToModel(QAbstractItemModel *model, const QModelIndex &index) {
+  ModelItem mItem(index);
+  if(!mItem.valid()) {
+    return;
+  }
+  mItem.setContentFromQString(_textedit->toPlainText());
+  mItem.saveToModel(model, index);
 }
 
-void ReqTextItemWidget::set_caption(std::string const& caption){
-  _captionlabel->setText(caption.c_str());
-}
-
-void ReqTextItemWidget::set_maintext(std::string const& maintext){
-  _textedit->setPlainText(maintext.c_str());
+  void ReqTextItemWidget::setModelIndex(QModelIndex const& index) {
+  ModelItem mItem(index);
+  if(!mItem.valid()) {
+    std::cout<<"Invalid model?"<<std::endl;
+    // Ups, thats not a valid item..may this deserves a better response than silence (TODO)
+    return;
+  }
+  _textedit->setPlainText(mItem.getContentAsQString());
   QSize oldsize=_textedit->size();
   oldsize.setHeight(0);
   _textedit->resize(oldsize);
-}
 
-std::string ReqTextItemWidget::get_caption()const{
-  std::string retval=_captionlabel->text().toStdString();
-  return retval;
-}
-
-std::string ReqTextItemWidget::get_maintext()const{
-  std::string retval = _textedit->toPlainText().toStdString();
-
-  return retval;
 }
 
 }

@@ -28,7 +28,6 @@ namespace requirements {
     
     Iterator begin() { return Iterator(nodes.begin()); }
     Iterator end() { return Iterator(nodes.end()); }
-    bool findById(Id id, NodePtr& node);
     NodePtr createNode(Id id, std::string&& content);
     NodePtr createNode(const std::string& content);
     void deleteNode(NodePtr node);

@@ -10,8 +10,8 @@ namespace requirements {
     result.clear();
     result.reserve(ids.size());
     for(auto& id: ids) {
-      NodePtr node;
-      if(!collection.findById(id, node)) {
+      auto node = collection.getNodeById(id);
+      if(!node) {
         result.clear();
         return false;
       }

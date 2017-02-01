@@ -65,8 +65,8 @@ namespace requirements {
         if(!string_to_id(path.stem().string(), id)) {
           throw Exception(Exception::Reason::InvalidId);
         }
-        NodePtr dummy;
-        if(!collection.findById(id, dummy)) {
+        auto dummy = collection.getNodeById(id);
+        if(!dummy) {
           boost::filesystem::remove(path);
         }
       }

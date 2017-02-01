@@ -25,6 +25,9 @@ MainWindow::MainWindow(){
   generate_elements();
   generate_view();
   generate_menu();
+  timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
+  timer->start(1000);
 }
 
 ///
@@ -32,6 +35,19 @@ MainWindow::MainWindow(){
 ///
 MainWindow::~MainWindow(){
   Settings::getInstance().store();
+}
+
+void MainWindow::updateTimer() {
+  std::cout<<"Timer called"<<std::endl;
+  if(_threadconnector.consumeResponse(modelState)) {
+    std::cout<<"Update received"<<std::endl;
+    for(auto item: *(modelState.nodeCollection)) {
+      std::cout<<requirements::id_to_string(item->getId())<<std::endl;
+    }
+    std::cout<<"End of list"<<std::endl;
+    printtree("");
+    std::cout<<"Printed"<<std::endl;
+  }
 }
 
 void MainWindow::generate_elements(){
@@ -168,7 +184,6 @@ void MainWindow::set_current_project(std::string const& filename){
 }
 
 void MainWindow::load_current_project(){
-  init_project();
   printtree();
 }
 
@@ -178,13 +193,7 @@ void MainWindow::set_focus_to_uuid(QStandardItem *parent_item, std::string const
     QStandardItem* item_text=parent_item->child(i,COLUMN_TEXT);
     if(item_id->text().toStdString()==uuid){
       //Gefunden, also hinspringen
-      //_reqtree->scrollTo(item_text->index());
       _reqtree->setCurrentIndex(item_text->index());
-      /*QItemSeletionModel *selection=_reqtree->selectionModel();
-      selection->select (QItemSelection (
-        treeview->model ()->index (search, 0),
-        treeview->model ()->index (search, treeview->model ()->columnCount () - 1)),
-          QItemSelectionModel::Select);*/
     }
     else{
       //War nicht dabei, vielleicht in den Kindern?
@@ -232,7 +241,6 @@ QStandardItem* MainWindow::get_parent_item_by_modelindex(const QModelIndex& inde
 }
 
 void MainWindow::add_blob_to_row(QModelIndex const& index,std::string const& blobtext){
-//void MainWindow::add_blob_to_row(Gtk::TreeModel::iterator selected_row,std::string const& blobtext){
   if(blobtext!=""){
     QStandardItem* item_parent=get_parent_item_by_modelindex(index);
     if(item_parent!=nullptr){
@@ -248,15 +256,6 @@ void MainWindow::add_blob_to_row(QModelIndex const& index,std::string const& blo
         commit_to_collection(get_uuid_by_modelindex(index),content);
       }
     }
-
-
-    //Gtk::TreeModel::Row row = *selected_row;
-    //Glib::ustring content = row[_topic_columns.col_cont];
-    //content+="\n%(blob:";
-    //content+=blobtext;
-    //content+=")\n";
-    ////In den Baum schreiben, das changed()-Signal sorgt dafür, dass das in die collection kommt
-    //row[_topic_columns.col_cont]=content;
   }
 }
 

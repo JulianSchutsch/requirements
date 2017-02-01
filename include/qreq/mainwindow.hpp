@@ -8,18 +8,16 @@
 #include <QString>
 #include <QModelIndex>
 #include <QLineEdit>
+#include <QTimer>
 
 #include "qreq/reqtree.hpp"
 #include "qreq/commandline.hpp"
 #include "qreq/threadconnector.hpp"
 
-#include "requirements/batch/thread.hpp"
 #include "requirements/batch/response.hpp"
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
-#include "requirements/istorage.hpp"
-#include "requirements/storage/text.hpp"
 
 namespace qreq{
 
@@ -34,6 +32,7 @@ Q_OBJECT
   ReqTree *_reqtree;
   QStandardItemModel *_reqmodel;
   CommandLine *_commandline;
+  QTimer* timer;
 
   ThreadConnector _threadconnector;
   void generate_elements();
@@ -46,15 +45,11 @@ Q_OBJECT
 
   //Backend functions
 
-  std::unique_ptr<::requirements::storage::Text> _currentStorage;
-  void init_project();
-  //void init_collection();
-  void store_collection();
+  ::requirements::batch::Response modelState;
   void printtree(std::string const& uuid_to_jump="");
   void add_children_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
   void add_child_to_tree(QStandardItem *parent_item,const requirements::NodePtr& node);
   void new_node(bool sibling=true,bool copy_content=false);
-  requirements::NodePtr get_node_for_uuid(std::string const& uuid);
   void commit_to_collection(std::string const& uuid, std::string const& content);
   std::string newblob(std::string sourcefilename);
 
@@ -66,6 +61,8 @@ Q_OBJECT
   void add_blob_to_row(QModelIndex const& index,std::string const& blobtext);
 
 private slots:
+  void updateTimer();
+
   void on_f1button_clicked();
   void on_f2button_clicked();
   void on_f3button_clicked();

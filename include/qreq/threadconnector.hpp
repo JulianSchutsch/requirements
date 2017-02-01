@@ -17,7 +17,6 @@ namespace qreq{
 
 class ThreadConnector final {
 private:
-  batch::Thread _batchthread;
   std::mutex _conn_mutex;
   // The response contains all possible results from the batch thread
   bool newResponse = false;
@@ -26,6 +25,7 @@ private:
   void batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters);
   void batch_edit(NodePtr node){(void)node;}
 public:
+  batch::Thread _batchthread;
   ThreadConnector();
   void send_command(std::string command);
   // If new data has been received from the batch thread, this function returns true and moves all

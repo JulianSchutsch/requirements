@@ -5,7 +5,8 @@ namespace requirements {
   NodePtr Node::clone(NodeCollection& a_collection) {
     auto cp_content = content;
     NodePtr n=new Node(a_collection, id, std::move(cp_content));
-    for(auto& child: children) {
+    auto childrenCopy = children;
+    for(auto& child: childrenCopy) {
       auto nChild = child->clone(a_collection);
       nChild->setLastOf(n);
     }
@@ -70,6 +71,7 @@ namespace requirements {
     clearFromParent();
     parent = node->parent;
     auto it = parent->findChild(node);
+    assert(it!=parent->children.end());
     ++it;
     parent->children.emplace(it, this);
   }

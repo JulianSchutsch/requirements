@@ -4,6 +4,8 @@
 #include <QKeyEvent>
 #include <QTextEdit>
 
+#include "qreq/model.hpp"
+
 ///Wir wollen mehrere Strings haben:
 ///caption und maintext
 ///Der dem Item zugeordnete QVariant enthält also eine Stringlist in der Reihenfolge
@@ -15,7 +17,7 @@ ReqTextItemDelegate::ReqTextItemDelegate(QObject *parent)
  : QItemDelegate(parent){
 }
 
-QWidget *ReqTextItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const{
+QWidget *ReqTextItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index) const{
   //QTextEdit *editor = new QTextEdit(parent);
   ReqTextItemWidget *editor=new ReqTextItemWidget(parent);
 
@@ -23,28 +25,14 @@ QWidget *ReqTextItemDelegate::createEditor(QWidget *parent, const QStyleOptionVi
 }
 
 void ReqTextItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const{
-  //QString value = index.model()->data(index, Qt::EditRole).toString();
-  QStringList valuelist = index.model()->data(index, Qt::EditRole).toStringList();
-
-  //QTextEdit *textedit=static_cast<QTextEdit*>(editor);
   ReqTextItemWidget *widget=static_cast<ReqTextItemWidget*>(editor);
-  //textedit->setPlainText(value);
-  if(valuelist.size()>1){
-    widget->set_caption(valuelist[0].toStdString());
-    widget->set_maintext(valuelist[1].toStdString());
-  }
+  widget->setModelIndex(index);
 }
 
 void ReqTextItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const{
-  //QTextEdit *textedit=static_cast<QTextEdit*>(editor);
-  //QString value = textedit->toPlainText();
-  //model->setData(index, value, Qt::EditRole);
   ReqTextItemWidget *widget=static_cast<ReqTextItemWidget*>(editor);
-  //QString value=widget->get_maintext().c_str();
-  QStringList valuelist;
-  valuelist << widget->get_caption().c_str();
-  valuelist << widget->get_maintext().c_str();
-  model->setData(index,valuelist,Qt::EditRole);
+  // This should issue an edit command TODO
+  widget->saveToModel(model, index);
 }
 
 void ReqTextItemDelegate::updateEditorGeometry(QWidget *editor,const QStyleOptionViewItem &option, const QModelIndex &) const{
