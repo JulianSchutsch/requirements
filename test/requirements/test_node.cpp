@@ -300,3 +300,22 @@ TEST(Node, PreviousTo) {
     ASSERT_EQ((*it)->getParent(), root);
   }
 }
+
+TEST(Node, Clone) {
+  ::requirements::NodeCollection collection;
+  auto node = collection.createNode(testContent1);
+  auto collection2 = collection.clone();
+  auto node2 = collection2->getNodeById(node->getId());
+  ASSERT_NE(node, node2);
+  ASSERT_EQ(node->getChildren().size(), 0);
+  ASSERT_EQ(node2->getId(), node->getId());
+  ASSERT_EQ(node2->getContent(), node->getContent());
+  auto node2p = collection2->createNode(testContent2);
+  ASSERT_EQ(node->getChildren().size(), 0);
+  node2p->setLastOf(node2);
+  ASSERT_EQ(node2p->getParent(), node2);
+  ASSERT_EQ(node2->getChildren().size(), 1);
+  ASSERT_EQ(node->getChildren().size(), 0);
+  ASSERT_EQ(node2->getChildren().front()->getId(), node2p->getId());
+  ASSERT_EQ(node2->getChildren().front()->getContent(), testContent2);
+}

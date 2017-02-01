@@ -13,6 +13,7 @@ namespace requirements {
     using Nodes = std::map<Id, NodePtr>;
     Nodes nodes;
     NodePtr rootNode; // Root-Node always exists
+    friend class Node;
   public:
     class Iterator {
     private:

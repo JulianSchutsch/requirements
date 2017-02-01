@@ -1,16 +1,17 @@
 #include "requirements/node.hpp"
+#include "requirements/nodecollection.hpp"
 
 namespace requirements {
 
   NodePtr Node::clone(NodeCollection& a_collection) {
     auto cp_content = content;
     NodePtr n=new Node(a_collection, id, std::move(cp_content));
-    auto childrenCopy = children;
-    for(auto& child: childrenCopy) {
+    a_collection.nodes.emplace(id, n);
+    for(auto& child: children) {
       auto nChild = child->clone(a_collection);
       nChild->setLastOf(n);
     }
-    return std::move(n);
+    return n;
   }
 
   Node::ChildList::iterator Node::findChild(NodePtr node) {
@@ -93,9 +94,6 @@ namespace requirements {
   
   void Node::setLastOf(NodePtr node) {
     clearFromParent();
-    if(parent!=nullptr) {
-      parent->children.remove_if([this](const NodePtr& item){return item==this;});
-    }
     parent = node.get();
     if(parent!=nullptr) {
       parent->children.emplace_back(this);
