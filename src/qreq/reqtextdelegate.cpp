@@ -25,9 +25,49 @@ void ReqTextDelegate::paint(QPainter *painter,const QStyleOptionViewItem &option
     return;
   }
 
+  static const int innerBorder = 5;
+  static const int gap = 5;
+
+  auto& rect = option.rect;
+  auto left = rect.x();
+  auto top = rect.y();
+  auto width = rect.width();
+  auto height = rect.height();
+  auto right = rect.right();
+  auto bottom = rect.bottom();
+
+  QFontMetrics fm(option.font);
+  int textHeight = fm.height();
+
+  auto innerLeft = left+innerBorder;
+  auto innerRight = right-innerBorder;
+  auto innerTop = top+innerBorder;
+  auto boxTop = innerTop+textHeight+2*gap;
+  auto innerBottom = bottom-innerBorder;
+  auto innerWidth = width-2*innerBorder;
+  auto boxHeight = height-textHeight-4*gap;
+
   painter->save();
-  painter->translate(QPointF(option.rect.x(), option.rect.y()));
+  painter->drawLine(QPoint(innerLeft, innerTop), QPoint(innerRight, innerTop));
+  painter->drawLine(QPoint(innerLeft, innerTop), QPoint(innerLeft, boxTop));
+  painter->drawLine(QPoint(innerRight, innerTop), QPoint(innerRight, boxTop));
+  painter->drawLine(QPoint(innerLeft, boxTop), QPoint(innerRight, boxTop));
+  painter->drawLine(QPoint(innerLeft, boxTop), QPoint(innerLeft, innerBottom));
+  painter->drawLine(QPoint(innerRight, boxTop), QPoint(innerRight, innerBottom));
+  painter->drawLine(QPoint(innerLeft, innerBottom), QPoint(innerRight, innerBottom));
+
+  auto caption = ::requirements::id_to_string(node->getId());
+
+  auto captionRect = QRect(innerLeft+gap, innerTop+gap, innerWidth-2*gap, textHeight);
+
+  painter->setPen(QColor(0,0,255));
+  painter->drawText(captionRect,  Qt::AlignTop, caption.c_str());
+
+  auto boxRect = QRect(innerLeft+gap, boxTop+gap, innerWidth-2*gap, boxHeight);
+
   QTextDocument document(node->getContent().c_str());
+
+  painter->translate(boxRect.left(), boxRect.top());
   document.drawContents(painter);
   painter->restore();
 
@@ -42,7 +82,7 @@ QSize ReqTextDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
   QTextDocument document(node->getContent().c_str());
   document.setTextWidth(option.rect.width());
   auto size = document.size();
-  return QSize(size.width()+20, size.height()+20);
+  return QSize(option.rect.width(), size.height()+50);
 }
 
 QWidget *ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const{
