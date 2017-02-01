@@ -39,6 +39,7 @@ namespace requirements {
       void waitForEmptyQueue();
   
       void enqueue(std::unique_ptr<ICommand> command);
+      void enqueue(std::vector<std::unique_ptr<ICommand>> commands);
       
       // Wakeup the Queue-Thread
       void notify();

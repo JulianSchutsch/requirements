@@ -22,6 +22,14 @@ namespace requirements {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
       }
     }
+
+    void Queue::enqueue(std::vector<std::unique_ptr<ICommand>> commands) {
+      std::lock_guard<std::mutex> guard(queueMutex);
+      for(auto& command: commands) {
+        queue.emplace(std::move(command));
+      }
+      queueCondition.notify_all();
+    }
     
     void Queue::enqueue(std::unique_ptr<ICommand> command) {
       std::lock_guard<std::mutex> guard(queueMutex);
