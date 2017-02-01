@@ -2,6 +2,13 @@
 
 namespace qreq {
 
+  Qt::ItemFlags Model::flags(const QModelIndex& index) const {
+    if(!index.isValid()) {
+      return Qt::ItemIsEnabled;
+    }
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+  }
+
   Model& Model::getModel(const QModelIndex& index) {
     auto* result=const_cast<Model*>(dynamic_cast<const Model*>(index.model()));
     assert(result!=nullptr);

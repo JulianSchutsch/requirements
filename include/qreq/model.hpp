@@ -24,6 +24,7 @@ namespace qreq {
     int rowCount(const QModelIndex& nodeModelIndex) const override;
     int columnCount(const QModelIndex&) const override;
     QVariant data(const QModelIndex&, int) const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const;
   };
 
 }
