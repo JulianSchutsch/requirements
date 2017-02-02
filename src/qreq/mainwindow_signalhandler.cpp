@@ -37,6 +37,7 @@ void MainWindow::on_f4button_clicked(){
 
 void MainWindow::on_f5button_clicked(){
   //Create new node as sibling and copy content of old node into new node
+  manipulator.newTwin(_reqtree->currentIndex());
 }
 
 void MainWindow::on_f6button_clicked(){
@@ -44,8 +45,9 @@ void MainWindow::on_f6button_clicked(){
 }
 
 void MainWindow::on_f7button_clicked(){
-  if(_reqtree->currentIndex().isValid()==true) std::cout << "valid" << std::endl;else std::cout << "invalid" << std::endl;
-  manipulator.newChild(_reqtree->currentIndex());
+  const auto index=_reqtree->currentIndex();
+  manipulator.newChild(index);
+  _reqtree->expand(index);
 }
 
 void MainWindow::on_f8button_clicked(){
