@@ -9,6 +9,7 @@
 #include "requirements/batch/response.hpp"
 
 #include "qreq/threadconnector.hpp"
+#include "qreq/batchmessage.hpp"
 
 namespace qreq {
 
@@ -31,6 +32,7 @@ namespace qreq {
 
     // This function is supposed to the connection between the batch thread and the main thread. It must be called in regular intervals to collect changes in the model.
     void checkResponses();
+    std::list<BatchMessage> consumeMessages() { return std::move(connector.consumeMessages()); }
 
     static Model& getModel(const QModelIndex& index);
     ::requirements::NodePtr getNodeFromModelIndex(const QModelIndex& index) const;

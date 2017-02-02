@@ -33,10 +33,8 @@ void ThreadConnector::batch_ret(batch::Response&& bres){
 }
 
 void ThreadConnector::batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters){
-  (void)kind;
-  (void)message;
-  (void)parameters;
-  std::cout << "batch_message:" << util::formatString(message, parameters) << std::endl;
+  std::lock_guard<std::mutex> guard(_conn_mutex);
+  messages.emplace_back(kind, message, parameters);
 }
 
 bool ThreadConnector::consumeResponse(::requirements::batch::Response& target){
@@ -47,6 +45,15 @@ bool ThreadConnector::consumeResponse(::requirements::batch::Response& target){
     return true;
   }
   return false;
+}
+
+std::list<BatchMessage> ThreadConnector::consumeMessages() {
+  std::list<BatchMessage> result;
+  {
+    std::lock_guard<std::mutex> guard(_conn_mutex);
+    result = std::move(messages);
+  }
+  return std::move(result);
 }
 
 }

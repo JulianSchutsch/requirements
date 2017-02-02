@@ -9,6 +9,8 @@
 #include <QModelIndex>
 #include <QLineEdit>
 #include <QTimer>
+#include <QListWidget>
+#include <QStringListModel>
 
 #include "qreq/reqtree.hpp"
 #include "qreq/commandline.hpp"
@@ -27,6 +29,7 @@ namespace qreq {
     ReqTree *_reqtree;
     CommandLine *_commandline;
     QTimer *timer;
+    QListWidget *_messageList;
 
     void generate_elements();
     void generate_view();
@@ -37,6 +40,8 @@ namespace qreq {
 
     Model model;
     ModelManipulator manipulator;
+
+    void printMessage(const BatchMessage& message);
 
   private slots:
 

@@ -164,7 +164,25 @@ void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
 
 void MainWindow::on_commandline_return(std::string const& command){
   std::cout << "command entered: " << command << std::endl;
-  manipulator.send_command(command);
+  try {
+    manipulator.send_command(command);
+  } catch(::requirements::Exception& e) {
+    BatchMessage m;
+    m.message = e.getReason();
+    m.parameters = e.getParameters();
+    switch(e.getKind()) {
+      case ::requirements::Exception::Kind::Internal:
+        m.kind = ::requirements::Status::MessageKind::InternalError;
+        break;
+      case ::requirements::Exception::Kind::User:
+        m.kind = ::requirements::Status::MessageKind::UserError;
+        break;
+      case ::requirements::Exception::Kind::Other:
+        m.kind = ::requirements::Status::MessageKind::OtherError;
+        break;
+    }
+    printMessage(m);
+  }
 }
 
 }
