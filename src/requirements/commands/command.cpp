@@ -26,6 +26,8 @@
 #include "requirements/commands/previousto.hpp"
 #include "requirements/commands/blobaliases.hpp"
 #include "requirements/commands/help.hpp"
+#include "requirements/commands/levelup.hpp"
+#include "requirements/commands/leveldown.hpp"
 
 namespace requirements {
   namespace commands {
@@ -51,7 +53,9 @@ namespace requirements {
       {"nextto", [](Parser& parser) { return new NextTo(parser); }},
       {"previousto", [](Parser& parser) { return new PreviousTo(parser); }},
       {"blobaliases", [](Parser& parser) { return new BlobAliases(parser); }},
-      {"help", [](Parser& parser) { return new Help(parser); }}
+      {"help", [](Parser& parser) { return new Help(parser); }},
+      {"levelup", [](Parser& parser) { return new LevelUp(parser); }},
+      {"leveldown", [](Parser& parser) { return new LevelDown(parser); }}
     };
     
     std::unique_ptr<ICommand> assembleFromString(const std::string &str) {
