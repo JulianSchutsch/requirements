@@ -26,6 +26,10 @@ namespace qreq {
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
   }
 
+  void Model::forwardColumnsInserted(const QModelIndex& index, int start, int end) {
+    insertColumn(start, index);
+  }
+
   Model& Model::getModel(const QModelIndex& index) {
     auto* result=const_cast<Model*>(dynamic_cast<const Model*>(index.model()));
     assert(result!=nullptr);

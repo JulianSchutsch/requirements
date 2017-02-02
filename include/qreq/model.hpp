@@ -26,6 +26,8 @@ namespace qreq {
 
     quintptr insertLookup(const ::requirements::NodePtr& node) const;
 
+    void forwardColumnsInserted(const QModelIndex& index, int start, int end);
+
   public:
 
     const::requirements::batch::Response& getModel() const { return model; }

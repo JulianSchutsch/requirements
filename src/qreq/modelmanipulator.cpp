@@ -25,21 +25,35 @@ namespace qreq {
   }
 
   void ModelManipulator::newSibling(const QModelIndex &index) {
-    metaManipulator(index, [this](::requirements::NodePtr node){
-      auto newId = ::requirements::generateRandomId();
+    metaManipulator(index, [this, index](::requirements::NodePtr node){
+
+      auto parentIndex = model.parent(index);
+      auto newRow = node->childIndex()+1;
+
+      model.beginInsertRows(parentIndex, newRow, newRow);
+      auto newNode = model.model.nodeCollection->createNode("");
+      newNode->setNextTo(node);
+      model.endInsertRows();
+
       std::vector<std::unique_ptr<ICommand>> commands;
-      commands.emplace_back(std::make_unique<::requirements::commands::New>(newId));
-      commands.emplace_back(std::make_unique<::requirements::commands::NextTo>(newId, node->getId()));
+      commands.emplace_back(std::make_unique<::requirements::commands::New>(newNode->getId()));
+      commands.emplace_back(std::make_unique<::requirements::commands::NextTo>(newNode->getId(), node->getId()));
       model.connector._batchthread.enqueue(std::move(commands));
     });
   }
 
   void ModelManipulator::newChild(const QModelIndex &index) {
-    metaManipulator(index, [this](::requirements::NodePtr node){
-      auto newId = ::requirements::generateRandomId();
+    metaManipulator(index, [this, index](::requirements::NodePtr node){
+      auto newRow = node->getChildren().size();
+
+      model.beginInsertRows(index, newRow, newRow);
+      auto newNode = model.model.nodeCollection->createNode("");
+      newNode->setLastOf(node);
+      model.endInsertRows();
+
       std::vector<std::unique_ptr<ICommand>> commands;
-      commands.emplace_back(std::make_unique<::requirements::commands::New>(newId));
-      commands.emplace_back(std::make_unique<::requirements::commands::LastOf>(newId, node->getId()));
+      commands.emplace_back(std::make_unique<::requirements::commands::New>(newNode->getId()));
+      commands.emplace_back(std::make_unique<::requirements::commands::LastOf>(newNode->getId(), node->getId()));
       model.connector._batchthread.enqueue(std::move(commands));
     });
   }
@@ -61,7 +75,17 @@ namespace qreq {
   }
 
   void ModelManipulator::deleteNode(const QModelIndex& index) {
-    metaManipulator(index, [this](::requirements::NodePtr node){model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::Delete>(node->getId())); });
+    metaManipulator(index, [this, index](::requirements::NodePtr node){
+
+      auto parentIndex = model.parent(index);
+      auto oldRow = node->childIndex();
+
+      model.beginRemoveRows(parentIndex, oldRow, oldRow);
+      model.model.nodeCollection->deleteNode(node);
+      model.endRemoveRows();
+
+      model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::Delete>(node->getId()));
+    });
   }
 
   void ModelManipulator::send_command(const std::string &command) {
