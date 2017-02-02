@@ -103,14 +103,12 @@ namespace qreq {
 
   QWidget *
   ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
-    std::cout << "Start editing" << std::endl;
     auto *editor = new QTextEdit(parent);
     editor->setFrameStyle(QFrame::NoFrame);
     return editor;
   }
 
   void ReqTextDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
-    std::cout << "Set Editor data" << std::endl;
     auto *item_widget = static_cast<QTextEdit *>(editor);
     auto &model = Model::getModel(index);
     auto node = model.getNodeFromModelIndex(index);
@@ -129,7 +127,6 @@ namespace qreq {
 
   void ReqTextDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                                              const QModelIndex &) const {
-    std::cout << "Layout update" << std::endl;
     auto &rect = option.rect;
     auto left = rect.x();
     auto top = rect.y();

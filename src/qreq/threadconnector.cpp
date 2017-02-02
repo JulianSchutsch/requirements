@@ -29,7 +29,6 @@ void ThreadConnector::batch_ret(batch::Response&& bres){
     _response = std::move(bres);
     newResponse = true;
   }
-  std::cout << "batch_ret" << std::endl;
 }
 
 void ThreadConnector::batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters){
