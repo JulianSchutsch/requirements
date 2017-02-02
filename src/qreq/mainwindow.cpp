@@ -2,6 +2,8 @@
 #include "qreq/settings.hpp"
 #include "qreq/reqtextdelegate.hpp"
 
+#include "requirements/commands/folder.hpp"
+
 #include "util/formatstring.hpp"
 
 #include <QApplication>
@@ -89,13 +91,13 @@ namespace qreq {
     QPushButton *f1_button = new QPushButton(tr("F1 Keycodes"));
     connect(f1_button, SIGNAL(clicked()), this, SLOT(on_f1button_clicked()));
     f1_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f2_button = new QPushButton(tr("F2 Save"));
+    QPushButton *f2_button = new QPushButton(tr("F2 Edit"));
     connect(f2_button, SIGNAL(clicked()), this, SLOT(on_f2button_clicked()));
     f2_button->setFocusPolicy(Qt::NoFocus);
     QPushButton *f3_button = new QPushButton(tr("F3 Open"));
     connect(f3_button, SIGNAL(clicked()), this, SLOT(on_f3button_clicked()));
     f3_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f4_button = new QPushButton(tr("F4 Edit"));
+    QPushButton *f4_button = new QPushButton(tr("F4 No Function"));
     connect(f4_button, SIGNAL(clicked()), this, SLOT(on_f4button_clicked()));
     f4_button->setFocusPolicy(Qt::NoFocus);
     QPushButton *f5_button = new QPushButton(tr("F5 Copy"));
@@ -190,6 +192,9 @@ namespace qreq {
   }
 
   void MainWindow::load_current_project() {
+    //Schade, dass ich draußen bleiben muss. Naja, schreib ich halt nen Brief:
+    auto command="folder "+Settings::getInstance().current_project;
+    manipulator.send_command(command);
   }
 
 }

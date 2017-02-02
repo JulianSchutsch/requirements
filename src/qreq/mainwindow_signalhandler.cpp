@@ -17,7 +17,8 @@ void MainWindow::on_f1button_clicked(){
 }
 
 void MainWindow::on_f2button_clicked(){
-  // No actual function left
+  //versetzen des aktuellen Knotens in den Edit-Mode
+  _reqtree->edit(_reqtree->currentIndex());
 }
 
 void MainWindow::on_f3button_clicked(){
@@ -31,8 +32,7 @@ void MainWindow::on_f3button_clicked(){
 }
 
 void MainWindow::on_f4button_clicked(){
-  //versetzen des aktuellen Knotens in den Edit-Mode
-  _reqtree->edit(_reqtree->currentIndex());
+
 }
 
 void MainWindow::on_f5button_clicked(){
@@ -44,6 +44,7 @@ void MainWindow::on_f6button_clicked(){
 }
 
 void MainWindow::on_f7button_clicked(){
+  if(_reqtree->currentIndex().isValid()==true) std::cout << "valid" << std::endl;else std::cout << "invalid" << std::endl;
   manipulator.newChild(_reqtree->currentIndex());
 }
 
@@ -159,6 +160,8 @@ void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
 
 void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
   QString commandtext=_commandline->text();
+  auto node=model.getNodeFromModelIndex(i);
+  commandtext+=::requirements::id_to_string(node->getId()).c_str();
   _commandline->setText(commandtext);
 }
 
