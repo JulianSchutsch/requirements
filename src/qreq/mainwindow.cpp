@@ -53,9 +53,6 @@ void MainWindow::generate_elements(){
   connect(_reqtree,SIGNAL(ctrl_down_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_down(QModelIndex)));
   connect(_reqtree,SIGNAL(alt_return_pressed(QModelIndex)),this,SLOT(on_reqtree_alt_return(QModelIndex)));
 
-  // TODO: Connection between reqmodel and this mainapp, needs investigation, could be directly connected to view
-  //connect(_reqmodel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_reqmodel_item_changed(QStandardItem*)));
-
   _commandline=new CommandLine(this);
   connect(_commandline,SIGNAL(fire_command(std::string)),this,SLOT(on_commandline_return(std::string)));
 }

@@ -26,6 +26,9 @@ namespace qreq {
     quintptr insertLookup(const ::requirements::NodePtr& node) const;
 
   public:
+
+    const::requirements::batch::Response& getModel() const { return model; }
+
     // This function is supposed to the connection between the batch thread and the main thread. It must be called in regular intervals to collect changes in the model.
     void checkResponses();
 

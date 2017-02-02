@@ -21,8 +21,6 @@ namespace qreq {
 
   void ReqTextDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, QModelIndex const &index) const {
 
-    if (option.state & QStyle::State_Selected) painter->fillRect(option.rect, option.palette.highlight());
-
     auto &model = Model::getModel(index);
     auto node = model.getNodeFromModelIndex(index);
     if (!node) {
@@ -43,12 +41,16 @@ namespace qreq {
     auto innerLeft = left + innerBorder;
     auto innerRight = right - innerBorder;
     auto innerTop = top + innerBorder;
+    auto innerHeight = height - 2 * innerBorder;
     auto boxTop = innerTop + textHeight + 2 * gap;
     auto innerBottom = bottom - innerBorder;
     auto innerWidth = width - 2 * innerBorder;
     auto boxHeight = height - textHeight - 4 * gap;
 
     painter->save();
+    if(option.state & QStyle::State_Selected) {
+      painter->fillRect(QRect(innerLeft, innerTop, innerWidth, innerHeight), QColor(255, 255,0));
+    }
     painter->drawLine(QPoint(innerLeft, innerTop), QPoint(innerRight, innerTop));
     painter->drawLine(QPoint(innerLeft, innerTop), QPoint(innerLeft, boxTop));
     painter->drawLine(QPoint(innerRight, innerTop), QPoint(innerRight, boxTop));
@@ -57,11 +59,24 @@ namespace qreq {
     painter->drawLine(QPoint(innerRight, boxTop), QPoint(innerRight, innerBottom));
     painter->drawLine(QPoint(innerLeft, innerBottom), QPoint(innerRight, innerBottom));
 
-    auto caption = ::requirements::id_to_string(node->getId());
+    auto& imodel = model.getModel();
+    auto id = node->getId();
+    std::string caption;
+    QColor captionColor(0,0,255);
+    if(imodel.shortcuts->has(id)) {
+      captionColor = QColor(0,128,0);
+      caption = imodel.shortcuts->get(id);
+    } else {
+      caption = ::requirements::id_to_string(id);
+    }
+    if(imodel.errors->has(id)) {
+      captionColor = QColor(255,0,0);
+      caption+=" "+imodel.errors->get(id);
+    }
 
     auto captionRect = QRect(innerLeft + gap, innerTop + gap, innerWidth - 2 * gap, textHeight);
 
-    painter->setPen(QColor(0, 0, 255));
+    painter->setPen(captionColor);
     painter->drawText(captionRect, Qt::AlignTop, caption.c_str());
 
     auto boxRect = QRect(innerLeft + gap, boxTop + gap, innerWidth - 2 * gap, boxHeight);
@@ -120,8 +135,6 @@ namespace qreq {
     auto top = rect.y();
     auto width = rect.width();
     auto height = rect.height();
-    auto right = rect.right();
-    auto bottom = rect.bottom();
 
     QFontMetrics fm(option.font);
     int textHeight = fm.height();

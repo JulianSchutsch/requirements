@@ -15,6 +15,7 @@ namespace qreq {
       return;
     }
     node->updateContent(content);
+    emit dataChanged(index, index);
     connector._batchthread.enqueue(std::make_unique<::requirements::commands::SetContent>(node->getId(), content));
   }
 
@@ -58,6 +59,7 @@ namespace qreq {
         auto keepCollection = std::move(model.nodeCollection);
         model = std::move(intermediate);
         model.nodeCollection = std::move(keepCollection);
+        emit dataChanged(QModelIndex(), QModelIndex());
       }
     }
   }
