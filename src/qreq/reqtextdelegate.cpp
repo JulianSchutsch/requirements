@@ -132,7 +132,7 @@ namespace qreq {
     auto innerWidth = width - 2 * innerBorder;
     auto boxHeight = height - textHeight - 4 * gap;
 
-    editor->setGeometry(QRect(innerLeft+1, boxTop+1, innerWidth-2, boxHeight-2));
+    editor->setGeometry(QRect(innerLeft+gap, boxTop+gap, innerWidth-2*gap, boxHeight-2*gap));
   }
 
   bool ReqTextDelegate::eventFilter(QObject *editor, QEvent *event) {
