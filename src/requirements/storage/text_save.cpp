@@ -8,12 +8,11 @@
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
-#include "requirements/id.hpp"
+#include "requirements/exception.hpp"
 
 #include "util/path.hpp"
 
 #include "requirements/storage/text_common.hpp"
-#include "requirements/storage/exception.hpp"
 
 namespace requirements {
   namespace storage {
@@ -59,11 +58,12 @@ namespace requirements {
     }
 
     static void deleteObsoleteNodes(NodeCollection& collection, const std::string& folder) {
-      for(auto it=boost::filesystem::directory_iterator(folder+text_requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
+      auto requirementsFolder = folder+text_requirementsFolder;
+      for(auto it=boost::filesystem::directory_iterator(requirementsFolder);it!=boost::filesystem::directory_iterator();++it) {
         boost::filesystem::path path(*it);
         Id id;
         if(!string_to_id(path.stem().string(), id)) {
-          throw Exception(Exception::Reason::InvalidId);
+          throw Exception(Exception::Kind::User, "Unexpected file %1% not conforming to uuid standard found in %2%", {path.native(), requirementsFolder});
         }
         auto dummy = collection.getNodeById(id);
         if(!dummy) {
@@ -75,7 +75,7 @@ namespace requirements {
     void text_save(NodeCollection& collection, const std::string& a_folder) {
       const auto& folder = util::ensureTrailingSlash(a_folder);
       if(folder.empty()) {
-        throw Exception(Exception::Reason::FolderNameEmpty);
+        throw Exception(Exception::Kind::Internal, "Empty folder name used to open requirements folder", {});
       }
       text_ensureFolder(folder);
       saveNodes(collection, folder);

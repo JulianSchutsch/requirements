@@ -15,6 +15,7 @@ namespace requirements {
   
   class Status;
   class ICommand;
+  class Exception;
   
   namespace batch {
     
@@ -34,6 +35,8 @@ namespace requirements {
       void parse(Status &status);
       
       bool processQueue(Status &status, std::unique_lock<std::mutex> &guard);
+
+      void forwardException(Exception& e);
     
     public:
       void waitForEmptyQueue();

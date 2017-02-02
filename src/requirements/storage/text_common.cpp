@@ -2,19 +2,23 @@
 
 #include <boost/filesystem.hpp>
 
-#include "requirements/storage/exception.hpp"
+#include "requirements/exception.hpp"
 
 namespace requirements {
   namespace storage {
 
     static void ensureSubFolder(const std::string& subFolder) {
       if(!boost::filesystem::exists(subFolder)) {
-        if(!boost::filesystem::create_directory(subFolder)) {
-          throw Exception(Exception::Reason::CannotCreateFolder);
+        try {
+          if (!boost::filesystem::create_directory(subFolder)) {
+            throw Exception(Exception::Kind::User, "Failed to create folder %1%", {subFolder});
+          }
+        } catch (boost::filesystem::filesystem_error& e) {
+          throw ::requirements::Exception(Exception::Kind::Other, "Failed to create folder %1%, exception %2%", {e.what(), subFolder});
         }
       } else {
         if(!boost::filesystem::is_directory(subFolder)) {
-          throw Exception(Exception::Reason::NotAFolder);
+          throw ::requirements::Exception(Exception::Kind::User, "Cannot create folder %1%, already a file.", {subFolder});
         }
       }
     }

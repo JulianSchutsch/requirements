@@ -4,9 +4,10 @@
 
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/filesystem.hpp>
-#include <requirements/storage/exception.hpp>
 
 #include "util/path.hpp"
+
+#include "requirements/exception.hpp"
 
 #include "requirements/storage/text_common.hpp"
 #include "requirements/storage/text_load.hpp"
@@ -83,7 +84,7 @@ namespace requirements {
     void Text::setBlobAliases(const std::string& blob, const std::string& alias) {
       auto it = blobAliases.find(blob);
       if(it==blobAliases.end()) {
-        throw Exception(Exception::Reason::BlobNotFound);
+        throw Exception(Exception::Kind::User, "Blob %1% not found", {blob});
       }
       it->second = it->first + " " + alias;
     }

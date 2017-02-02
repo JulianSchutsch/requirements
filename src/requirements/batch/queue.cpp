@@ -46,18 +46,37 @@ namespace requirements {
         }
         return;
       }
-      auto storage = status.openStorage();
-      ::requirements::annotations::ParserResult result;
-      ::requirements::annotations::parse(*storage, result);
-      if (responseFunction) {
-        Response response;
-        response.status = status.clone();
-        response.shortcuts = std::move(result.shortcuts);
-        response.errors = std::move(result.errors);
-        response.requirements = std::move(result.requirements);
-        response.sections = std::move(result.sections);
-        response.nodeCollection = storage->getNodeCollection().clone();
-        responseFunction(std::move(response));
+      try {
+        auto storage = status.openStorage();
+        ::requirements::annotations::ParserResult result;
+        ::requirements::annotations::parse(*storage, result);
+        if (responseFunction) {
+          Response response;
+          response.status = status.clone();
+          response.shortcuts = std::move(result.shortcuts);
+          response.errors = std::move(result.errors);
+          response.requirements = std::move(result.requirements);
+          response.sections = std::move(result.sections);
+          response.nodeCollection = storage->getNodeCollection().clone();
+          responseFunction(std::move(response));
+        }
+      } catch(Exception& e) {
+        forwardException(e);
+        status.messageFunction(Status::MessageKind::OtherError, "Exception during parsing of folder %1%, disable folder",{status.folder});
+      }
+    }
+
+    void Queue::forwardException(Exception& e) {
+      switch(e.getKind()) {
+        case Exception::Kind::Internal:
+          status.messageFunction(Status::MessageKind::InternalError, e.getReason(), e.getParameters());
+          break;
+        case Exception::Kind::User:
+          status.messageFunction(Status::MessageKind::UserError, e.getReason(), e.getParameters());
+          break;
+        case Exception::Kind::Other:
+          status.messageFunction(Status::MessageKind::OtherError, e.getReason(), e.getParameters());
+          break;
       }
     }
     
@@ -69,17 +88,7 @@ namespace requirements {
         try {
           top->execute(status);
         } catch(::requirements::Exception& e) {
-          switch(e.getKind()) {
-            case Exception::Kind::Internal:
-              status.messageFunction(Status::MessageKind::InternalError, e.getReason(), e.getParameters());
-              break;
-            case Exception::Kind::User:
-              status.messageFunction(Status::MessageKind::UserError, e.getReason(), e.getParameters());
-              break;
-            case Exception::Kind::Other:
-              status.messageFunction(Status::MessageKind::OtherError, e.getReason(), e.getParameters());
-              break;
-          }
+          forwardException(e);
         }
         guard.lock();
         queue.pop();
