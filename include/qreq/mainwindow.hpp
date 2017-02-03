@@ -66,6 +66,7 @@ namespace qreq {
     void on_reqtree_ctrl_down(const QModelIndex &i);
     void on_reqtree_alt_return(const QModelIndex &i);
     void on_commandline_return(std::string const &command);
+    void on_model_reset();
 
   protected:
     void keyPressEvent(QKeyEvent *event);

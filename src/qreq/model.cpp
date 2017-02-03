@@ -69,9 +69,16 @@ namespace qreq {
   }
 
   Model& Model::getModel(const QModelIndex& index) {
-    auto* result=const_cast<Model*>(dynamic_cast<const Model*>(index.model()));
-    assert(result!=nullptr);
-    return *result;
+    if(index.isValid()==true){
+      auto* result=const_cast<Model*>(dynamic_cast<const Model*>(index.model()));
+      assert(result!=nullptr);
+      return *result;
+    }
+    else{
+      Model* result=nullptr;
+      return *result;
+    }
+
   }
 
   ::requirements::NodePtr Model::getNodeFromModelIndex(const QModelIndex& index) const {
@@ -90,11 +97,13 @@ namespace qreq {
     if(connector.consumeResponse(intermediate)) {
       if(!model.nodeCollection || *intermediate.nodeCollection!=*model.nodeCollection) {
         std::cout<<"Replace data"<<std::endl;
-        emit beginResetModel();
+        //emit beginResetModel();
+        beginResetModel();
         model = std::move(intermediate);
         lookup.clear();
         reverseLookup.clear();
-        emit endResetModel();
+        //emit endResetModel();
+        endResetModel();
       } else {
         std::cout<<"Keep core collection, replace the rest"<<std::endl;
         // Trick to move everything but the nodecollection, this keeps the model stable.

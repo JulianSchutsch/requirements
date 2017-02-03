@@ -77,6 +77,7 @@ namespace qreq {
     connect(_reqtree, SIGNAL(ctrl_up_pressed(QModelIndex)), this, SLOT(on_reqtree_ctrl_up(QModelIndex)));
     connect(_reqtree, SIGNAL(ctrl_down_pressed(QModelIndex)), this, SLOT(on_reqtree_ctrl_down(QModelIndex)));
     connect(_reqtree, SIGNAL(alt_return_pressed(QModelIndex)), this, SLOT(on_reqtree_alt_return(QModelIndex)));
+    connect(&model,SIGNAL(modelReset()),this,SLOT(on_model_reset()));
 
     _commandline = new CommandLine(this);
     connect(_commandline, SIGNAL(fire_command(std::string)), this, SLOT(on_commandline_return(std::string)));

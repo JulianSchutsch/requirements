@@ -12,10 +12,11 @@
 namespace qreq {
 
   class Model : public QAbstractItemModel {
+    Q_OBJECT
   private:
     ThreadConnector connector;
     ::requirements::batch::Response model;
-    int rootRowCount() const;
+
     friend class ModelManipulator;
 
     mutable quintptr lookupIndex;
@@ -28,7 +29,7 @@ namespace qreq {
     quintptr currentEdited;
 
   public:
-
+    int rootRowCount() const;
     bool isEditing(const QModelIndex& index);
     QString editorContent();
     QSizeF editorSize();

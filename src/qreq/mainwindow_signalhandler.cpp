@@ -190,4 +190,16 @@ void MainWindow::on_commandline_return(std::string const& command){
   }
 }
 
+void MainWindow::on_model_reset(){
+  const auto oldindex=_reqtree->currentIndex();
+  const auto sib=_reqtree->indexAt(_reqtree->rect().topLeft());
+  if(model.rootRowCount()>0){
+    _reqtree->setCurrentIndex(sib);
+    _reqtree->expandAll();
+    _reqtree->setCurrentIndex(oldindex);
+  }
+
+
+}
+
 }
