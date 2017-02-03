@@ -1,0 +1,90 @@
+\documentclass[12pt]{article}
+\usepackage{parskip}
+\usepackage{graphicx}
+\begin{document}
+\section{Introduction}
+The requirements tool is developed following the unix philosophy of doing one thing and one thing well.
+
+The underlying data, hierarchical texts and annotations, are too complicated to be processed using a single text file. To simplify cooperation of programs, we introduce two ways,
+\begin{itemize}
+\item A library simplifying access to the requirement folders
+\item A console tool to allow indirect usage of the library through script languages
+\end{itemize}
+
+This document describes the architecture and the library and a few usage scenarios.
+
+\section{Layer architecture}
+\begin{figure}[!t]
+\includegraphics[width=1.0\textwidth]{layer_architecture.pdf}
+\caption{Layer architecture of the requirement system}
+\label{fig:layerarchitecture}
+\end{figure}
+
+The layer architecture shown in fig. \ref{fig:layerarchitecture} insulates the application using library from lower layers as much as possible.
+Under ideal circumstances the application can interact with the batch system
+using only commands. In some cases this is not enough, hence the node collection
+and the results from the annotation system are available to the application as well. These results are clones with ownership transfered to the application.
+
+The application creates instances of commands and sends them to the batch system for execution. usually the batch system runs within its own thread, therefore this operation is non blocking.
+
+The batch system calls the annotation system's parser after all commands from its queue have been processed. Once this step is finished, the application receives a callback containing a status.
+
+The application must refrain from using any lower layers directly. Only commands
+must access the lower layers as they can do so in a safe manner.
+
+\section{Storage/Blobs}
+Storage (::requirements::IStorage) abstracts the details of how nodes and their relationships are stored. The IStorage object should only be managed by the Status object instanciated by the batch system.
+
+A programmer of a command therefore uses the storage system like this,
+\begin{verbatim}
+void MyCommand::execute(Status& status) {
+  auto storage = status.openStorage();
+  // ... Code working on the model
+  //     accessible through storage
+  // ...
+}
+\end{verbatim}
+
+The storage interface offers methods to work with blobs and to retrieve a reference to the node collection.
+
+Once the command finishes, the storage will take care of saving all changes.
+
+It is not possible to execute a command and revert its effect afterwards.
+It is recommended to use a version control system for the storage folder.
+
+\section{Node Collection}
+The node collection contains a tree of nodes, each associated with content (simple string). The simplicity of this model is on purpose since the complicated details of reliable processes are added through the annotation system.
+
+As an example, one could implement a simple command, switching the contents of two nodes,
+\begin{verbatim}
+void SwitchContent::execute(Status& status) {
+  auto storage = status.openStorage();
+  auto& collection = storage->getNodeCollection();
+  auto node1 = collection.getNodeById(id1);
+  auto node2 = collection.getNodeById(id2);
+  auto temp = node1.getContent();
+  node1.updateContent(node2.getContent());
+  node2.updateContent(temp);
+}
+\end{verbatim}
+
+The \texttt{id1} and \texttt{id2} are supposed to be members of SwitchContent, likely passed to the constructor from the application. Selection helpers are available to handle a larger set of common cases.
+
+\section{Annotation System}
+The annotation system is a collection of annotations for different purposes.
+Annotations are the result of parsing the content of the node collection.
+
+There are annotations for several purposes, e.g.
+\begin{itemize}
+ \item Associate nodes with shortcuts
+ \item Associate nodes with error messages (parser errors)
+ \item Associate nodes with status, e.g. if a requirement is covered by
+  acceptance criteria
+\end{itemize}
+
+Important to know is, that annotations are not stored, they are derived from the
+node collection and external sources (e.g. test results) any time its required.
+
+They are essential in the creation of reports and extending the gui's views on the raw content.
+
+\end{document}
