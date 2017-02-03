@@ -1,9 +1,7 @@
 #pragma once
 
-#include <mutex>
-
-#include <QString>
-#include <QStandardItem>
+#include <QTextEdit>
+#include <QAbstractItemModel>
 
 #include "requirements/id.hpp"
 #include "requirements/batch/response.hpp"
@@ -26,9 +24,17 @@ namespace qreq {
 
     quintptr insertLookup(const ::requirements::NodePtr& node) const;
 
-    void forwardColumnsInserted(const QModelIndex& index, int start, int end);
+    QTextEdit* currentEditor = nullptr;
+    quintptr currentEdited;
 
   public:
+
+    bool isEditing(const QModelIndex& index);
+    QString editorContent();
+    QSizeF editorSize();
+    QModelIndex editedIndex();
+    void setCurrentEditor(const QModelIndex& index, QTextEdit* editor);
+    void clearCurrentEditor();
 
     const::requirements::batch::Response& getModel() const { return model; }
 

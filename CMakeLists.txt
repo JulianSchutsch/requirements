@@ -53,7 +53,7 @@ if("${DISABLE_QREQ}" STREQUAL "")
   set(CMAKE_INCLUDE_CURRENT_DIR ON)
   add_sources(QREQ_SOURCES "*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src" "qreq")
   add_sources(QREQ_HEADERS "*.hpp" "${CMAKE_CURRENT_LIST_DIR}/include" "qreq")
-  add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS} )
+  add_executable(qreq ${QREQ_SOURCES} ${QREQ_HEADERS})
   target_link_libraries (qreq "requirements" Qt5::Widgets Qt5::Gui ${LIB_TINYXML})
 endif()
 

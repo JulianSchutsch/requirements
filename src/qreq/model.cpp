@@ -6,6 +6,48 @@
 
 namespace qreq {
 
+  void Model::setCurrentEditor(const QModelIndex& index, QTextEdit* editor) {
+    currentEditor = editor;
+    currentEdited = index.internalId();
+    std::cout<<"editing now"<<std::endl;
+  }
+  void Model::clearCurrentEditor() {
+    std::cout<<"Stopped"<<std::endl;
+    currentEditor = nullptr;
+  }
+
+  QModelIndex Model::editedIndex() {
+    if(currentEditor==nullptr) {
+      return QModelIndex();
+    }
+    auto nodeIt = lookup.find(currentEdited);
+    if(nodeIt==lookup.end()) {
+      return QModelIndex();
+    }
+    return createIndex(nodeIt->second->childIndex(), 0, currentEdited);
+  }
+
+  QSizeF Model::editorSize() {
+    if(currentEditor==nullptr) {
+      return QSizeF(0,0);
+    }
+    return currentEditor->document()->size();
+  }
+
+  QString Model::editorContent() {
+    if(currentEditor==nullptr) {
+      return "";
+    }
+    return currentEditor->toPlainText();
+  }
+
+  bool Model::isEditing(const QModelIndex &index) {
+    if(currentEditor==nullptr) {
+      return false;
+    }
+    return index.internalId()==currentEdited;
+  }
+
   void Model::updateContent(const QModelIndex& index, const std::string& content) {
     if(!index.isValid()) {
       return;
@@ -24,10 +66,6 @@ namespace qreq {
       return Qt::ItemIsEnabled;
     }
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
-  }
-
-  void Model::forwardColumnsInserted(const QModelIndex& index, int start, int end) {
-    insertColumn(start, index);
   }
 
   Model& Model::getModel(const QModelIndex& index) {

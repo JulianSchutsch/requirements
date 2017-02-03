@@ -16,8 +16,6 @@ namespace qreq {
 
   static const int innerBorder = 5;
   static const int gap = 5;
-  static const int editGap = 7;
-
 
   void ReqTextDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, QModelIndex const &index) const {
 
@@ -81,10 +79,12 @@ namespace qreq {
 
     auto boxRect = QRect(innerLeft + gap, boxTop + gap, innerWidth - 2 * gap, boxHeight);
 
-    QTextDocument document(node->getContent().c_str());
+    if(!model.isEditing(index)) {
+      QTextDocument document(node->getContent().c_str());
+      painter->translate(boxRect.left(), boxRect.top());
+      document.drawContents(painter);
+    }
 
-    painter->translate(boxRect.left(), boxRect.top());
-    document.drawContents(painter);
     painter->restore();
 
   }
@@ -95,16 +95,30 @@ namespace qreq {
     if (!node) {
       return QSize(200, 200);
     }
-    QTextDocument document(node->getContent().c_str());
-    document.setTextWidth(option.rect.width());
-    auto size = document.size();
+    QSizeF size;
+    if(model.isEditing(index)) {
+      size = model.editorSize();
+    } else {
+      QTextDocument document(node->getContent().c_str());
+      document.setTextWidth(option.rect.width());
+      size = document.size();
+    }
     return QSize(option.rect.width(), size.height() + 50);
+  }
+
+  void ReqTextDelegate::editorDestroyed(QObject *obj) {
+    std::cout<<"Destroy editor"<<std::endl;
+    if(currentModel) {
+      currentModel->clearCurrentEditor();
+    }
   }
 
   QWidget *
   ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
     auto *editor = new QTextEdit(parent);
+    connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(editorDestroyed(QObject*)));
     editor->setFrameStyle(QFrame::NoFrame);
+    std::cout<<"Create Editor"<<std::endl;
     return editor;
   }
 
@@ -117,6 +131,8 @@ namespace qreq {
       return;
     }
     item_widget->setText(node->getContent().c_str());
+    currentModel = &model;
+    model.setCurrentEditor(index, static_cast<QTextEdit*>(editor));
   }
 
   void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
@@ -147,6 +163,9 @@ namespace qreq {
 
   bool ReqTextDelegate::eventFilter(QObject *editor, QEvent *event) {
     if (event->type() == QEvent::KeyPress) {
+      if(currentModel!=nullptr) {
+        emit sizeHintChanged(currentModel->editedIndex());
+      }
       QKeyEvent *key_event = static_cast<QKeyEvent *>(event);
       if (key_event->modifiers() == Qt::ControlModifier) {
         if (key_event->key() == Qt::Key_Return) {
