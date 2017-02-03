@@ -185,11 +185,11 @@ namespace qreq {
     menubar->addMenu(recentmenu);
     setMenuBar(menubar);
     //Und jetzt gleich das letzte Projekt laden
-    if (Settings::getInstance().current_project != "") load_current_project();
+    //if (Settings::getInstance().current_project != "") load_current_project();
   }
 
   void MainWindow::set_current_project(std::string const &filename) {
-    Settings::getInstance().current_project = filename;
+    Settings::getInstance().add_project(filename);
     load_current_project();
   }
 

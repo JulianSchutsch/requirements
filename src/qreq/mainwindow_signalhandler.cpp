@@ -74,7 +74,14 @@ void MainWindow::on_linkblobbutton_clicked(){
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event){
-  if(event->modifiers()&Qt::ShiftModifier){
+  if((event->modifiers()==(Qt::AltModifier|Qt::ControlModifier))){
+    switch(event->key()){
+    default:
+      std::cout << "ctrl+alt + " << std::hex << event->key() << std::dec << std::endl;
+      break;
+    }
+  }
+  else if(event->modifiers()&Qt::ShiftModifier){
     switch(event->key()){
     default:
       std::cout << "shift + " << std::hex << event->key() << std::dec << std::endl;

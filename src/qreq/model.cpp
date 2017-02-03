@@ -1,4 +1,5 @@
 #include "qreq/model.hpp"
+#include "qreq/settings.hpp"
 
 #include "requirements/commands/setcontent.hpp"
 
@@ -112,6 +113,8 @@ namespace qreq {
         model.nodeCollection = std::move(keepCollection);
         emit dataChanged(QModelIndex(), QModelIndex());
       }
+      Settings::getInstance().add_project(model.status->folder);
+      std::cout << "model said: " << model.status->folder << std::endl; //Aha, das ist doch schon mal was.
     }
   }
 

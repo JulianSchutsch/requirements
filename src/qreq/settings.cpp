@@ -76,19 +76,24 @@ std::string Settings::settings_filename(){
 ///
 void Settings::add_project(std::string const& filename){
   //look for existing name
-  bool found=false;
-  for(auto &name:_last_projects){
-    if(name==filename) found=true;
-  }
-  if(found==false){
-    //we can add it
-    //look for length
+  //Shortcut: See, if the new project is already the newest
+  //if so, do nothing
+  if(_last_projects.back()!=filename){
+    std::list<std::string>::iterator it=_last_projects.begin();
+    while(it!=_last_projects.end()){
+      if(*it==filename){
+        //Oh, schon drin. Jetzt aber raus damit
+        it=_last_projects.erase(it);
+      }
+      else ++it;
+    }
     if(_last_projects.size()>10){
       //remove oldest (==first) element
       _last_projects.pop_front();
     }
     _last_projects.push_back(filename);
   }
+  current_project=filename;
 }
 
 const std::list<std::string>& Settings::last_projects() const{
