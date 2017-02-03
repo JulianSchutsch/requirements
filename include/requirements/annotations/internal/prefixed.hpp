@@ -54,6 +54,7 @@ namespace requirements {
             ++previousScope->number;
             prefix = previousScope->prefix + "." + std::to_string(previousScope->number);
           } else {
+            builder.collection.insertRootEntry(nodeId);
             prefix = builder.majorPrefix.consume();
           }
           builder.collection.insert(nodeId, BaseType(prefix, std::forward<BaseTypeParams>(params)...));

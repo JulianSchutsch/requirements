@@ -168,6 +168,34 @@ namespace requirements {
       }
       return success;
     }
+
+    static bool recursiveRequirementsAcceptance(::requirements::Id id, ::requirements::NodeCollection& collection, ParserResult& result) {
+      bool covered = true;
+      auto parent = collection.getNodeById(id);
+      for(auto& node: parent->getChildren()) {
+        covered = covered && recursiveRequirementsAcceptance(node->getId(), collection, result);
+      }
+      auto& requirement = result.requirements->access(id);
+      covered = covered && requirement.isCoveredByAcceptance();
+      requirement.setTreeCoveredByAcceptance(covered);
+      return covered;
+    }
+
+    static bool requirementsAcceptance(::requirements::NodeCollection& collection, ParserResult& result) {
+      for(auto& acceptance: *result.acceptances) {
+        for(auto& accepts: acceptance.second.getAccepts()) {
+          if(!result.requirements->has(accepts)) {
+            result.errors->insert(acceptance.first, "accepts points to non existent node "+::requirements::id_to_string(acceptance.first));
+            return false;
+          }
+          result.requirements->access(accepts).setCoveredByAcceptance(true);
+        }
+      }
+      for(const auto& rootNode: result.requirements->getRootEntries()) {
+        recursiveRequirementsAcceptance(rootNode, collection, result);
+      }
+      return true;
+    }
     
     bool parse(::requirements::IStorage &storage, ParserResult &result) {
       result.errors.reset(new Errors());
@@ -176,7 +204,10 @@ namespace requirements {
       result.acceptances.reset(new Acceptances());
       result.shortcuts.reset(new Shortcuts());
       Builders builders(result);
-      return parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders);
+      if(!parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders)) {
+        return false;
+      }
+      return requirementsAcceptance(storage.getNodeCollection(), result);
     }
   }
 }
