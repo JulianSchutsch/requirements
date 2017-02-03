@@ -9,11 +9,14 @@
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 
+#include <iostream>
+
 namespace requirements {
   namespace annotations {
     
     namespace {
       struct Builders {
+        MajorPrefix majorPrefix;
         SectionsBuilder sections;
         ErrorsBuilder errors;
         ShortcutsBuilder shortcuts;
@@ -22,7 +25,7 @@ namespace requirements {
         
         Builders(ParserResult &result)
           : sections(*result.sections), errors(*result.errors), shortcuts(*result.shortcuts),
-            requirements(*result.requirements), acceptances(*result.acceptances) {}
+            requirements(*result.requirements, majorPrefix), acceptances(*result.acceptances, majorPrefix) {}
       };
     }
     
@@ -64,11 +67,12 @@ namespace requirements {
     }
     
     static bool parseAcceptance(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+      std::cout<<"Parse Acceptance"<<std::endl;
       ::util::LineParser parser(node->getContent());
       std::stringstream text;
       std::vector<::requirements::Id> accepts;
       for(;;) {
-        static std::regex acceptsRegex(R"(accepts\s*(\w+)\s*)");
+        static std::regex acceptsRegex(R"(accepts:\s*(\w+)\s*)");
         std::smatch matches;
         if(parser.consume(acceptsRegex, matches)) {
           auto idStr = matches[1];
@@ -86,7 +90,9 @@ namespace requirements {
         }
         text<<line;
       }
-      AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), accepts);
+      std::cout<<"And create the scope"<<std::endl;
+      AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), std::move(accepts));
+      builders.shortcuts.set(node->getId(), scope.getKey());
   
       bool success = true;
       for(auto& child: node->getChildren()) {
@@ -162,14 +168,46 @@ namespace requirements {
       }
       return success;
     }
+
+    static bool recursiveRequirementsAcceptance(::requirements::Id id, ::requirements::NodeCollection& collection, ParserResult& result) {
+      bool covered = true;
+      auto parent = collection.getNodeById(id);
+      for(auto& node: parent->getChildren()) {
+        covered = covered && recursiveRequirementsAcceptance(node->getId(), collection, result);
+      }
+      auto& requirement = result.requirements->access(id);
+      covered = covered && requirement.isCoveredByAcceptance();
+      requirement.setTreeCoveredByAcceptance(covered);
+      return covered;
+    }
+
+    static bool requirementsAcceptance(::requirements::NodeCollection& collection, ParserResult& result) {
+      for(auto& acceptance: *result.acceptances) {
+        for(auto& accepts: acceptance.second.getAccepts()) {
+          if(!result.requirements->has(accepts)) {
+            result.errors->insert(acceptance.first, "accepts points to non existent node "+::requirements::id_to_string(acceptance.first));
+            return false;
+          }
+          result.requirements->access(accepts).setCoveredByAcceptance(true);
+        }
+      }
+      for(const auto& rootNode: result.requirements->getRootEntries()) {
+        recursiveRequirementsAcceptance(rootNode, collection, result);
+      }
+      return true;
+    }
     
     bool parse(::requirements::IStorage &storage, ParserResult &result) {
       result.errors.reset(new Errors());
       result.sections.reset(new Sections());
       result.requirements.reset(new Requirements());
+      result.acceptances.reset(new Acceptances());
       result.shortcuts.reset(new Shortcuts());
       Builders builders(result);
-      return parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders);
+      if(!parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders)) {
+        return false;
+      }
+      return requirementsAcceptance(storage.getNodeCollection(), result);
     }
   }
 }

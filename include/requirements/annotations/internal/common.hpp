@@ -2,6 +2,7 @@
 
 #include "requirements/id.hpp"
 #include <map>
+#include <list>
 
 namespace requirements {
   namespace annotations {
@@ -12,9 +13,19 @@ namespace requirements {
       template<typename Entry>
       class Common {
       protected:
-        std::map<::requirements::Id, Entry> entries;
+        using EntryMap = std::map<::requirements::Id, Entry>;
+        using RootEntryList = std::list<::requirements::Id>;
+        EntryMap entries;
+        RootEntryList rootEntries;
   
       public:
+        typename EntryMap::const_iterator begin() { return entries.cbegin(); }
+        typename EntryMap::const_iterator end() { return entries.cend(); }
+
+        Entry& access(::requirements::Id id) { return entries.at(id); }
+
+        const RootEntryList& getRootEntries() const { return rootEntries; }
+
         bool has(::requirements::Id id) const {
           return entries.find(id) != entries.end();
         }
@@ -28,6 +39,10 @@ namespace requirements {
         }
         void insert(::requirements::Id id, const Entry& entry) {
           entries.emplace(id, entry);
+        }
+
+        void insertRootEntry(::requirements::Id id) {
+          rootEntries.emplace_back(id);
         }
       };
   

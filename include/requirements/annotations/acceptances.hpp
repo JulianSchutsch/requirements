@@ -16,6 +16,7 @@ namespace requirements {
     public:
       const std::string& getKey() const { return key; }
       const std::string& getText() const { return text; }
+      const std::vector<::requirements::Id>& getAccepts() const { return accepts; }
       
       Acceptance(const std::string& a_key, const std::string& a_text, const std::vector<::requirements::Id>& a_accepts);
     };
