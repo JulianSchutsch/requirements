@@ -42,7 +42,7 @@ namespace qreq {
     auto newRow = node->childIndex()+1;
 
     model.beginInsertRows(parentIndex, newRow, newRow);
-    auto newNode = model.model.nodeCollection->createNode("");
+    auto newNode = model.model.nodeCollection->createNode(copy_content?node->getContent():"");
     newNode->setNextTo(node);
     model.endInsertRows();
 
