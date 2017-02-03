@@ -7,14 +7,13 @@
 #include <boost/range/iterator_range.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string.hpp>
-#include <include/requirements/exception.hpp>
 
 #include "util/path.hpp"
 #include "util/stringfile.hpp"
 
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
-
+#include "requirements/exception.hpp"
 #include "requirements/storage/text_common.hpp"
 
 namespace requirements {
