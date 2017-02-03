@@ -27,7 +27,7 @@ Node Collection</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>90</x>
+      <x>80</x>
       <y>700</y>
       <w>160</w>
       <h>90</h>
@@ -111,7 +111,7 @@ Application</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>150</x>
+      <x>140</x>
       <y>640</y>
       <w>50</w>
       <h>100</h>
@@ -123,14 +123,14 @@ Application</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>220</x>
+      <x>210</x>
       <y>370</y>
-      <w>90</w>
+      <w>100</w>
       <h>400</h>
     </coordinates>
     <panel_attributes>lt=&gt;
 </panel_attributes>
-    <additional_attributes>70;30;50;30;50;380;30;380</additional_attributes>
+    <additional_attributes>80;30;60;30;60;380;30;380</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
