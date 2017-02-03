@@ -13,7 +13,8 @@ static const char* testContent4 = "test content 4";
 
 TEST(AnnotationRequirements, NoPrefix) {
   annotations::Requirements requirements;
-  annotations::RequirementsBuilder builder(requirements);
+  annotations::MajorPrefix majorPrefix;
+  annotations::RequirementsBuilder builder(requirements, majorPrefix);
   try {
     annotations::RequirementsBuilderScope majorScope(builder, ::requirements::generateRandomId(), testContent1);
     FAIL();
@@ -28,7 +29,8 @@ TEST(AnnotationRequirements, NoPrefix) {
 
 TEST(AnnotationRequirements, SimpleTree) {
   annotations::Requirements requirements;
-  annotations::RequirementsBuilder builder(requirements);
+  annotations::MajorPrefix majorPrefix;
+  annotations::RequirementsBuilder builder(requirements, majorPrefix);
   Id testId1 = generateRandomId();
   Id testId2 = generateRandomId();
   Id testId3 = generateRandomId();
@@ -65,7 +67,8 @@ TEST(AnnotationRequirements, SimpleTree) {
 
 TEST(AnnotationRequirements, NestedRequirements) {
   annotations::Requirements requirements;
-  annotations::RequirementsBuilder builder(requirements);
+  annotations::MajorPrefix majorPrefix;
+  annotations::RequirementsBuilder builder(requirements, majorPrefix);
   Id testId1 = generateRandomId();
   Id testId2 = generateRandomId();
   Id testId3 = generateRandomId();
@@ -162,7 +165,8 @@ TEST(AnnotationRequirements, NestedRequirements) {
 
 TEST(AnnotationRequirements, Continuation) {
   ::annotations::Requirements requirements;
-  ::annotations::RequirementsBuilder builder(requirements);
+  ::annotations::MajorPrefix majorPrefix;
+  ::annotations::RequirementsBuilder builder(requirements, majorPrefix);
   ::requirements::Id testId1 = ::requirements::generateRandomId();
   ::requirements::Id testId2 = ::requirements::generateRandomId();
   ::requirements::Id testId3 = ::requirements::generateRandomId();

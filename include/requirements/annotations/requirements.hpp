@@ -12,10 +12,14 @@ namespace requirements {
     private:
       std::string key;
       std::string text;
+      bool coveredByAcceptance = false;
     public:
       const std::string& getKey() const { return key; }
       
       const std::string& getText() const { return text; }
+
+      void setCoveredByAcceptance(bool value) { coveredByAcceptance = value; }
+      bool isCoveredByAcceptance() const { return coveredByAcceptance; }
       
       Requirement(const std::string& a_key, const std::string& a_text);
     };

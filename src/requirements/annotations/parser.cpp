@@ -9,11 +9,14 @@
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 
+#include <iostream>
+
 namespace requirements {
   namespace annotations {
     
     namespace {
       struct Builders {
+        MajorPrefix majorPrefix;
         SectionsBuilder sections;
         ErrorsBuilder errors;
         ShortcutsBuilder shortcuts;
@@ -22,7 +25,7 @@ namespace requirements {
         
         Builders(ParserResult &result)
           : sections(*result.sections), errors(*result.errors), shortcuts(*result.shortcuts),
-            requirements(*result.requirements), acceptances(*result.acceptances) {}
+            requirements(*result.requirements, majorPrefix), acceptances(*result.acceptances, majorPrefix) {}
       };
     }
     
@@ -64,11 +67,12 @@ namespace requirements {
     }
     
     static bool parseAcceptance(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+      std::cout<<"Parse Acceptance"<<std::endl;
       ::util::LineParser parser(node->getContent());
       std::stringstream text;
       std::vector<::requirements::Id> accepts;
       for(;;) {
-        static std::regex acceptsRegex(R"(accepts\s*(\w+)\s*)");
+        static std::regex acceptsRegex(R"(accepts:\s*(\w+)\s*)");
         std::smatch matches;
         if(parser.consume(acceptsRegex, matches)) {
           auto idStr = matches[1];
@@ -86,7 +90,9 @@ namespace requirements {
         }
         text<<line;
       }
-      AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), accepts);
+      std::cout<<"And create the scope"<<std::endl;
+      AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), std::move(accepts));
+      builders.shortcuts.set(node->getId(), scope.getKey());
   
       bool success = true;
       for(auto& child: node->getChildren()) {
@@ -167,6 +173,7 @@ namespace requirements {
       result.errors.reset(new Errors());
       result.sections.reset(new Sections());
       result.requirements.reset(new Requirements());
+      result.acceptances.reset(new Acceptances());
       result.shortcuts.reset(new Shortcuts());
       Builders builders(result);
       return parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders);
