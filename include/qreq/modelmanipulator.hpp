@@ -5,16 +5,20 @@
 #include "requirements/node.hpp"
 
 #include <QModelIndex>
+#include <QObject>
 
 namespace qreq {
 
   class Model;
 
-  class ModelManipulator {
+  class ModelManipulator : public QObject{
+  Q_OBJECT
   private:
     Model& model;
     void forceNewChild(const QModelIndex& index,::requirements::NodePtr node);
     void forceNewSibling(const QModelIndex &index,::requirements::NodePtr node,bool copy_content=false);
+  signals:
+    void change_to_viewpos(const QModelIndex& index);
   public:
     void metaManipulator(const QModelIndex& index, std::function<void(::requirements::NodePtr)> generator);
     ModelManipulator(Model& model);

@@ -87,6 +87,7 @@ namespace qreq {
     auto sizePolicy = _messageList->sizePolicy();
     sizePolicy.setVerticalPolicy(QSizePolicy::Policy::Fixed);
     _messageList->setSizePolicy(sizePolicy);
+    connect(&manipulator,SIGNAL(change_to_viewpos(QModelIndex)),this,SLOT(on_manipulate_viewpos(QModelIndex)));
   }
 
   void MainWindow::generate_view() {

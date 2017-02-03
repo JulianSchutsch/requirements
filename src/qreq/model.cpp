@@ -98,12 +98,10 @@ namespace qreq {
     if(connector.consumeResponse(intermediate)) {
       if(!model.nodeCollection || *intermediate.nodeCollection!=*model.nodeCollection) {
         std::cout<<"Replace data"<<std::endl;
-        //emit beginResetModel();
         beginResetModel();
         model = std::move(intermediate);
         lookup.clear();
         reverseLookup.clear();
-        //emit endResetModel();
         endResetModel();
       } else {
         std::cout<<"Keep core collection, replace the rest"<<std::endl;
@@ -113,8 +111,8 @@ namespace qreq {
         model.nodeCollection = std::move(keepCollection);
         emit dataChanged(QModelIndex(), QModelIndex());
       }
+      //So, damit kommts in die Liste der jüngsten Projekte
       Settings::getInstance().add_project(model.status->folder);
-      std::cout << "model said: " << model.status->folder << std::endl; //Aha, das ist doch schon mal was.
     }
   }
 

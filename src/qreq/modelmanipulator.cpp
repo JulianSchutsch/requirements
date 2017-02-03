@@ -44,6 +44,7 @@ namespace qreq {
     model.beginInsertRows(parentIndex, newRow, newRow);
     auto newNode = model.model.nodeCollection->createNode(copy_content?node->getContent():"");
     newNode->setNextTo(node);
+    QModelIndex newIndex=model.index(newRow,0,parentIndex);
     model.endInsertRows();
 
     std::vector<std::unique_ptr<ICommand>> commands;
@@ -53,6 +54,7 @@ namespace qreq {
       commands.emplace_back(std::make_unique<::requirements::commands::SetContent>(newNode->getId(),node->getContent()));
     }
     model.connector._batchthread.enqueue(std::move(commands));
+    emit change_to_viewpos(newIndex);
   }
 
   void ModelManipulator::newChild(const QModelIndex &index) {
@@ -73,12 +75,14 @@ namespace qreq {
     model.beginInsertRows(index, newRow, newRow);
     auto newNode = model.model.nodeCollection->createNode("");
     newNode->setLastOf(node);
+    QModelIndex newIndex=model.index(newRow,0,index);
     model.endInsertRows();
 
     std::vector<std::unique_ptr<ICommand>> commands;
     commands.emplace_back(std::make_unique<::requirements::commands::New>(newNode->getId()));
     commands.emplace_back(std::make_unique<::requirements::commands::LastOf>(newNode->getId(), node->getId()));
     model.connector._batchthread.enqueue(std::move(commands));
+    emit change_to_viewpos(newIndex);
   }
 
   void ModelManipulator::up(const QModelIndex &index) {

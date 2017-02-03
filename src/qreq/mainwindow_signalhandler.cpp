@@ -32,7 +32,6 @@ void MainWindow::on_f3button_clicked(){
 }
 
 void MainWindow::on_f4button_clicked(){
-
 }
 
 void MainWindow::on_f5button_clicked(){
@@ -207,6 +206,11 @@ void MainWindow::on_model_reset(){
   }
 
 
+}
+
+void MainWindow::on_manipulate_viewpos(const QModelIndex& index){
+  _reqtree->scrollTo(index);
+  _reqtree->setCurrentIndex(index);
 }
 
 }
