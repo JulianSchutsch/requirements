@@ -69,6 +69,7 @@ namespace qreq {
     _reqtree->setHeaderHidden(true);
     _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
     _reqtree->setAlternatingRowColors(false);
+    _reqtree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(ctrl_left_pressed(QModelIndex)), this, SLOT(on_reqtree_ctrl_left(QModelIndex)));

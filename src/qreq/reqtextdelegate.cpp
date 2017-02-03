@@ -107,7 +107,6 @@ namespace qreq {
   }
 
   void ReqTextDelegate::editorDestroyed(QObject *obj) {
-    std::cout<<"Destroy editor"<<std::endl;
     if(currentModel) {
       currentModel->clearCurrentEditor();
     }
@@ -118,7 +117,6 @@ namespace qreq {
     auto *editor = new QTextEdit(parent);
     connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(editorDestroyed(QObject*)));
     editor->setFrameStyle(QFrame::NoFrame);
-    std::cout<<"Create Editor"<<std::endl;
     return editor;
   }
 
