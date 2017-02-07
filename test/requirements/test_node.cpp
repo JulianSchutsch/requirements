@@ -341,6 +341,14 @@ TEST(Node, Compare) {
     auto collection2 = collection.clone();
     ASSERT_EQ(collection==*collection2, true);
     ASSERT_EQ(collection!=*collection2, false);
+    auto rootNode = collection.getRootNode();
+    for(auto& child:rootNode->getChildren()) {
+      ASSERT_EQ(child->getParent(), rootNode);
+    }
+    auto rootNode2 = collection.getRootNode();
+    for(auto& child:rootNode2->getChildren()) {
+      ASSERT_EQ(child->getParent(), rootNode2);
+    }
   }
 
 }

@@ -3,17 +3,13 @@
 
 #include "requirements/commands/setcontent.hpp"
 
-#include <iostream>
-
 namespace qreq {
 
   void Model::setCurrentEditor(const QModelIndex& index, QTextEdit* editor) {
     currentEditor = editor;
     currentEdited = index.internalId();
-    std::cout<<"editing now"<<std::endl;
   }
   void Model::clearCurrentEditor() {
-    std::cout<<"Stopped"<<std::endl;
     currentEditor = nullptr;
   }
 

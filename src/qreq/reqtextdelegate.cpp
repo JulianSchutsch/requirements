@@ -4,12 +4,6 @@
 #include <QKeyEvent>
 #include <QPainter>
 
-#include <iostream>
-#include <include/requirements/batch/response.hpp>
-
-//TODO: Signal-Handling verbessern: F4 aus dem Hauptfenster muss direkt im TextEdit landen.
-//Dort drin muss ctrl+Return abgefangen werden. Jetzt wird das noch auf der Ebene des ReqTextItemWidget gemacht
-
 namespace qreq {
 
   ReqTextDelegate::ReqTextDelegate(QObject *parent) {}
