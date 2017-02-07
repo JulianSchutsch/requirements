@@ -44,6 +44,9 @@ namespace requirements {
         void insertRootEntry(::requirements::Id id) {
           rootEntries.emplace_back(id);
         }
+        Common() = default;
+        Common(const Common&) = delete;
+        Common& operator = (const Common&) = delete;
       };
   
       template<typename Entry>

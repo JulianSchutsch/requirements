@@ -6,6 +6,7 @@
 #include "requirements/annotations/shortcuts.hpp"
 #include "requirements/annotations/sections.hpp"
 #include "requirements/annotations/requirements.hpp"
+#include "requirements/annotations/acceptances.hpp"
 
 #include "requirements/status.hpp"
 
@@ -18,6 +19,7 @@ namespace requirements {
       std::unique_ptr<::requirements::annotations::Shortcuts> shortcuts;
       std::unique_ptr<::requirements::annotations::Sections> sections;
       std::unique_ptr<::requirements::annotations::Requirements> requirements;
+      std::unique_ptr<::requirements::annotations::Acceptances> acceptances;
     };
   }
 }

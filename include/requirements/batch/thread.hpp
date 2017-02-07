@@ -15,11 +15,10 @@ namespace requirements {
     
     class Thread final {
     private:
+      volatile bool terminated = false;
       Queue queue;
       std::thread thread;
-  
-      volatile bool terminated = false;
-      
+
       void mainloop();
       
     public:

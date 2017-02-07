@@ -7,6 +7,8 @@
 #include "requirements/annotations/internal/common.hpp"
 #include "requirements/annotations/majorprefix.hpp"
 
+#include <iostream>
+
 namespace requirements {
   namespace annotations {
     namespace internal {

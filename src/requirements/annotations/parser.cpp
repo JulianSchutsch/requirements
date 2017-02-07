@@ -9,8 +9,6 @@
 #include "requirements/node.hpp"
 #include "requirements/nodecollection.hpp"
 
-#include <iostream>
-
 namespace requirements {
   namespace annotations {
     
@@ -37,7 +35,9 @@ namespace requirements {
       builders.shortcuts.set(node->getId(), scope.getKey());
       bool success = true;
       for (auto &child: node->getChildren()) {
-        success = success && parseRequirement(child, result, builders);
+        if(!parseRequirement(child, result, builders)) {
+          success = false;
+        }
       }
       return success;
     }
@@ -61,18 +61,19 @@ namespace requirements {
       
       bool success = true;
       for (auto &child: node->getChildren()) {
-        success = success && parseRequirement(child, result, builders);
+        if(!parseRequirement(child, result, builders)) {
+          success = false;
+        }
       }
       return success;
     }
     
     static bool parseAcceptance(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
-      std::cout<<"Parse Acceptance"<<std::endl;
       ::util::LineParser parser(node->getContent());
       std::stringstream text;
       std::vector<::requirements::Id> accepts;
       for(;;) {
-        static std::regex acceptsRegex(R"(accepts:\s*(\w+)\s*)");
+        static std::regex acceptsRegex(R"(accepts:\s*(\S+)\s*)");
         std::smatch matches;
         if(parser.consume(acceptsRegex, matches)) {
           auto idStr = matches[1];
@@ -90,7 +91,6 @@ namespace requirements {
         }
         text<<line;
       }
-      std::cout<<"And create the scope"<<std::endl;
       AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), std::move(accepts));
       builders.shortcuts.set(node->getId(), scope.getKey());
   
@@ -173,7 +173,9 @@ namespace requirements {
       bool covered = true;
       auto parent = collection.getNodeById(id);
       for(auto& node: parent->getChildren()) {
-        covered = covered && recursiveRequirementsAcceptance(node->getId(), collection, result);
+        if(!recursiveRequirementsAcceptance(node->getId(), collection, result)) {
+          covered = false;
+        }
       }
       auto& requirement = result.requirements->access(id);
       covered = covered && requirement.isCoveredByAcceptance();

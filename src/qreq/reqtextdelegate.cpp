@@ -16,6 +16,7 @@ namespace qreq {
 
   static const int innerBorder = 5;
   static const int gap = 5;
+  static const int coverageSignWidth = 20;
 
   void ReqTextDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, QModelIndex const &index) const {
 
@@ -72,7 +73,25 @@ namespace qreq {
       caption+=" "+imodel.errors->get(id);
     }
 
-    auto captionRect = QRect(innerLeft + gap, innerTop + gap, innerWidth - 2 * gap, textHeight);
+    int increment = 0;
+    if(imodel.requirements->has(id)) {
+      const auto& requirement = imodel.requirements->get(id);
+      auto coverageRect = QRect(innerLeft + gap+increment, innerTop + gap, coverageSignWidth, textHeight);
+      if(requirement.isCoveredByAcceptance()) {
+        if(requirement.isTreeCoveredByAcceptance()) {
+          painter->setPen(QColor(0,255,0));
+        } else {
+          painter->setPen(QColor(0, 0, 0));
+        }
+      } else {
+        painter->setPen(QColor(255,0,0));
+      }
+      increment += coverageSignWidth;
+      painter->drawText(coverageRect, Qt::AlignTop, "[A]");
+    }
+
+
+    auto captionRect = QRect(innerLeft + gap+increment , innerTop + gap, innerWidth - 2 * gap-increment, textHeight);
 
     painter->setPen(captionColor);
     painter->drawText(captionRect, Qt::AlignTop, caption.c_str());
