@@ -17,7 +17,6 @@
 #include "requirements/commands/folder.hpp"
 #include "requirements/commands/edit.hpp"
 #include "requirements/commands/tree.hpp"
-#include "requirements/commands/touch.hpp"
 #include "requirements/commands/showfolder.hpp"
 #include "requirements/commands/print.hpp"
 #include "requirements/commands/newblob.hpp"
@@ -45,7 +44,6 @@ namespace requirements {
       {"folder",  [](Parser &parser) { return new Folder(parser); }},
       {"edit", [](Parser& parser) { return new Edit(parser); }},
       {"tree", [](Parser& parser) { return new Tree(parser); }},
-      {"touch", [](Parser& parser) { return new Touch(parser); }},
       {"showfolder", [](Parser& parser) { return new ShowFolder(parser); }},
       {"print", [](Parser& parser) { return new Print(parser); }},
       {"newblob", [](Parser& parser) { return new NewBlob(parser); }},

@@ -123,12 +123,10 @@ namespace qreq {
   void ModelManipulator::levelUp(const QModelIndex &index) {
     metaManipulator(index, [this, index](::requirements::NodePtr node){
       auto parentNode = node->getParent();
-      std::cout<<"Parent "<<parentNode->getContent()<<std::endl;
       auto superParentNode = parentNode->getParent();
       if(superParentNode==nullptr) {
         return;
       }
-      std::cout<<"SuperParent "<<superParentNode->getContent()<<std::endl;
       auto oldIndex = node->childIndex();
       auto newIndex = parentNode->childIndex()+1;
       auto parent = model.parent(index);
