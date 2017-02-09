@@ -8,12 +8,17 @@
 
 #include <QKeyEvent>
 #include <QPainter>
+#include <QScrollBar>
 
 #include <iostream>
 
 namespace qreq {
 
-  ReqTextDelegate::ReqTextDelegate(QObject *parent) {}
+  ReqTextDelegate::ReqTextDelegate(QTreeView* a_treeView, QObject *parent)
+    : treeView(a_treeView) {
+    connect(treeView->horizontalScrollBar(), SIGNAL(rangeChanged(int, int)), this, SLOT(horizontalSliderRangeChanged(int, int)));
+    connect(treeView->verticalScrollBar(), SIGNAL(rangeChanged(int, int)), this, SLOT(verticalSliderRangeChanged(int, int)));
+  }
 
   static const int innerBorder = 5;
   static const int gap = 5;
@@ -202,6 +207,8 @@ namespace qreq {
   QWidget * ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
     auto *editor = new QTextEdit(parent);
     connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(editorDestroyed(QObject*)));
+    connect(editor, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
+    connect(editor, SIGNAL(textChanged()), this, SLOT(textChanged()));
     editor->setFrameStyle(QFrame::NoFrame);
     editor->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     editor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -234,11 +241,76 @@ namespace qreq {
     editor->setGeometry(geometry.bodyTextRect);
   }
 
-  bool ReqTextDelegate::eventFilter(QObject *editor, QEvent *event) {
+  void ReqTextDelegate::horizontalSliderRangeChanged(int min, int max) {
+    makeCursorVisible();
+  }
+
+  void ReqTextDelegate::verticalSliderRangeChanged(int min, int max) {
+    makeCursorVisible();
+  }
+
+  void ReqTextDelegate::makeRegionVisible(QRect r, int margin) {
+    auto hscroll = treeView->horizontalScrollBar();
+    auto vscroll = treeView->verticalScrollBar();
+    auto width = treeView->width()-(vscroll->isVisible()?vscroll->width():0);
+    auto height = treeView->height()-(hscroll->isVisible()?hscroll->height():0);
+    auto hvalue = hscroll->value();
+    auto vvalue = vscroll->value();
+    auto newhvalue = hvalue;
+    auto newvvalue = vvalue;
+    if(hvalue+margin>=r.left()) {
+      newhvalue = std::max(r.left()-margin, 0);
+    }
+    if(hvalue+width-margin<r.right()) {
+      newhvalue = std::min(r.right()+margin-width-1, hscroll->maximum());
+    }
+    if(newhvalue!=hvalue) {
+      hscroll->setSliderPosition(newhvalue);
+    }
+
+    if(vvalue+margin>=r.top()) {
+      newvvalue = std::max(r.top()-margin, 0);
+    }
+    if(vvalue+height-margin<r.bottom()) {
+      newvvalue = std::min(r.bottom()+margin-height-1, vscroll->maximum());
+    }
+    if(newvvalue!=vvalue) {
+      vscroll->setSliderPosition(newvvalue);
+    }
+  }
+
+  void ReqTextDelegate::makeCursorVisible() {
+    if(currentModel==nullptr) {
+      return;
+    }
+    auto currentEditor = currentModel->getCurrentEditor();
+    if(currentEditor==nullptr) {
+      return;
+    }
+    QTextEdit* editor = static_cast<QTextEdit*>(currentEditor);
+    auto innerRect = editor->cursorRect();
+    auto hscroll = treeView->horizontalScrollBar();
+    auto vscroll = treeView->verticalScrollBar();
+    auto hvalue = hscroll->value();
+    auto vvalue = vscroll->value();
+    auto x = hvalue+editor->pos().x();
+    auto y = vvalue+editor->pos().y();
+    makeRegionVisible(QRect(innerRect.left()+x, innerRect.top()+y, innerRect.width(), innerRect.height()), 20);
+  }
+
+  void ReqTextDelegate::cursorPositionChanged() {
+    makeCursorVisible();
+  }
+
+  void ReqTextDelegate::textChanged() {
+    if(currentModel!=nullptr) {
+      emit sizeHintChanged(currentModel->editedIndex());
+    }
+  }
+
+  bool ReqTextDelegate::eventFilter(QObject *peditor, QEvent *event) {
+    QTextEdit* editor = static_cast<QTextEdit*>(peditor);
     if (event->type() == QEvent::KeyPress) {
-      if(currentModel!=nullptr) {
-        emit sizeHintChanged(currentModel->editedIndex());
-      }
       QKeyEvent *key_event = static_cast<QKeyEvent *>(event);
       if (key_event->modifiers() == Qt::ControlModifier) {
         if (key_event->key() == Qt::Key_Return) {

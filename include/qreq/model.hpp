@@ -35,6 +35,7 @@ namespace qreq {
     QModelIndex editedIndex();
     void setCurrentEditor(const QModelIndex& index, QTextEdit* editor);
     void clearCurrentEditor();
+    QTextEdit* getCurrentEditor() const { return currentEditor; }
 
     const::requirements::batch::Response& getModel() const { return model; }
 
