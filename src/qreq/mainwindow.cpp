@@ -75,7 +75,7 @@ namespace qreq {
     _reqtree->setUniformRowHeights(false);
     _reqtree->header()->setStretchLastSection(false);
     _reqtree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    _reqtree->setAutoScroll(false);
+    _reqtree->setAutoScroll(true);
     connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(ctrl_left_pressed(QModelIndex)), this, SLOT(on_reqtree_ctrl_left(QModelIndex)));
