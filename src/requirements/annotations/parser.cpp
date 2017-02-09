@@ -20,52 +20,61 @@ namespace requirements {
         ShortcutsBuilder shortcuts;
         RequirementsBuilder requirements;
         AcceptancesBuilder acceptances;
+        ScenesBuilder scenes;
         
         Builders(ParserResult &result)
-          : sections(*result.sections), errors(*result.errors), shortcuts(*result.shortcuts),
-            requirements(*result.requirements, majorPrefix), acceptances(*result.acceptances, majorPrefix) {}
+          : sections(*result.sections)
+          , errors(*result.errors)
+          , shortcuts(*result.shortcuts)
+          , requirements(*result.requirements, majorPrefix)
+          , acceptances(*result.acceptances, majorPrefix)
+          , scenes(*result.scenes, majorPrefix) {}
       };
     }
-    
+
+    static bool shortcutSectionHelper(::requirements::NodePtr node, Builders& builders, const std::string& parameters,
+                                      std::function<bool(const std::string& title, const std::string& shortcut)> parser) {
+      static std::regex sectionTitle(R"(\s*(\w+)\s*(.*))");
+      std::smatch matches;
+      if(!std::regex_match(parameters, matches, sectionTitle)) {
+        builders.errors.set(node->getId(), "A specialized section title must be a shortcut followed by an arbitrary title string");
+        return false;
+      }
+      const std::string& shortcut = matches[1];
+      const std::string& title = matches[2];
+
+      builders.shortcuts.set(node->getId(), title);
+      return parser(title, shortcut);
+    }
+
+    template<bool subParser(::requirements::NodePtr node, ParserResult& result, Builders& builders)>
+    static bool iterChildren(::requirements::NodePtr parent, ParserResult& result, Builders& builders) {
+      bool success = true;
+      for (auto &child: parent->getChildren()) {
+        if(!subParser(child, result, builders)) {
+          success = false;
+        }
+      }
+      return success;
+    }
+
     static bool parseSectionContext(::requirements::NodePtr node, ParserResult &result, Builders &builders);
     
     static bool parseRequirement(::requirements::NodePtr node, ParserResult &result, Builders &builders) {
       RequirementsBuilderScope scope(builders.requirements, node->getId(), node->getContent());
       builders.sections.addElement(node->getId());
       builders.shortcuts.set(node->getId(), scope.getKey());
-      bool success = true;
-      for (auto &child: node->getChildren()) {
-        if(!parseRequirement(child, result, builders)) {
-          success = false;
-        }
-      }
-      return success;
+      return  iterChildren<parseRequirement>(node, result, builders);
     }
     
     static bool parseRequirementSection(::requirements::NodePtr node, ParserResult &result, Builders &builders,
                                         util::LineParser &parser, const std::string &parameters) {
-      static std::regex requirementsTitle(R"(\s*(\w+)\s*(.*))");
-      std::smatch matches;
-      if (!std::regex_match(parameters, matches, requirementsTitle)) {
-        builders.errors.set(node->getId(),
-                            "A requirements title must be a shortcut followed by an arbitrary title string");
-        return false;
-      }
-      const std::string &shortcut = matches[1];
-      const std::string &title = matches[2];
-      
-      builders.shortcuts.set(node->getId(), title);
-      builders.requirements.setMajorPrefix(shortcut);
-      
-      SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
-      
-      bool success = true;
-      for (auto &child: node->getChildren()) {
-        if(!parseRequirement(child, result, builders)) {
-          success = false;
-        }
-      }
-      return success;
+      return shortcutSectionHelper(node, builders, parameters,
+        [&](const std::string& title, const std::string& shortcut){
+          builders.requirements.setMajorPrefix(shortcut);
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+          return iterChildren<parseRequirement>(node, result, builders);
+        });
     }
     
     static bool parseAcceptance(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
@@ -93,47 +102,75 @@ namespace requirements {
       }
       AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), std::move(accepts));
       builders.shortcuts.set(node->getId(), scope.getKey());
-  
-      bool success = true;
-      for(auto& child: node->getChildren()) {
-        success = success && parseAcceptance(child, result, builders);
-      }
-      return success;
+
+      return iterChildren<parseAcceptance>(node, result, builders);
     }
-    
+
     static bool parseAcceptanceSection(::requirements::NodePtr node, ParserResult& result, Builders& builders,
                                        util::LineParser& parser, const std::string& parameters) {
-      static std::regex acceptanceTitle(R"(\s*(\w+)\s*(.*))");
-      std::smatch matches;
-      if(!std::regex_match(parameters, matches, acceptanceTitle)) {
-        builders.errors.set(node->getId(), "An acceptance title must be a shortcut followed by an arbitrary title string");
-        return false;
-      }
-      const std::string& shortcut = matches[1];
-      const std::string& title = matches[2];
-      
-      builders.shortcuts.set(node->getId(), title);
-      builders.acceptances.setMajorPrefix(shortcut);
-      
-      SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
-      
-      bool success = true;
-      for(auto& child: node->getChildren()) {
-        success = success && parseAcceptance(child, result, builders);
-      }
-      return success;
+      return shortcutSectionHelper(node, builders, parameters,
+        [&](const std::string& title, const std::string& shortcut) {
+          builders.acceptances.setMajorPrefix(shortcut);
+
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+          return iterChildren<parseAcceptance>(node, result, builders);
+        });
     }
-    
+
+    static bool parseScene(::requirements::NodePtr node, ParserResult& result, Builders& builders) {
+      ::util::LineParser parser(node->getContent());
+      std::stringstream text;
+      std::vector<Scene::Risk> risks;
+      for(;;) {
+        std::cout<<"Check if the current line is a risk line"<<std::endl;
+        static std::regex riskRegex(R"(risk:\s*(\S+)\s*(.*))");
+        std::smatch matches;
+        if(parser.consume(riskRegex, matches)) {
+          std::cout<<"Detected risk"<<std::endl;
+          auto levelStr = matches[1];
+          auto description = matches[2];
+          static std::map<std::string, Scene::RiskLevel> levels = {
+            {"high", Scene::RiskLevel::High},
+            {"medium", Scene::RiskLevel::Medium},
+            {"low", Scene::RiskLevel::Low}
+          };
+          auto levelIt = levels.find(levelStr);
+          if(levelIt==levels.end()) {
+            builders.errors.set(node->getId(), "Risks must have valid risk level (low, medium or high)");
+            return false;
+          }
+          risks.emplace_back(levelIt->second, description);
+          continue;
+        }
+        std::string line;
+        if(!parser.consume(line)) {
+          break;
+        }
+        text<<line;
+      }
+      ScenesBuilderScope scope(builders.scenes, node->getId(), text.str(), std::move(risks));
+      builders.shortcuts.set(node->getId(), scope.getKey());
+
+      return iterChildren<parseScene>(node, result, builders);
+    }
+
+    static bool parseSceneSection(::requirements::NodePtr node, ParserResult& result, Builders& builders,
+                                       util::LineParser& parser, const std::string& parameters) {
+
+      return shortcutSectionHelper(node, builders, parameters,
+        [&](const std::string& title, const std::string& shortcut) {
+          builders.acceptances.setMajorPrefix(shortcut);
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+          return iterChildren<parseScene>(node, result, builders);
+        });
+    }
+
     static bool parseSection(::requirements::NodePtr node, ParserResult &result, Builders &builders, util::LineParser &parser,
                  const std::string &parameters) {
-      bool success = true;
       auto title = boost::algorithm::trim_copy(parameters);
       builders.shortcuts.set(node->getId(), title);
       SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
-      for (auto &child: node->getChildren()) {
-        success = success && parseSectionContext(child, result, builders);
-      }
-      return success;
+      return iterChildren<parseSectionContext>(node, result, builders);
     }
     
     static bool parseSectionContext(::requirements::NodePtr node, ParserResult &result, Builders &builders) {
@@ -151,7 +188,8 @@ namespace requirements {
                                             const std::string &parameters)> sectionContextTags = {
         {"section",      parseSection},
         {"requirements", parseRequirementSection},
-        {"acceptance",  parseAcceptanceSection}
+        {"acceptance",  parseAcceptanceSection},
+        {"scenes", parseSceneSection}
       };
       auto tagIt = sectionContextTags.find(matches[1]);
       if (tagIt == sectionContextTags.end()) {
@@ -159,14 +197,6 @@ namespace requirements {
         return false;
       }
       return tagIt->second(node, result, builders, parser, matches[2]);
-    }
-    
-    static bool parseTopLevel(::requirements::NodePtr node, ParserResult &result, Builders &builders) {
-      bool success = true;
-      for (auto &child: node->getChildren()) {
-        success = success && parseSectionContext(child, result, builders);
-      }
-      return success;
     }
 
     static bool recursiveRequirementsAcceptance(::requirements::Id id, ::requirements::NodeCollection& collection, ParserResult& result) {
@@ -205,8 +235,9 @@ namespace requirements {
       result.requirements.reset(new Requirements());
       result.acceptances.reset(new Acceptances());
       result.shortcuts.reset(new Shortcuts());
+      result.scenes.reset(new Scenes());
       Builders builders(result);
-      if(!parseTopLevel(storage.getNodeCollection().getRootNode(), result, builders)) {
+      if(!iterChildren<parseSectionContext>(storage.getNodeCollection().getRootNode(), result, builders)) {
         return false;
       }
       return requirementsAcceptance(storage.getNodeCollection(), result);

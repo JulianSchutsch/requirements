@@ -10,6 +10,7 @@
 #include "requirements/annotations/shortcuts.hpp"
 #include "requirements/annotations/requirements.hpp"
 #include "requirements/annotations/acceptances.hpp"
+#include "requirements/annotations/scenes.hpp"
 
 namespace requirements {
   namespace annotations {
@@ -20,6 +21,7 @@ namespace requirements {
       std::unique_ptr<Shortcuts> shortcuts;
       std::unique_ptr<Requirements> requirements;
       std::unique_ptr<Acceptances> acceptances;
+      std::unique_ptr<Scenes> scenes;
     };
     
     bool parse(::requirements::IStorage &storage, ParserResult &result);
