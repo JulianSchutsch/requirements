@@ -79,7 +79,7 @@ namespace qreq {
     connect(_reqtree, SIGNAL(alt_return_pressed(QModelIndex)), this, SLOT(on_reqtree_alt_return(QModelIndex)));
     connect(&model,SIGNAL(modelReset()),this,SLOT(on_model_reset()));
 
-    _commandline = new CommandLine(this);
+    _commandline = new CommandLine(this,std::vector<std::string>());
     connect(_commandline, SIGNAL(fire_command(std::string)), this, SLOT(on_commandline_return(std::string)));
 
     _messageList = new QListWidget(this);
