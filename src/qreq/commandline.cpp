@@ -4,7 +4,7 @@
 
 namespace qreq{
 
-CommandLine::CommandLine(QWidget *parent) : QLineEdit(parent){
+CommandLine::CommandLine(QWidget *parent,strvec const& initial_commands) : QLineEdit(parent){
   _commandstack.clear();
   _commandpointer=0;
 }
@@ -59,6 +59,25 @@ void CommandLine::keyPressEvent(QKeyEvent *event){
   else
     QLineEdit::keyPressEvent(event);
 
+}
+
+strvec CommandLine::getLastCommands(strvec::size_type count)const{
+  if(count < _commandstack.size()){
+    //Nur die letzten count Elements
+    strvec retval;
+    for(auto i=_commandstack.size()-count;i<_commandstack.size();++i){
+      retval.push_back(_commandstack[i]);
+    }
+    return retval;
+    //strvec::iterator it;
+    //std::vector<std::string>::iterator it;
+    //it=_commandstack.begin();
+    //strvec retval;
+    //retval.assign(it,_commandstack.end());
+  }
+  else{
+    return _commandstack;
+  }
 }
 
 }

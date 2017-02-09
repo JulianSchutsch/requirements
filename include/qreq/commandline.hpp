@@ -8,18 +8,20 @@
 
 namespace qreq{
 
+  using strvec=std::vector<std::string>;
+
 class CommandLine : public QLineEdit{
   Q_OBJECT
-  std::vector<std::string> _commandstack;
-  std::vector<std::string>::size_type _commandpointer;
+  strvec _commandstack;
+  strvec::size_type _commandpointer;
 protected:
   void keyPressEvent(QKeyEvent *event);
 signals:
   void fire_command(std::string const& command);
 public:
-  CommandLine(QWidget *parent);
+  CommandLine(QWidget *parent,strvec const& initial_commands);
   ~CommandLine();
-
+  strvec getLastCommands(strvec::size_type count)const;
 };
 
 }
