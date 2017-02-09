@@ -2,10 +2,14 @@
 
 #include <sstream>
 
+#include <QAbstractTextDocumentLayout>
+
 #include "qreq/model.hpp"
 
 #include <QKeyEvent>
 #include <QPainter>
+
+#include <iostream>
 
 namespace qreq {
 
@@ -20,6 +24,7 @@ namespace qreq {
     QRect headerRect;
     QRect bodyRect;
     QRect bodyTextRect;
+    QSize fullSize;
     QFontMetrics fm;
     bool selected;
     int headerTextPos;
@@ -28,7 +33,9 @@ namespace qreq {
       selected = option.state & QStyle::State_Selected;
       textHeight = fm.height();
 
+
       auto &rect = option.rect;
+      fullSize = QSize(rect.width(), rect.height());
       auto width = rect.width();
       auto height = rect.height();
 
@@ -45,6 +52,47 @@ namespace qreq {
       headerRect = QRect(innerLeft, innerTop, innerWidth, textHeight + 2*gap);
       bodyRect = QRect(innerLeft, boxTop, innerWidth, boxHeight);
       bodyTextRect = QRect(innerLeft + gap, boxTop + gap, innerWidth - 2*gap, boxHeight - 2*gap);
+
+      headerTextPos = innerLeft + gap;
+    }
+
+    CellGeometry(const QStyleOptionViewItem& option, const QModelIndex& index)
+      : fm(option.font) {
+      selected = option.state & QStyle::State_Selected;
+      textHeight = fm.height();
+
+      auto &rect = option.rect;
+
+      auto &model = Model::getModel(index);
+      auto node = model.getNodeFromModelIndex(index);
+      QSizeF contentSize(0,0);
+      if (node) {
+        if(model.isEditing(index)) {
+          QTextDocument document(model.editorContent());
+          contentSize = document.size();
+        } else {
+          QTextDocument document(node->getContent().c_str());
+          contentSize = document.size();
+        }
+      }
+
+      auto boxWidth = contentSize.width() + 2*gap;
+      auto innerWidth = boxWidth + 2*gap;
+      auto width = innerWidth + 2*innerBorder;
+
+      auto boxHeight = contentSize.height() + 2*gap;
+      auto innerHeight = boxHeight + textHeight + 2 * gap;
+      auto height = innerHeight + 2 * innerBorder;
+
+      auto innerLeft = rect.left() + innerBorder;
+      auto innerTop = rect.top() + innerBorder;
+      auto boxTop = innerTop + textHeight + 2 * gap;
+
+      frameRect = QRect(innerLeft, innerTop, innerWidth, innerHeight);
+      headerRect = QRect(innerLeft, innerTop, innerWidth, textHeight + 2*gap);
+      bodyRect = QRect(innerLeft, boxTop, innerWidth, boxHeight);
+      bodyTextRect = QRect(innerLeft + gap, boxTop + gap, innerWidth - 2*gap, boxHeight - 2*gap);
+      fullSize = QSize(width, height);
 
       headerTextPos = innerLeft + gap;
     }
@@ -125,7 +173,6 @@ namespace qreq {
     paintFrame(painter, geometry);
 
     auto& imodel = model.getModel();
-    auto id = node->getId();
 
     paintRequirementAcceptance(painter, geometry, model.getModel(), node->getId());
     paintNodeDescription(painter, geometry, model.getModel(), node->getId());
@@ -142,20 +189,8 @@ namespace qreq {
   }
 
   QSize ReqTextDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const {
-    auto &model = Model::getModel(index);
-    auto node = model.getNodeFromModelIndex(index);
-    if (!node) {
-      return QSize(200, 200);
-    }
-    QSizeF size;
-    if(model.isEditing(index)) {
-      size = model.editorSize();
-    } else {
-      QTextDocument document(node->getContent().c_str());
-      document.setTextWidth(option.rect.width());
-      size = document.size();
-    }
-    return QSize(option.rect.width(), size.height() + 50);
+    CellGeometry geometry(option, index);
+    return geometry.fullSize;
   }
 
   void ReqTextDelegate::editorDestroyed(QObject *obj) {
@@ -168,6 +203,9 @@ namespace qreq {
     auto *editor = new QTextEdit(parent);
     connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(editorDestroyed(QObject*)));
     editor->setFrameStyle(QFrame::NoFrame);
+    editor->setWordWrapMode(QTextOption::WrapMode::NoWrap);
+    editor->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    editor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     return editor;
   }
 
@@ -192,22 +230,8 @@ namespace qreq {
 
   void ReqTextDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                                              const QModelIndex &) const {
-    auto &rect = option.rect;
-    auto left = rect.x();
-    auto top = rect.y();
-    auto width = rect.width();
-    auto height = rect.height();
-
-    QFontMetrics fm(option.font);
-    int textHeight = fm.height();
-
-    auto innerLeft = left + innerBorder;
-    auto innerTop = top + innerBorder;
-    auto boxTop = innerTop + textHeight + 2 * gap;
-    auto innerWidth = width - 2 * innerBorder;
-    auto boxHeight = height - textHeight - 4 * gap;
-
-    editor->setGeometry(QRect(innerLeft+gap, boxTop+gap, innerWidth-2*gap, boxHeight-2*gap));
+    CellGeometry geometry(option);
+    editor->setGeometry(geometry.bodyTextRect);
   }
 
   bool ReqTextDelegate::eventFilter(QObject *editor, QEvent *event) {

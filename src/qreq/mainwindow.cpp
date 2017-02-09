@@ -8,6 +8,7 @@
 
 #include <QApplication>
 #include <QVBoxLayout>
+#include <QHeaderView>
 #include <QHBoxLayout>
 #include <QWidget>
 #include <QLabel>
@@ -65,11 +66,14 @@ namespace qreq {
     setMinimumWidth(800);
     setMinimumHeight(600);
     _reqtree = new ReqTree(this);
-    _reqtree->setModel(&model);
     _reqtree->setHeaderHidden(true);
     _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
     _reqtree->setAlternatingRowColors(false);
     _reqtree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    _reqtree->setModel(&model);
+    _reqtree->setUniformRowHeights(false);
+    _reqtree->header()->setStretchLastSection(false);
+    _reqtree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(ctrl_left_pressed(QModelIndex)), this, SLOT(on_reqtree_ctrl_left(QModelIndex)));

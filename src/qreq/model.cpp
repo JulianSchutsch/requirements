@@ -24,13 +24,6 @@ namespace qreq {
     return createIndex(nodeIt->second->childIndex(), 0, currentEdited);
   }
 
-  QSizeF Model::editorSize() {
-    if(currentEditor==nullptr) {
-      return QSizeF(0,0);
-    }
-    return currentEditor->document()->size();
-  }
-
   QString Model::editorContent() {
     if(currentEditor==nullptr) {
       return "";

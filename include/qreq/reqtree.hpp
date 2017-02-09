@@ -9,6 +9,12 @@ class ReqTree : public QTreeView{
   Q_OBJECT
 protected:
   void keyPressEvent(QKeyEvent *event);
+
+  int sizeHintForColumn(int column) const override {
+    int viewWidth = viewport()->width();
+    int colWidth = QTreeView::sizeHintForColumn(column);
+    return std::max(viewWidth, colWidth);
+  }
 signals:
   void ctrl_left_pressed(const QModelIndex& index);
   void ctrl_right_pressed(const QModelIndex& index);

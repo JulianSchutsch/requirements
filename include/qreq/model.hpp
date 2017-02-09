@@ -32,7 +32,6 @@ namespace qreq {
     int rootRowCount() const;
     bool isEditing(const QModelIndex& index);
     QString editorContent();
-    QSizeF editorSize();
     QModelIndex editedIndex();
     void setCurrentEditor(const QModelIndex& index, QTextEdit* editor);
     void clearCurrentEditor();
