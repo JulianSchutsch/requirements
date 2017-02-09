@@ -32,7 +32,7 @@ namespace qreq{
   protected:
     bool eventFilter(QObject *editor, QEvent *event) override;
   public:
-    ReqTextDelegate(QTreeView* treeview, QObject *parent = nullptr);
+    ReqTextDelegate(QTreeView* treeview);
 
     void paint(QPainter *painter,const QStyleOptionViewItem &option, QModelIndex const& index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;

@@ -67,7 +67,7 @@ namespace qreq {
     setMinimumHeight(600);
     _reqtree = new ReqTree(this);
     _reqtree->setHeaderHidden(true);
-    _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree, _reqtree));
+    _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
     _reqtree->setAlternatingRowColors(false);
     _reqtree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     _reqtree->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -182,7 +182,6 @@ namespace qreq {
     QMenuBar *menubar = new QMenuBar();
     QSignalMapper *signalMapper = new QSignalMapper(this);
     for (auto filename : Settings::getInstance().last_projects()) {
-      std::cout << "adding " << filename << std::endl;
       QAction *openact = new QAction(filename.c_str(), this);
       connect(openact, SIGNAL(triggered()), signalMapper, SLOT(map()));
       signalMapper->setMapping(openact, filename.c_str());

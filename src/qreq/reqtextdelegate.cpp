@@ -14,7 +14,7 @@
 
 namespace qreq {
 
-  ReqTextDelegate::ReqTextDelegate(QTreeView* a_treeView, QObject *parent)
+  ReqTextDelegate::ReqTextDelegate(QTreeView* a_treeView)
     : treeView(a_treeView) {
     connect(treeView->horizontalScrollBar(), SIGNAL(rangeChanged(int, int)), this, SLOT(horizontalSliderRangeChanged(int, int)));
     connect(treeView->verticalScrollBar(), SIGNAL(rangeChanged(int, int)), this, SLOT(verticalSliderRangeChanged(int, int)));
@@ -45,11 +45,9 @@ namespace qreq {
       auto height = rect.height();
 
       auto innerLeft = rect.left() + innerBorder;
-      auto innerRight = rect.right() - innerBorder;
       auto innerTop = rect.top() + innerBorder;
       auto innerHeight = height - 2 * innerBorder;
       auto boxTop = innerTop + textHeight + 2 * gap;
-      auto innerBottom = rect.bottom() - innerBorder;
       auto innerWidth = width - 2 * innerBorder;
       auto boxHeight = height - textHeight - 4 * gap;
 
@@ -199,12 +197,15 @@ namespace qreq {
   }
 
   void ReqTextDelegate::editorDestroyed(QObject *obj) {
+    (void)obj;
     if(currentModel) {
       currentModel->clearCurrentEditor();
     }
   }
 
   QWidget * ReqTextDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+    (void)option;
+    (void)index;
     auto *editor = new QTextEdit(parent);
     connect(editor, SIGNAL(destroyed(QObject*)), this, SLOT(editorDestroyed(QObject*)));
     connect(editor, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
@@ -230,6 +231,7 @@ namespace qreq {
   }
 
   void ReqTextDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
+    (void)model;
     auto *widget = static_cast<QTextEdit *>(editor);
     auto& pmodel = Model::getModel(index);
     pmodel.updateContent(index, widget->toPlainText().toStdString());
@@ -242,10 +244,14 @@ namespace qreq {
   }
 
   void ReqTextDelegate::horizontalSliderRangeChanged(int min, int max) {
+    (void)min;
+    (void)max;
     makeCursorVisible();
   }
 
   void ReqTextDelegate::verticalSliderRangeChanged(int min, int max) {
+    (void)min;
+    (void)max;
     makeCursorVisible();
   }
 
