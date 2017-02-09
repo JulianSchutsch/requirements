@@ -122,11 +122,9 @@ namespace requirements {
       std::stringstream text;
       std::vector<Scene::Risk> risks;
       for(;;) {
-        std::cout<<"Check if the current line is a risk line"<<std::endl;
         static std::regex riskRegex(R"(risk:\s*(\S+)\s*(.*))");
         std::smatch matches;
         if(parser.consume(riskRegex, matches)) {
-          std::cout<<"Detected risk"<<std::endl;
           auto levelStr = matches[1];
           auto description = matches[2];
           static std::map<std::string, Scene::RiskLevel> levels = {
