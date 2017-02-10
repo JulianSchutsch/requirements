@@ -70,10 +70,12 @@ namespace qreq {
     _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
     _reqtree->setAlternatingRowColors(false);
     _reqtree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    _reqtree->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     _reqtree->setModel(&model);
     _reqtree->setUniformRowHeights(false);
     _reqtree->header()->setStretchLastSection(false);
     _reqtree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    _reqtree->setAutoScroll(true);
     connect(_reqtree, SIGNAL(expanded(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(collapsed(QModelIndex)), this, SLOT(on_reqtree_expanded(QModelIndex)));
     connect(_reqtree, SIGNAL(ctrl_left_pressed(QModelIndex)), this, SLOT(on_reqtree_ctrl_left(QModelIndex)));
@@ -180,7 +182,6 @@ namespace qreq {
     QMenuBar *menubar = new QMenuBar();
     QSignalMapper *signalMapper = new QSignalMapper(this);
     for (auto filename : Settings::getInstance().last_projects()) {
-      std::cout << "adding " << filename << std::endl;
       QAction *openact = new QAction(filename.c_str(), this);
       connect(openact, SIGNAL(triggered()), signalMapper, SLOT(map()));
       signalMapper->setMapping(openact, filename.c_str());

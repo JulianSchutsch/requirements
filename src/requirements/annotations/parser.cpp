@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "util/lineparser.hpp"
 
@@ -121,6 +122,8 @@ namespace requirements {
       ::util::LineParser parser(node->getContent());
       std::stringstream text;
       std::vector<Scene::Risk> risks;
+      bool hasProbability = false;
+      float probability;
       for(;;) {
         static std::regex riskRegex(R"(risk:\s*(\S+)\s*(.*))");
         std::smatch matches;
@@ -140,13 +143,28 @@ namespace requirements {
           risks.emplace_back(levelIt->second, description);
           continue;
         }
+        static std::regex probabilityRegex(R"(probability:\s*(\S+)\s*)");
+        if(parser.consume(probabilityRegex, matches)) {
+          if(hasProbability) {
+            builders.errors.set(node->getId(), "Two probabilities for a single scene element specified.");
+          }
+          try {
+            probability = ::boost::lexical_cast<float>(matches[1]);
+          } catch(::boost::bad_lexical_cast& e) {
+            builders.errors.set(node->getId(), "Probability requires single float parameter between 0 and 1.");
+          }
+          if(probability<0 || probability>1) {
+            builders.errors.set(node->getId(), "Probability out of range, must be between 0 and 1.");
+          }
+          hasProbability = true;
+        }
         std::string line;
         if(!parser.consume(line)) {
           break;
         }
         text<<line;
       }
-      ScenesBuilderScope scope(builders.scenes, node->getId(), text.str(), std::move(risks));
+      ScenesBuilderScope scope(builders.scenes, node->getId(), text.str(), std::move(risks), hasProbability, probability);
       builders.shortcuts.set(node->getId(), scope.getKey());
 
       return iterChildren<parseScene>(node, result, builders);

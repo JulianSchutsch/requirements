@@ -28,12 +28,14 @@ namespace requirements {
       std::string key;
       std::string text;
       std::vector<Risk> risks;
+      bool hasProbability;
+      float probability;
     public:
       const std::string& getKey() const { return key; }
       const std::string& getText() const { return text; }
       const std::vector<Risk>& getRisks() const { return risks; }
 
-      Scene(const std::string& a_key, const std::string& a_text, const std::vector<Risk>& a_risks);
+      Scene(const std::string& a_key, const std::string& a_text, const std::vector<Risk>& a_risks, bool a_hasProbability, float a_probability);
     };
 
     using Scenes = internal::Common<Scene>;
