@@ -39,6 +39,19 @@ void printUserError(const std::string& format, const std::vector<std::string>& p
   std::cout<<"Error detected:"<<util::formatString(format, parameters)<<std::endl;
 }
 
+void printException(::requirements::Exception& e) {
+  switch(e.getKind()) {
+    case Exception::Kind::Internal: {
+      printInternalError(e.getReason(), e.getParameters());
+      break;
+    }
+    case Exception::Kind::User:
+    case Exception::Kind::Other:
+      printUserError(e.getReason(), e.getParameters());
+      break;
+  }
+}
+
 void handleResponse(::batch::Response&& r) {
   if(!r.status->selections[0].empty()) {
     std::cout<<"Selected: ";
@@ -92,16 +105,7 @@ int main(int argc, char** args) {
   try {
     batchThread.enqueue(commands::assembleFromString(commandStr));
   } catch(::requirements::Exception& e) {
-    switch(e.getKind()) {
-      case Exception::Kind::Internal: {
-        printInternalError(e.getReason(), e.getParameters());
-        break;
-      }
-      case Exception::Kind::User:
-      case Exception::Kind::Other:
-        printUserError(e.getReason(), e.getParameters());
-        break;
-    }
+    printException(e);
   }
   
   return 0;
