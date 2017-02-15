@@ -39,6 +39,46 @@ void printUserError(const std::string& format, const std::vector<std::string>& p
   std::cout<<"Error detected:"<<util::formatString(format, parameters)<<std::endl;
 }
 
+void printException(::requirements::Exception& e) {
+  switch(e.getKind()) {
+    case Exception::Kind::Internal: {
+      printInternalError(e.getReason(), e.getParameters());
+      break;
+    }
+    case Exception::Kind::User:
+    case Exception::Kind::Other:
+      printUserError(e.getReason(), e.getParameters());
+      break;
+  }
+}
+
+void handleResponse(::batch::Response&& r) {
+  if(!r.status->selections[0].empty()) {
+    std::cout<<"Selected: ";
+    for(auto selected: r.status->selections[0]) {
+      std::cout<<id_to_string(selected)<<" ";
+    }
+    std::cout<<std::endl;
+  }
+}
+
+void handleMessage(Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
+  switch(kind)
+  {
+    case Status::MessageKind::InternalError:
+      printInternalError(msg, parameters);
+      break;
+    case Status::MessageKind::UserError:
+    case Status::MessageKind::OtherError:
+      printUserError(msg, parameters);
+      break;
+    case Status::MessageKind::Content:
+    case Status::MessageKind::Message:
+      std::cout<<util::formatString(msg, parameters)<<std::endl;
+      break;
+  }
+}
+
 std::string joinArgs(int argc, char** args) {
   std::string commandStr;
   for(int i=1;i<argc;++i) {
@@ -57,47 +97,15 @@ int main(int argc, char** args) {
   auto commandStr = joinArgs(argc, args);
 
   batch::Thread batchThread(
-    [](batch::Response&& r){
-      if(!r.status->selections[0].empty()) {
-        std::cout<<"Selected: ";
-        for(auto selected: r.status->selections[0]) {
-          std::cout<<id_to_string(selected)<<" ";
-        }
-        std::cout<<std::endl;
-      }
-    },
-    [](Status::MessageKind kind, const std::string& msg, const std::vector<std::string>& parameters) {
-      switch(kind)
-      {
-        case Status::MessageKind::InternalError:
-          printInternalError(msg, parameters);
-          break;
-        case Status::MessageKind::UserError:
-        case Status::MessageKind::OtherError:
-          printUserError(msg, parameters);
-          break;
-        case Status::MessageKind::Content:
-        case Status::MessageKind::Message:
-          std::cout<<util::formatString(msg, parameters)<<std::endl;
-          break;
-      }
-    },
+    &handleResponse,
+    &handleMessage,
     &editCallback,
     util::getConfigPath()+"/.req_status.xml");
   
   try {
     batchThread.enqueue(commands::assembleFromString(commandStr));
   } catch(::requirements::Exception& e) {
-    switch(e.getKind()) {
-      case Exception::Kind::Internal: {
-        printInternalError(e.getReason(), e.getParameters());
-        break;
-      }
-      case Exception::Kind::User:
-      case Exception::Kind::Other:
-        printUserError(e.getReason(), e.getParameters());
-        break;
-    }
+    printException(e);
   }
   
   return 0;
