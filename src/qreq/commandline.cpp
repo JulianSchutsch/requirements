@@ -5,8 +5,8 @@
 namespace qreq{
 
 CommandLine::CommandLine(QWidget *parent,strvec const& initial_commands) : QLineEdit(parent){
-  _commandstack.clear();
-  _commandpointer=0;
+  _commandstack=initial_commands;
+  _commandpointer=_commandstack.size();
 }
 
 CommandLine::~CommandLine(){

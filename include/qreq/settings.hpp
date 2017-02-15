@@ -6,6 +6,7 @@
 namespace qreq{
   class Settings{
     std::list<std::string> _last_projects;
+    std::vector<std::string> _last_commands;
     std::string settings_filename();
   public:
     static Settings& getInstance();
@@ -23,6 +24,8 @@ namespace qreq{
 
     //The current selected project
     std::string current_project;
+    const std::vector<std::string>& last_commands() const;
+    void last_commands(std::vector<std::string> const& commands);
   protected:
     Settings();
     ~Settings();

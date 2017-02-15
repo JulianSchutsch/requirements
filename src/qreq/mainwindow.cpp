@@ -33,6 +33,10 @@ namespace qreq {
   }
 
   MainWindow::~MainWindow() {
+    //Copy Last commands to Settings
+    strvec last_commands=_commandline->getLastCommands(20);  //TODO Diese Zahl könnte man konfigurierbar machen
+    Settings::getInstance().last_commands(last_commands);
+    //Store Settings
     Settings::getInstance().store();
   }
 
@@ -85,7 +89,7 @@ namespace qreq {
     connect(_reqtree, SIGNAL(alt_return_pressed(QModelIndex)), this, SLOT(on_reqtree_alt_return(QModelIndex)));
     connect(&model,SIGNAL(modelReset()),this,SLOT(on_model_reset()));
 
-    _commandline = new CommandLine(this,std::vector<std::string>());
+    _commandline = new CommandLine(this,Settings::getInstance().last_commands());
     connect(_commandline, SIGNAL(fire_command(std::string)), this, SLOT(on_commandline_return(std::string)));
 
     _messageList = new QListWidget(this);
