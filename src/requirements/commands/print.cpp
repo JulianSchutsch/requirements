@@ -6,6 +6,7 @@
 #include "requirements/exception.hpp"
 #include "requirements/annotations/parser.hpp"
 #include "requirements/generators/latex/requirements.hpp"
+#include "requirements/generators/latex/labels.hpp"
 #include "requirements/commands/parser.hpp"
 
 namespace requirements {
@@ -16,13 +17,23 @@ namespace requirements {
       if(!annotations::parse(*storage, parsed)) {
         throw Exception(Exception::Kind::User, "Issues during parsing, cannot print");
       }
-      std::string printFile = status.folder+"/latex/requirements.tex";
-      std::fstream file(printFile, std::fstream::out);
-      if(!file) {
-        throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {printFile});
+      {
+        std::string printFile = status.folder + "/latex/requirements.tex";
+        std::fstream file(printFile, std::fstream::out);
+        if (!file) {
+          throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {printFile});
+        }
+        generators::latex::printRequirements(*parsed.sections, *parsed.requirements, file);
       }
-      generators::latex::printRequirements(*parsed.sections, *parsed.requirements, file);
-      status.messageFunction(Status::MessageKind::Message, "Generated requirements document in requirements %1% ", {printFile});
+      {
+        std::string printFile = status.folder + "/latex/labels.tex";
+        std::fstream file(printFile, std::fstream::out);
+        if (!file) {
+          throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {printFile});
+        }
+        generators::latex::printLabels(storage->getNodeCollection(), *parsed.shortcuts, file);
+      }
+      status.messageFunction(Status::MessageKind::Message, "Generated requirements documents", {});
   
     }
     
