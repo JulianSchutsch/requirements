@@ -29,26 +29,26 @@ TEST(AnnotationsSections, Filter) {
   Id element6 = generateRandomId();
   
   {
-    annotations::SectionsBuilderScope top(builder, "1", "");
+    annotations::SectionsBuilderScope top(builder, "1", "", "");
     {
-      annotations::SectionsBuilderScope sec(builder, "1.1", "");
+      annotations::SectionsBuilderScope sec(builder, "1.1", "", "");
       sec.addElement(element1);
       sec.addElement(element2);
     }
     {
-      annotations::SectionsBuilderScope sec(builder, "1.2", "");
+      annotations::SectionsBuilderScope sec(builder, "1.2", "", "");
       sec.addElement(element3);
     }
     {
-      annotations::SectionsBuilderScope sec(builder, "1.3", "");
+      annotations::SectionsBuilderScope sec(builder, "1.3", "", "");
       {
-        annotations::SectionsBuilderScope subsec(builder, "1.3.1", "");
+        annotations::SectionsBuilderScope subsec(builder, "1.3.1", "", "");
         subsec.addElement(element6);
       }
     }
   }
   {
-    annotations::SectionsBuilderScope top(builder, "2", "");
+    annotations::SectionsBuilderScope top(builder, "2", "", "");
     top.addElement(element4);
     top.addElement(element5);
   }

@@ -11,6 +11,7 @@
 #include "requirements/annotations/requirements.hpp"
 #include "requirements/annotations/acceptances.hpp"
 #include "requirements/annotations/scenes.hpp"
+#include "requirements/annotations/phases.hpp"
 
 namespace requirements {
   namespace annotations {
@@ -22,6 +23,7 @@ namespace requirements {
       std::unique_ptr<Requirements> requirements;
       std::unique_ptr<Acceptances> acceptances;
       std::unique_ptr<Scenes> scenes;
+      std::unique_ptr<Phases> phases;
     };
     
     bool parse(::requirements::IStorage &storage, ParserResult &result);

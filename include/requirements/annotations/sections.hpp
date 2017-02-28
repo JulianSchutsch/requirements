@@ -20,6 +20,8 @@ namespace requirements {
       Section *parent = nullptr;
       std::unique_ptr<Section> firstChild;
       std::unique_ptr<Section> nextSibling;
+
+      std::string phaseIdentifier;
       
       friend class SectionsBuilderScope;
       
@@ -32,9 +34,11 @@ namespace requirements {
       
       Section(const Section &inherited, Elements &&elements, std::unique_ptr<Section> &&newFirstChild);
       
-      Section(const std::string &a_title, const std::string &description, Section *parent);
+      Section(const std::string &a_title, const std::string &description, const std::string& aPhaseIdentifier, Section *parent);
       
       int getDepth() const { return depth; }
+
+      const std::string& getPhaseIdentifier() const { return phaseIdentifier; }
       
       const std::string &getTitle() const { return title; }
       
@@ -117,7 +121,7 @@ namespace requirements {
     public:
       void addElement(::requirements::Id id);
       
-      SectionsBuilderScope(SectionsBuilder &a_builder, const std::string &title, const std::string &description);
+      SectionsBuilderScope(SectionsBuilder &a_builder, const std::string &title, const std::string &description, const std::string& phaseIdentifier);
       
       ~SectionsBuilderScope();
     };

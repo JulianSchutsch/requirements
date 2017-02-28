@@ -58,6 +58,7 @@ namespace requirements {
           response.requirements = std::move(result.requirements);
           response.sections = std::move(result.sections);
           response.acceptances = std::move(result.acceptances);
+          response.phases = std::move(result.phases);
           response.nodeCollection = storage->getNodeCollection().clone();
           responseFunction(std::move(response));
         }

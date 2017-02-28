@@ -7,6 +7,7 @@
 #include "requirements/annotations/sections.hpp"
 #include "requirements/annotations/requirements.hpp"
 #include "requirements/annotations/acceptances.hpp"
+#include "requirements/annotations/phases.hpp"
 
 #include "requirements/status.hpp"
 
@@ -20,6 +21,7 @@ namespace requirements {
       std::unique_ptr<::requirements::annotations::Sections> sections;
       std::unique_ptr<::requirements::annotations::Requirements> requirements;
       std::unique_ptr<::requirements::annotations::Acceptances> acceptances;
+      std::unique_ptr<::requirements::annotations::Phases> phases;
     };
   }
 }

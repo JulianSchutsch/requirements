@@ -9,11 +9,15 @@ namespace requirements {
       : elements(std::move(elements)), depth(inherited.depth), title(inherited.title),
         description(inherited.description), firstChild(std::move(newFirstChild)) {}
     
-    Section::Section(const std::string &a_title, const std::string &a_description, Section *a_parent)
-      : depth(a_parent ? a_parent->depth + 1 : 0), title(a_title), description(a_description), parent(a_parent) {}
+    Section::Section(const std::string &a_title, const std::string &a_description, const std::string& aPhaseIdentifier, Section *a_parent)
+      : depth(a_parent ? a_parent->depth + 1 : 0)
+      , title(a_title)
+      , description(a_description)
+      , parent(a_parent)
+      , phaseIdentifier(aPhaseIdentifier) {}
     
     SectionsBuilderScope::SectionsBuilderScope(SectionsBuilder &a_builder, const std::string &title,
-                                               const std::string &description)
+                                               const std::string &description, const std::string& phaseIdentifier)
       : builder(a_builder) {
       previousScope = builder.currentScope;
       builder.currentScope = this;
@@ -23,7 +27,7 @@ namespace requirements {
         }
       }
       
-      auto newSection = std::make_unique<Section>(title, description,
+      auto newSection = std::make_unique<Section>(title, description, phaseIdentifier,
                                                   (previousScope != nullptr) ? previousScope->section : nullptr);
       section = newSection.get();
       

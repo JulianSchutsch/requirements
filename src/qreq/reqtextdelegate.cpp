@@ -147,6 +147,13 @@ namespace qreq {
     geometry.headerTextOut(painter, caption, captionColor);
   }
 
+  void ReqTextDelegate::paintPhaseIdentifier(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const {
+    if(model.phases->has(nodeId)) {
+      geometry.headerTextOut(painter, "(Phase: "+model.phases->get(nodeId)+")", QColor(0,0,255));
+    }
+
+  }
+
   void ReqTextDelegate::paintAcceptanceAccepts(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const {
     if(!model.acceptances->has(nodeId)) {
       return;
@@ -179,6 +186,7 @@ namespace qreq {
 
     paintRequirementAcceptance(painter, geometry, model.getModel(), node->getId());
     paintNodeDescription(painter, geometry, model.getModel(), node->getId());
+    paintPhaseIdentifier(painter, geometry, model.getModel(), node->getId());
     paintAcceptanceAccepts(painter, geometry, model.getModel(), node->getId());
 
     if(!model.isEditing(index)) {

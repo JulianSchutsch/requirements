@@ -22,6 +22,7 @@ namespace requirements {
         RequirementsBuilder requirements;
         AcceptancesBuilder acceptances;
         ScenesBuilder scenes;
+        PhasesBuilder phases;
         
         Builders(ParserResult &result)
           : sections(*result.sections)
@@ -29,7 +30,8 @@ namespace requirements {
           , shortcuts(*result.shortcuts)
           , requirements(*result.requirements, majorPrefix)
           , acceptances(*result.acceptances, majorPrefix)
-          , scenes(*result.scenes, majorPrefix) {}
+          , scenes(*result.scenes, majorPrefix)
+          , phases(*result.phases) {}
       };
     }
 
@@ -73,7 +75,7 @@ namespace requirements {
       return shortcutSectionHelper(node, builders, parameters,
         [&](const std::string& title, const std::string& shortcut){
           builders.requirements.setMajorPrefix(shortcut);
-          SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll(), "");
           return iterChildren<parseRequirement>(node, result, builders);
         });
     }
@@ -113,7 +115,7 @@ namespace requirements {
         [&](const std::string& title, const std::string& shortcut) {
           builders.acceptances.setMajorPrefix(shortcut);
 
-          SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll(), "");
           return iterChildren<parseAcceptance>(node, result, builders);
         });
     }
@@ -176,8 +178,21 @@ namespace requirements {
       return shortcutSectionHelper(node, builders, parameters,
         [&](const std::string& title, const std::string& shortcut) {
           builders.acceptances.setMajorPrefix(shortcut);
-          SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll(), ""  );
           return iterChildren<parseScene>(node, result, builders);
+        });
+    }
+
+    static bool parsePhase(::requirements::NodePtr node, ParserResult& result, Builders& builders, util::LineParser& parser, const std::string& parameters) {
+      // ShortcutSectionHelper is used here, since the first parameter (which is a phase folder), is identicial to a simple file name
+      return shortcutSectionHelper(node, builders, parameters,
+        [&](const std::string& title, const std::string& phaseIdentifier) {
+          if(!builders.phases.addPhase(node->getId(), phaseIdentifier)) {
+            builders.errors.set(node->getId(), "Phase identifier already in use");
+            return false;
+          }
+          SectionsBuilderScope section(builders.sections, title, parser.consumeAll(), phaseIdentifier);
+          return iterChildren<parseSectionContext>(node, result, builders);
         });
     }
 
@@ -185,7 +200,7 @@ namespace requirements {
                  const std::string &parameters) {
       auto title = boost::algorithm::trim_copy(parameters);
       builders.shortcuts.set(node->getId(), title);
-      SectionsBuilderScope section(builders.sections, title, parser.consumeAll());
+      SectionsBuilderScope section(builders.sections, title, parser.consumeAll(), "");
       return iterChildren<parseSectionContext>(node, result, builders);
     }
     
@@ -205,7 +220,8 @@ namespace requirements {
         {"section",      parseSection},
         {"requirements", parseRequirementSection},
         {"acceptance",  parseAcceptanceSection},
-        {"scenes", parseSceneSection}
+        {"scenes", parseSceneSection},
+        {"phase", parsePhase}
       };
       auto tagIt = sectionContextTags.find(matches[1]);
       if (tagIt == sectionContextTags.end()) {
@@ -252,6 +268,7 @@ namespace requirements {
       result.acceptances.reset(new Acceptances());
       result.shortcuts.reset(new Shortcuts());
       result.scenes.reset(new Scenes());
+      result.phases.reset(new Phases());
       Builders builders(result);
       if(!iterChildren<parseSectionContext>(storage.getNodeCollection().getRootNode(), result, builders)) {
         return false;

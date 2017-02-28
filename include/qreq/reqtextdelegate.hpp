@@ -24,6 +24,7 @@ namespace qreq{
     void paintFrame(QPainter* painer, CellGeometry& geometry) const;
     void paintRequirementAcceptance(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const;
     void paintNodeDescription(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const;
+    void paintPhaseIdentifier(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const;
     void paintAcceptanceAccepts(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const;
 
     void makeRegionVisible(QRect r, int margin);
