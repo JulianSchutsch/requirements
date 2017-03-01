@@ -4,7 +4,38 @@
 
 namespace requirements {
   namespace annotations {
-    
+
+    void Sections::Iterator::simpleNext() {
+      if (iterator->firstChild) {
+        iterator = iterator->firstChild.get();
+        return;
+      }
+      while (iterator != nullptr && iterator->nextSibling.get() == nullptr) {
+        iterator = iterator->parent;
+      }
+      if (iterator != nullptr) {
+        iterator = iterator->nextSibling.get();
+        return;
+      }
+    }
+
+    void Sections::Iterator::skipPhaseSections() {
+      while(iterator!=nullptr && iterator->phaseSection==true) {
+        simpleNext();
+      }
+    }
+
+    Sections::Iterator::Iterator(Section *a_iterator)
+    : iterator(a_iterator) {
+      skipPhaseSections();
+    }
+
+    Sections::Iterator& Sections::Iterator::operator++() {
+      simpleNext();
+      skipPhaseSections();
+      return *this;
+    }
+
     Section::Section(const Section &inherited, Elements &&elements, std::unique_ptr<Section> &&newFirstChild)
       : elements(std::move(elements)), depth(inherited.depth), title(inherited.title),
         description(inherited.description), firstChild(std::move(newFirstChild)), phaseIdentifier(inherited.phaseIdentifier), phaseSection(inherited.phaseSection) {}

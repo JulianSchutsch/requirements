@@ -14,7 +14,6 @@ namespace requirements {
           return requirements.has(id);
         });
         for (auto &section: filtered) {
-          std::cout<<"Section:"<<section.getPhaseIdentifier()<<std::endl;
           auto& output = files.getOStream(section.getPhaseIdentifier());
           switch (section.getDepth()) {
             case 0:

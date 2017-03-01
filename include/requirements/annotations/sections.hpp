@@ -60,40 +60,11 @@ namespace requirements {
       class Iterator {
       private:
         Section *iterator;
-
-        void simpleNext() {
-          if (iterator->firstChild) {
-            iterator = iterator->firstChild.get();
-            return;
-          }
-          while (iterator != nullptr && iterator->nextSibling.get() == nullptr) {
-            iterator = iterator->parent;
-          }
-          if (iterator != nullptr) {
-            iterator = iterator->nextSibling.get();
-            return;
-          }
-        }
-
-        void skipPhaseSections() {
-          while(iterator!=nullptr && iterator->phaseSection==true) {
-            simpleNext();
-          }
-        }
-
+        void simpleNext();
+        void skipPhaseSections();
       public:
-
-        Iterator(Section *a_iterator)
-          : iterator(a_iterator) {
-          skipPhaseSections();
-        }
-
-        Iterator &operator++() {
-          simpleNext();
-          skipPhaseSections();
-          return *this;
-        }
-        
+        Iterator(Section *a_iterator);
+        Iterator &operator++();
         bool operator==(const Iterator &other) const { return iterator == other.iterator; }
         
         bool operator!=(const Iterator &other) const { return iterator != other.iterator; }
