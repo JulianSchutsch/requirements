@@ -22,6 +22,7 @@ namespace requirements {
       std::unique_ptr<Section> nextSibling;
 
       std::string phaseIdentifier;
+      bool phaseSection = false;
       
       friend class SectionsBuilderScope;
       
@@ -34,7 +35,7 @@ namespace requirements {
       
       Section(const Section &inherited, Elements &&elements, std::unique_ptr<Section> &&newFirstChild);
       
-      Section(const std::string &a_title, const std::string &description, const std::string& aPhaseIdentifier, Section *parent);
+      Section(const std::string &a_title, const std::string &description, const std::string& a_PhaseIdentifier, bool a_PhaseSection, Section *parent);
       
       int getDepth() const { return depth; }
 
@@ -59,22 +60,37 @@ namespace requirements {
       class Iterator {
       private:
         Section *iterator;
-      public:
-        Iterator(Section *a_iterator)
-          : iterator(a_iterator) {}
-        
-        Iterator &operator++() {
+
+        void simpleNext() {
           if (iterator->firstChild) {
             iterator = iterator->firstChild.get();
-            return *this;
+            return;
           }
           while (iterator != nullptr && iterator->nextSibling.get() == nullptr) {
             iterator = iterator->parent;
           }
           if (iterator != nullptr) {
             iterator = iterator->nextSibling.get();
-            return *this;
+            return;
           }
+        }
+
+        void skipPhaseSections() {
+          while(iterator!=nullptr && iterator->phaseSection==true) {
+            simpleNext();
+          }
+        }
+
+      public:
+
+        Iterator(Section *a_iterator)
+          : iterator(a_iterator) {
+          skipPhaseSections();
+        }
+
+        Iterator &operator++() {
+          simpleNext();
+          skipPhaseSections();
           return *this;
         }
         

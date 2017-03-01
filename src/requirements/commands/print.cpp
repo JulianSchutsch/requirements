@@ -8,9 +8,49 @@
 #include "requirements/generators/latex/requirements.hpp"
 #include "requirements/generators/latex/labels.hpp"
 #include "requirements/commands/parser.hpp"
+#include "requirements/internal/path.hpp"
 
 namespace requirements {
   namespace commands {
+
+    class PhaseFiles : public ::requirements::generators::IPhaseFiles {
+    private:
+      std::map<std::string, std::fstream*> files;
+    public:
+      std::ostream& getOStream(const std::string& phase) override;
+      PhaseFiles(const std::string& prefix, const std::string& postfix, annotations::Phases& phases);
+      ~PhaseFiles();
+    };
+
+    std::ostream& PhaseFiles::getOStream(const std::string& phase) {
+      return *files[phase];
+    }
+
+    PhaseFiles::PhaseFiles(const std::string& prefix, const std::string& postfix, annotations::Phases& phases) {
+      {
+        std::string filename = prefix + "/" + postfix;
+        files.emplace("", new std::fstream(filename, std::fstream::out));
+        if (!files[""]->is_open()) {
+          throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {filename});
+        }
+      }
+      for(auto& phase: phases) {
+        std::string folder = prefix+"/"+phase.second;
+        std::string filename = folder+"/"+postfix;
+        ::requirements::internal::ensureFolder(folder);
+        files.emplace(phase.second, new std::fstream(filename, std::fstream::out));
+        if (!files[phase.second]->is_open()) {
+          throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {filename});
+        }
+      }
+    }
+
+    PhaseFiles::~PhaseFiles() {
+      for(auto& file: files) {
+        delete file.second;
+      }
+    }
+
     void Print::execute(Status &status) {
       auto storage = status.openStorage();
       annotations::ParserResult parsed;
@@ -18,12 +58,8 @@ namespace requirements {
         throw Exception(Exception::Kind::User, "Issues during parsing, cannot print");
       }
       {
-        std::string printFile = status.folder + "/latex/requirements.tex";
-        std::fstream file(printFile, std::fstream::out);
-        if (!file) {
-          throw Exception(Exception::Kind::User, "Could not open target file %1% for printing.", {printFile});
-        }
-        generators::latex::printRequirements(*parsed.sections, *parsed.requirements, file);
+        PhaseFiles files(status.folder+"/latex", "requirements.tex", *parsed.phases);
+        generators::latex::printRequirements(*parsed.sections, *parsed.requirements, files);
       }
       {
         std::string printFile = status.folder + "/latex/labels.tex";

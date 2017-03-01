@@ -7,14 +7,20 @@ namespace requirements {
     
     Section::Section(const Section &inherited, Elements &&elements, std::unique_ptr<Section> &&newFirstChild)
       : elements(std::move(elements)), depth(inherited.depth), title(inherited.title),
-        description(inherited.description), firstChild(std::move(newFirstChild)) {}
+        description(inherited.description), firstChild(std::move(newFirstChild)), phaseIdentifier(inherited.phaseIdentifier), phaseSection(inherited.phaseSection) {}
     
-    Section::Section(const std::string &a_title, const std::string &a_description, const std::string& aPhaseIdentifier, Section *a_parent)
-      : depth(a_parent ? a_parent->depth + 1 : 0)
-      , title(a_title)
+    Section::Section(const std::string &a_title, const std::string &a_description, const std::string& a_phaseIdentifier, bool a_phaseSection, Section *a_parent)
+      : title(a_title)
       , description(a_description)
       , parent(a_parent)
-      , phaseIdentifier(aPhaseIdentifier) {}
+      , phaseIdentifier(a_phaseIdentifier)
+      , phaseSection(a_phaseSection){
+      if(a_phaseSection) {
+        depth = a_parent ? a_parent->depth : 0;
+      } else {
+        depth = a_parent ? a_parent->depth +1 : 0;
+      }
+    }
     
     SectionsBuilderScope::SectionsBuilderScope(SectionsBuilder &a_builder, const std::string &title,
                                                const std::string &description, const std::string& phaseIdentifier)
@@ -26,8 +32,15 @@ namespace requirements {
           throw Exception(Exception::Kind::Internal, "Cannot add sections to a section with common elements");
         }
       }
-      
-      auto newSection = std::make_unique<Section>(title, description, phaseIdentifier,
+
+      std::string inheritedPhaseIdentifier = phaseIdentifier;
+      if(inheritedPhaseIdentifier.empty()) {
+        if(previousScope!=nullptr) {
+          inheritedPhaseIdentifier = previousScope->section->getPhaseIdentifier();
+        }
+      }
+
+      auto newSection = std::make_unique<Section>(title, description, inheritedPhaseIdentifier, !phaseIdentifier.empty(),
                                                   (previousScope != nullptr) ? previousScope->section : nullptr);
       section = newSection.get();
       

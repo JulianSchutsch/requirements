@@ -9,11 +9,13 @@ namespace requirements {
     namespace latex {
       void printRequirements(annotations::Sections &sections,
                              annotations::Requirements &requirements,
-                             std::ostream &output) {
+                             IPhaseFiles& files) {
         auto filtered = sections.filter([&requirements](::requirements::Id id) {
           return requirements.has(id);
         });
         for (auto &section: filtered) {
+          std::cout<<"Section:"<<section.getPhaseIdentifier()<<std::endl;
+          auto& output = files.getOStream(section.getPhaseIdentifier());
           switch (section.getDepth()) {
             case 0:
               output << R"(\requirementssection{)" << section.getTitle() << "}" << std::endl;
