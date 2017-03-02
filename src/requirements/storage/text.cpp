@@ -4,6 +4,7 @@
 
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "util/path.hpp"
 
@@ -89,6 +90,37 @@ namespace requirements {
       it->second = it->first + " " + alias;
     }
 
+    void Text::loadTrashNode() {
+      std::string trashNodeFilename = folder + text_trashNodeFile;
+      if(!boost::filesystem::exists(trashNodeFilename)) {
+        return;
+      }
+      std::fstream file(trashNodeFilename, std::fstream::in);
+      std::string line;
+      if(!std::getline(file, line)) {
+        return;
+      }
+      std::string idStr = boost::algorithm::trim_copy(line);
+      ::requirements::Id id;
+      if(!string_to_id(idStr, id)) {
+        throw Exception(Exception::Kind::Other, "Trash node id incorrect", {});
+      }
+      auto node = collection.getNodeById(id);
+      if(!node) {
+        throw Exception(Exception::Kind::Other, "Invalid trash node id", {});
+      }
+      collection.setTrashNode(node);
+    }
+
+    void Text::saveTrashNode() {
+      std::string trashNodeFilename = folder + text_trashNodeFile;
+      std::fstream file(trashNodeFilename, std::fstream::out);
+      auto node = collection.getTrashNode();
+      if(node) {
+        file<<id_to_string(node->getId());
+      }
+    }
+
     Text::Text(const std::string& a_folder, bool a_autosave)
       : folder(util::ensureTrailingSlash(a_folder))
       , autosave(a_autosave) {
@@ -101,6 +133,7 @@ namespace requirements {
 
       text_load(collection, folder);
       loadBlobAliases();
+      loadTrashNode();
     }
 
     void Text::save(const std::string& a_folder) {
@@ -111,6 +144,7 @@ namespace requirements {
     void Text::save() {
       text_save(collection, folder);
       saveBlobAliases();
+      saveTrashNode();
     }
 
     Text::~Text() {

@@ -2,7 +2,7 @@
 
 #include "requirements/commands/up.hpp"
 #include "requirements/commands/down.hpp"
-#include "requirements/commands/delete.hpp"
+#include "requirements/commands/trash.hpp"
 #include "requirements/commands/new.hpp"
 #include "requirements/commands/nextto.hpp"
 #include "requirements/commands/lastof.hpp"
@@ -165,10 +165,10 @@ namespace qreq {
       auto oldRow = node->childIndex();
 
       model.beginRemoveRows(parentIndex, oldRow, oldRow);
-      model.model.nodeCollection->deleteNode(node);
+      auto trashId = model.model.nodeCollection->nodeToTrash(node);
       model.endRemoveRows();
 
-      model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::Delete>(node->getId()));
+      model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::Trash>(node->getId(), trashId));
     });
   }
 

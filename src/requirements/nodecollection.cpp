@@ -9,12 +9,18 @@ namespace requirements {
   std::unique_ptr<NodeCollection> NodeCollection::clone() {
     std::unique_ptr<NodeCollection> collection(new NodeCollection());
     collection->rootNode = rootNode->clone(*collection);
+    if(trashNode) {
+      collection->trashNode = collection->getNodeById(trashNode->getId());
+    }
     return std::move(collection);
   }
 
   void NodeCollection::deleteNode(NodePtr node) {
     auto id = node->getId();
     nodes.erase(id);
+    if(node==trashNode) {
+      trashNode = nullptr;
+    }
     node->setLastOf(nullptr);
     auto children = node->getChildren();
     for(auto& child:children) {
@@ -22,9 +28,28 @@ namespace requirements {
     }
   }
 
+  ::requirements::Id NodeCollection::nodeToTrash(NodePtr node) {
+    if(node->hasParent(trashNode) || node==trashNode) {
+      auto trashId = trashNode->getId();
+      deleteNode(node);
+      return trashId;
+    }
+    ensureTrashNode(::requirements::generateRandomId());
+    node->setLastOf(trashNode);
+    return trashNode->getId();
+  }
+
   void NodeCollection::clear() {
     nodes.clear();
     rootNode = nullptr;
+  }
+
+  NodePtr NodeCollection::ensureTrashNode(::requirements::Id trashId) {
+    if(trashNode==nullptr) {
+      std::string dummy;
+      trashNode = createNode(trashId, std::move(dummy));
+    }
+    return trashNode;
   }
 
   NodePtr NodeCollection::getNodeById(Id id) {

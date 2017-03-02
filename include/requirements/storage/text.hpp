@@ -25,10 +25,13 @@ namespace requirements {
       std::string folder;
       std::unique_ptr<boost::interprocess::file_lock> fileLock;
       std::map<std::string, std::string> blobAliases;
+
       bool autosave;
 
       void loadBlobAliases();
       void saveBlobAliases();
+      void loadTrashNode();
+      void saveTrashNode();
 
     public:
       std::string createBlob(const std::string& suffix) override;

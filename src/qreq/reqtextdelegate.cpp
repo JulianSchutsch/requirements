@@ -147,6 +147,17 @@ namespace qreq {
     geometry.headerTextOut(painter, caption, captionColor);
   }
 
+  void ReqTextDelegate::paintTrashbin(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const {
+    auto trashbin = model.nodeCollection->getTrashNode();
+    if(!trashbin) {
+      return;
+    }
+    if(nodeId!=trashbin->getId()) {
+      return;
+    }
+    geometry.headerTextOut(painter, "[Trashbin]", QColor(255,0,255));
+  }
+
   void ReqTextDelegate::paintPhaseIdentifier(QPainter* painter, CellGeometry& geometry, const ::requirements::batch::Response& model, ::requirements::Id nodeId) const {
     if(model.phases->has(nodeId)) {
       geometry.headerTextOut(painter, "(Phase: "+model.phases->get(nodeId)+")", QColor(0,0,255));
@@ -185,6 +196,7 @@ namespace qreq {
     auto& imodel = model.getModel();
 
     paintRequirementAcceptance(painter, geometry, model.getModel(), node->getId());
+    paintTrashbin(painter, geometry, model.getModel(), node->getId());
     paintNodeDescription(painter, geometry, model.getModel(), node->getId());
     paintPhaseIdentifier(painter, geometry, model.getModel(), node->getId());
     paintAcceptanceAccepts(painter, geometry, model.getModel(), node->getId());

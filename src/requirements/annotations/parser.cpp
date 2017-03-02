@@ -23,15 +23,17 @@ namespace requirements {
         AcceptancesBuilder acceptances;
         ScenesBuilder scenes;
         PhasesBuilder phases;
+        NodePtr trashNode;
         
-        Builders(ParserResult &result)
+        Builders(ParserResult &result, NodePtr a_trashNode)
           : sections(*result.sections)
           , errors(*result.errors)
           , shortcuts(*result.shortcuts)
           , requirements(*result.requirements, majorPrefix)
           , acceptances(*result.acceptances, majorPrefix)
           , scenes(*result.scenes, majorPrefix)
-          , phases(*result.phases) {}
+          , phases(*result.phases)
+          , trashNode(a_trashNode) {}
       };
     }
 
@@ -54,6 +56,9 @@ namespace requirements {
     static bool iterChildren(::requirements::NodePtr parent, ParserResult& result, Builders& builders) {
       bool success = true;
       for (auto &child: parent->getChildren()) {
+        if(child==builders.trashNode) {
+          continue;
+        }
         if(!subParser(child, result, builders)) {
           success = false;
         }
@@ -174,7 +179,6 @@ namespace requirements {
 
     static bool parseSceneSection(::requirements::NodePtr node, ParserResult& result, Builders& builders,
                                        util::LineParser& parser, const std::string& parameters) {
-
       return shortcutSectionHelper(node, builders, parameters,
         [&](const std::string& title, const std::string& shortcut) {
           builders.acceptances.setMajorPrefix(shortcut);
@@ -269,8 +273,9 @@ namespace requirements {
       result.shortcuts.reset(new Shortcuts());
       result.scenes.reset(new Scenes());
       result.phases.reset(new Phases());
-      Builders builders(result);
-      if(!iterChildren<parseSectionContext>(storage.getNodeCollection().getRootNode(), result, builders)) {
+      auto& collection = storage.getNodeCollection();
+      Builders builders(result, collection.getTrashNode());
+      if(!iterChildren<parseSectionContext>(collection.getRootNode(), result, builders)) {
         return false;
       }
       return requirementsAcceptance(storage.getNodeCollection(), result);

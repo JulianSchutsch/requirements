@@ -13,6 +13,7 @@ namespace requirements {
     using Nodes = std::map<Id, NodePtr>;
     Nodes nodes;
     NodePtr rootNode; // Root-Node always exists
+    NodePtr trashNode; // A trash node may exist, it is used as a trash bin
     friend class Node;
   public:
     class Iterator {
@@ -34,8 +35,12 @@ namespace requirements {
     NodePtr createNode(Id id, std::string&& content);
     NodePtr createNode(const std::string& content);
     void deleteNode(NodePtr node);
+    ::requirements::Id nodeToTrash(NodePtr node);
     inline NodePtr getRootNode() const noexcept { return rootNode; }
     NodePtr getNodeById(Id id);
+    NodePtr ensureTrashNode(::requirements::Id trashId);
+    NodePtr getTrashNode() const { return trashNode; }
+    void setTrashNode(NodePtr node) { trashNode = node; }
     void clear();
     NodeCollection();
     NodeCollection(const NodeCollection&) = delete;
