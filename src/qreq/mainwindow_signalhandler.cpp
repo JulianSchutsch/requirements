@@ -117,10 +117,11 @@ void MainWindow::on_f10button_clicked(){
 
 //Adds a new blob to storage.
 void MainWindow::on_newblobbutton_clicked(){
-    // TODO: Seems an abort case for "nothing selected" is missing
-/*  QString filename=QFileDialog::getOpenFileName(this,tr("Select file to be a blob"));
-  std::string trblob=newblob(filename.toStdString());
-  _threadconnector._batchthread.enqueue(std::make_unique<::requirements::commands::NewBlob>(filename.toStdString()));*/
+  QString filename=QFileDialog::getOpenFileName(this,tr("Select file to be a blob"));
+  if(!filename.isEmpty()){
+    //std::string trblob=newblob(filename.toStdString());
+    manipulator.newBlob(filename.toStdString());
+  }
 }
 
 void MainWindow::on_linkblobbutton_clicked(){

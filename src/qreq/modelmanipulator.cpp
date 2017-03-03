@@ -9,6 +9,7 @@
 #include "requirements/commands/levelup.hpp"
 #include "requirements/commands/leveldown.hpp"
 #include "requirements/commands/setcontent.hpp"
+#include "requirements/commands/newblob.hpp"
 
 #include "qreq/model.hpp"
 
@@ -174,6 +175,10 @@ namespace qreq {
 
   void ModelManipulator::send_command(const std::string &command) {
     model.connector.send_command(command);
+  }
+
+  void ModelManipulator::newBlob(const std::string& filename){
+    model.connector._batchthread.enqueue(std::make_unique<::requirements::commands::NewBlob>(filename));
   }
 
   ModelManipulator::ModelManipulator(Model &a_model)

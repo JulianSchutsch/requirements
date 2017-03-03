@@ -31,5 +31,6 @@ namespace qreq {
     void levelUp(const QModelIndex& index);
     void levelDown(const QModelIndex& index);
     void send_command(const std::string& command);
+    void newBlob(const std::string& filename);
   };
 }
