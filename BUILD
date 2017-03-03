@@ -5,7 +5,7 @@ You need:
  cmake, at least version 3
  g++, at least version 4.9 (aquivalent clang may also work)
  libxml
- libgtkmm-3.0-dev (for the graphical tool)
+ qt5-default (for the graphical tool)
  googletest (very recent version, best is from source)
 
 Once all this is available, in the projects root folder type:
