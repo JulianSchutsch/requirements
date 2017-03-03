@@ -47,48 +47,72 @@ void MainWindow::on_f1button_clicked(){
 }
 
 void MainWindow::on_f2button_clicked(){
-  //versetzen des aktuellen Knotens in den Edit-Mode
-  _reqtree->edit(_reqtree->currentIndex());
+  if(run_external_command("F2") == false){
+    //Standardbehandlung: versetzen des aktuellen Knotens in den Edit-Mode
+    _reqtree->edit(_reqtree->currentIndex());
+  }
 }
 
 void MainWindow::on_f3button_clicked(){
-  //Open Directory
-  QString dirname=QFileDialog::getExistingDirectory(this,tr("Select project"));
-  if(!(dirname.isEmpty())){
-    Settings::getInstance().add_project(dirname.toStdString());
-    set_current_project(dirname.toStdString());
-    generate_menu_recent();
+  if(run_external_command("F3") == false){
+    //Standardbehandlung: Open Directory
+    QString dirname=QFileDialog::getExistingDirectory(this,tr("Select project"));
+    if(!(dirname.isEmpty())){
+      Settings::getInstance().add_project(dirname.toStdString());
+      set_current_project(dirname.toStdString());
+      generate_menu_recent();
+    }
   }
 }
 
 void MainWindow::on_f4button_clicked(){
+  if(run_external_command("F4") == false){
+    //Standardbehandlung: erstmal nichts
+  }
 }
 
 void MainWindow::on_f5button_clicked(){
-  //Create new node as sibling and copy content of old node into new node
-  manipulator.newTwin(_reqtree->currentIndex());
+  if(run_external_command("F5") == false){
+    //Create new node as sibling and copy content of old node into new node
+    manipulator.newTwin(_reqtree->currentIndex());
+  }
 }
 
 void MainWindow::on_f6button_clicked(){
-  manipulator.newSibling(_reqtree->currentIndex());
+  if(run_external_command("F6") == false){
+    //Standardbehandlung: New Sibling
+    manipulator.newSibling(_reqtree->currentIndex());
+  }
 }
 
 void MainWindow::on_f7button_clicked(){
-  const auto index=_reqtree->currentIndex();
-  manipulator.newChild(index);
-  _reqtree->expand(index);
+  if(run_external_command("F7") == false){
+    //Standardbehandlung: New Child
+    const auto index=_reqtree->currentIndex();
+    manipulator.newChild(index);
+    _reqtree->expand(index);
+  }
 }
 
 void MainWindow::on_f8button_clicked(){
-  manipulator.deleteNode(_reqtree->currentIndex());
+  if(run_external_command("F8") == false){
+    //Standardbehandlung: delete
+    manipulator.deleteNode(_reqtree->currentIndex());
+  }
 }
 
 void MainWindow::on_f9button_clicked(){
-  QMessageBox::about(this,"QReq","Authors:\nJulian Schutsch\nDirk Neumann\nWebsite: https://github.com/JulianSchutsch/requirements");
+  if(run_external_command("F9") == false){
+    //Standardbehandlung: About
+    QMessageBox::about(this,"QReq","Authors:\nJulian Schutsch\nDirk Neumann\nWebsite: https://github.com/JulianSchutsch/requirements");
+  }
 }
 
 void MainWindow::on_f10button_clicked(){
-  QApplication::exit(0);
+  if(run_external_command("F10") == false){
+    //Standardbehandlung: Beenden
+    QApplication::exit(0);
+  }
 }
 
 //Adds a new blob to storage.

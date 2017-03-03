@@ -54,24 +54,23 @@ void Settings::load(){
       //std::cout << "Push: " << val.second.data() << std::endl;
       _last_commands.push_back(val.second.data());
     }
-    //Keycodes
-    //Das ist ja eine blöde Möglichkeit durch den Tree zu eiern. Gehts vielleicht auch besser?
-    std::array<std::string,10> keycodes={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"};
-    for(auto &keyname:keycodes){
+
+    for(auto &val:tree.get_child("qreq.keycodes")){
+      //val.second ist ein Baum
+      pt::ptree keytree=val.second;
       F_code keydata;
-      auto child=tree.get_child("qreq.keycodes."+keyname);
-      if(child.size()>0){
-        for(auto &val:tree.get_child("qreq.keycodes."+keyname)){
-          if(val.first=="caption") keydata.caption=val.second.data();
-          if(val.first=="command") keydata.command=val.second.data();
-          if(val.first=="params") keydata.params=(val.second.data()=="true"?true:false);
-          std::cout << val.first << "   " << val.second.data() << std::endl;
-        }
-        key_overrides[keyname]=keydata;
+      for(auto &va:keytree){
+        std::cout << va.first << " " << va.second.data() << std::endl;
+        if(va.first=="keyname") keydata.key=va.second.data();
+        else if(va.first=="caption") keydata.caption=va.second.data();
+        else if(va.first=="command") keydata.command=va.second.data();
+        else if(va.first=="params") keydata.params=(va.second.data()=="true"?true:false);
       }
+      key_overrides[keydata.key]=keydata;
     }
   }
   catch(std::exception& e){
+    std::cout << "Hm?" << std::endl;
     //Nothing read, data stay with default values
   }
 }
@@ -88,29 +87,30 @@ void Settings::store(){
   //Speichern der Key-Overrides
   for(auto& overkey:key_overrides){
     pt::ptree keytree;
+    keytree.add("keyname",overkey.second.key);
     keytree.add("caption",overkey.second.caption);
     keytree.add("command",overkey.second.command);
     keytree.add("params",overkey.second.params);
-    tree.add_child("qreq.keycodes."+overkey.first,keytree);
+    tree.add_child("qreq.keycodes.override",keytree);
   }
 
 /*
   //Test: Speichern von structs
   pt::ptree f1tree;
 
-  //f1tree.add("keyname","F1");
+  f1tree.add("keyname","F1");
   f1tree.add("caption","F1 commit");
   f1tree.add("command","git commit -a -m");
   f1tree.add("params",true);
 
   pt::ptree f2tree;
-  //f2tree.add("keyname","F2");
+  f2tree.add("keyname","F2");
   f2tree.add("caption","F2 push");
   f2tree.add("command","git push");
   f2tree.add("params",false);
 
-  tree.add_child("qreq.keycodes.F1",f1tree);
-  tree.add_child("qreq.keycodes.F2",f2tree);
+  tree.add_child("qreq.keycodes.override",f1tree);
+  tree.add_child("qreq.keycodes.override",f2tree);
 */
   pt::write_info(settings_filename(), tree);
 }
