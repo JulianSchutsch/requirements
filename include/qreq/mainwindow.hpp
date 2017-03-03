@@ -37,6 +37,7 @@ namespace qreq {
     void generate_menu_recent();
     void set_current_project(std::string const &filename);
     void load_current_project();
+    bool run_external_command(std::string commandkey);
 
     Model model;
     ModelManipulator manipulator;

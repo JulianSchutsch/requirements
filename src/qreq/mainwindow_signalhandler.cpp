@@ -6,14 +6,44 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include <iostream>
 
 namespace qreq{
 
+///
+/// Versucht, das Kommando aus der Override-Liste an der Stelle commandkey
+/// auszuführen. Gibt false zurück, wenn es kein solches Kommando gibt, sonst true.
+///
+bool MainWindow::run_external_command(std::string commandkey){
+  bool retval=true;
+  try {
+    auto command=Settings::getInstance().key_overrides.at(commandkey).command;
+    bool use_params=Settings::getInstance().key_overrides.at(commandkey).params;
+    if(use_params==true){
+      QString text = QInputDialog::getText(this, tr("Add command parameters"),
+                                         command.c_str(), QLineEdit::Normal);
+      if(!text.isEmpty()){
+        command+=" ";
+        command+=text.toStdString();
+      }
+    }
+    system(command.c_str());
+  }
+  catch (const std::out_of_range& oor) {
+    //kein override gefunden, also nehmen wir die Standardbehandlung
+    retval=false;
+  }
+  return retval;
+}
+
 void MainWindow::on_f1button_clicked(){
-  KeyCodeWindow kcw(this);
-  kcw.exec();
+  if(run_external_command("F1") == false){
+    //Standardbehandlung: Keycodes anzeigen
+    KeyCodeWindow kcw(this);
+    kcw.exec();
+  }
 }
 
 void MainWindow::on_f2button_clicked(){
@@ -102,6 +132,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     }
   }
   else{
+    //Hier muss noch auf die Buttonmap gewechselt werden
     switch(event->key()){
     case Qt::Key_F1:
       on_f1button_clicked();
@@ -204,8 +235,6 @@ void MainWindow::on_model_reset(){
     _reqtree->expandAll();
     _reqtree->setCurrentIndex(oldindex);
   }
-
-
 }
 
 void MainWindow::on_manipulate_viewpos(const QModelIndex& index){

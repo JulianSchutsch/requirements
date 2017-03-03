@@ -19,6 +19,7 @@
 #include <QMenuBar>
 
 #include <iostream>
+#include <functional>
 
 namespace qreq {
 
@@ -101,48 +102,48 @@ namespace qreq {
   }
 
   void MainWindow::generate_view() {
-    QPushButton *f1_button = new QPushButton(tr("F1 Keycodes"));
-    connect(f1_button, SIGNAL(clicked()), this, SLOT(on_f1button_clicked()));
-    f1_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f2_button = new QPushButton(tr("F2 Edit"));
-    connect(f2_button, SIGNAL(clicked()), this, SLOT(on_f2button_clicked()));
-    f2_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f3_button = new QPushButton(tr("F3 Open"));
-    connect(f3_button, SIGNAL(clicked()), this, SLOT(on_f3button_clicked()));
-    f3_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f4_button = new QPushButton(tr("F4 No Function"));
-    connect(f4_button, SIGNAL(clicked()), this, SLOT(on_f4button_clicked()));
-    f4_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f5_button = new QPushButton(tr("F5 Copy"));
-    connect(f5_button, SIGNAL(clicked()), this, SLOT(on_f5button_clicked()));
-    f5_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f6_button = new QPushButton(tr("F6 New Sibling"));
-    connect(f6_button, SIGNAL(clicked()), this, SLOT(on_f6button_clicked()));
-    f6_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f7_button = new QPushButton(tr("F7 New Child"));
-    connect(f7_button, SIGNAL(clicked()), this, SLOT(on_f7button_clicked()));
-    f7_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f8_button = new QPushButton(tr("F8 Delete"));
-    connect(f8_button, SIGNAL(clicked()), this, SLOT(on_f8button_clicked()));
-    f8_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f9_button = new QPushButton(tr("F9 About"));
-    connect(f9_button, SIGNAL(clicked()), this, SLOT(on_f9button_clicked()));
-    f9_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *f10_button = new QPushButton(tr("F10 Exit"));
-    connect(f10_button, SIGNAL(clicked()), this, SLOT(on_f10button_clicked()));
-    f10_button->setFocusPolicy(Qt::NoFocus);
-
+    //Default-Tasten
+    std::array<std::string,10> keynames={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"};
+    std::unordered_map<std::string,QString> fkey_texts={
+        {keynames[0],tr("F1 Keycodes")},
+        {keynames[1],tr("F2 Edit")},
+        {keynames[2],tr("F3 Open")},
+        {keynames[3],tr("F4 No Function")},
+        {keynames[4],tr("F5 Copy")},
+        {keynames[5],tr("F6 New Sibling")},
+        {keynames[6],tr("F7 New Child")},
+        {keynames[7],tr("F8 Delete")},
+        {keynames[8],tr("F9 About")},
+        {keynames[9],tr("F10 Exit")}
+    };
+    //Tastencodeoverrides mit den Default-Tasten mergen
+    for(auto& fcode:Settings::getInstance().key_overrides){
+      fkey_texts[fcode.first]=fcode.second.caption.c_str();
+    }
+    //Tasten-Handler
+    std::unordered_map<std::string,std::function<void()> > fkey_handler={
+        {keynames[0],std::bind(&MainWindow::on_f1button_clicked,this)},
+        {keynames[1],std::bind(&MainWindow::on_f2button_clicked,this)},
+        {keynames[2],std::bind(&MainWindow::on_f3button_clicked,this)},
+        {keynames[3],std::bind(&MainWindow::on_f4button_clicked,this)},
+        {keynames[4],std::bind(&MainWindow::on_f5button_clicked,this)},
+        {keynames[5],std::bind(&MainWindow::on_f6button_clicked,this)},
+        {keynames[6],std::bind(&MainWindow::on_f7button_clicked,this)},
+        {keynames[7],std::bind(&MainWindow::on_f8button_clicked,this)},
+        {keynames[8],std::bind(&MainWindow::on_f9button_clicked,this)},
+        {keynames[9],std::bind(&MainWindow::on_f10button_clicked,this)}
+    };
+    //Button-Map
+    std::map<std::string,QPushButton*> buttonmap;
+    //Buttonbox fürs Layout
     QHBoxLayout *bottombuttonbox = new QHBoxLayout();
-    bottombuttonbox->addWidget(f1_button);
-    bottombuttonbox->addWidget(f2_button);
-    bottombuttonbox->addWidget(f3_button);
-    bottombuttonbox->addWidget(f4_button);
-    bottombuttonbox->addWidget(f5_button);
-    bottombuttonbox->addWidget(f6_button);
-    bottombuttonbox->addWidget(f7_button);
-    bottombuttonbox->addWidget(f8_button);
-    bottombuttonbox->addWidget(f9_button);
-    bottombuttonbox->addWidget(f10_button);
+    for(auto& keyname:keynames){
+      buttonmap[keyname]=new QPushButton(fkey_texts[keyname]);
+      //New Qt-Signal-Slot-Syntax
+      connect(buttonmap[keyname],&QPushButton::clicked,fkey_handler[keyname]);
+      buttonmap[keyname]->setFocusPolicy(Qt::NoFocus);
+      bottombuttonbox->addWidget(buttonmap[keyname]);
+    }
 
     QPushButton *newblob_button = new QPushButton(tr("New Blob"));
     connect(newblob_button, SIGNAL(clicked()), this, SLOT(on_newblobbutton_clicked()));
