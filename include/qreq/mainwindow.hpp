@@ -43,6 +43,7 @@ namespace qreq {
     ModelManipulator manipulator;
 
     void printMessage(const BatchMessage& message);
+    //non-slot signal handler
 
   private slots:
 
@@ -66,6 +67,7 @@ namespace qreq {
     void on_reqtree_ctrl_up(const QModelIndex &i);
     void on_reqtree_ctrl_down(const QModelIndex &i);
     void on_reqtree_alt_return(const QModelIndex &i);
+    void on_reqtree_ctrl_alt_return(const QModelIndex &i);
     void on_commandline_return(std::string const &command);
     void on_model_reset();
     void on_manipulate_viewpos(const QModelIndex& index);

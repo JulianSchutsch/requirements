@@ -14,7 +14,16 @@ ReqTree::~ReqTree(){
 //Wir wollen die Tasten Ctrl+Richtungstasten einfangen, und jeweils ein spezielles Signal
 //senden, die anderen Tasten sollen normal verwendet werden
 void ReqTree::keyPressEvent(QKeyEvent *event){
-  if(event->modifiers()==Qt::ControlModifier){
+  if((event->modifiers()==(Qt::AltModifier|Qt::ControlModifier))){
+    switch(event->key()){
+    case Qt::Key_Return:
+      emit ctrl_alt_return_pressed(currentIndex());
+      break;
+    default:
+      QTreeView::keyPressEvent(event);
+    }
+  }
+  else if(event->modifiers()==Qt::ControlModifier){
     switch(event->key()){
     case Qt::Key_Left:
       std::cout << "Ctrl+Left" << std::endl;

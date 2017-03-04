@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QClipboard>
 
 #include <iostream>
 
@@ -223,10 +224,28 @@ void MainWindow::on_reqtree_ctrl_down(const QModelIndex& i){
 }
 
 void MainWindow::on_reqtree_alt_return(const QModelIndex& i){
-  QString commandtext=_commandline->text();
   auto node=model.getNodeFromModelIndex(i);
-  commandtext+=::requirements::id_to_string(node->getId()).c_str();
-  _commandline->setText(commandtext);
+  if(node!=nullptr){
+    QString commandtext=_commandline->text();
+    commandtext+=::requirements::id_to_string(node->getId()).c_str();
+    _commandline->setText(commandtext);
+  }
+  else{
+    //Ach, was solls. Schau ich mal nach Schokolade.
+  }
+}
+
+void MainWindow::on_reqtree_ctrl_alt_return(const QModelIndex &i){
+  auto node=model.getNodeFromModelIndex(i);
+  if(node!=nullptr){
+    std::string idname=::requirements::id_to_string(node->getId()).c_str();
+    //Jetzt kopieren in die Zwischenablage
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->setText(idname.c_str());
+  }
+  else{
+    //War keiner gewählt. Naja, dann nicht.
+  }
 }
 
 void MainWindow::on_commandline_return(std::string const& command){
