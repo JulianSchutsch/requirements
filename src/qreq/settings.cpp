@@ -131,7 +131,7 @@ void Settings::add_project(std::string const& filename){
   //look for existing name
   //Shortcut: See, if the new project is already the newest
   //if so, do nothing
-  if(_last_projects.back()!=filename){
+  if(_last_projects.empty() || _last_projects.back()!=filename){
     std::list<std::string>::iterator it=_last_projects.begin();
     while(it!=_last_projects.end()){
       if(*it==filename){
