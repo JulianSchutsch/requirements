@@ -3,30 +3,19 @@
 #include "requirements/annotations/sections.hpp"
 #include "requirements/annotations/requirements.hpp"
 #include "requirements/exception.hpp"
+#include "requirements/generators/latex/sections.hpp"
 
 namespace requirements {
   namespace generators {
     namespace latex {
-      void printRequirements(annotations::Sections &sections,
-                             annotations::Requirements &requirements,
+      void printRequirements(const annotations::Sections &sections,
+                             const annotations::Requirements &requirements,
                              IPhaseFiles& files) {
         auto filtered = sections.filter([&requirements](::requirements::Id id) {
           return requirements.has(id);
         });
-        for (auto &section: filtered) {
-          auto& output = files.getOStream(section.getPhaseIdentifier());
-          switch (section.getDepth()) {
-            case 0:
-              output << R"(\requirementssection{)" << section.getTitle() << "}" << std::endl;
-              break;
-            case 1:
-              output << R"(\requirementssubsection{)" << section.getTitle() << "}" << std::endl;
-              break;
-            default:
-              output << R"(\requirementsparagraph{)" << section.getTitle() << "}" << std::endl;
-              break;
-          }
-          output << section.getDescription() << std::endl;
+        iterSections(filtered, files,
+                     [&requirements](const annotations::Section& section, std::ostream& output){
           auto &elements = section.getElements();
           if (elements.size() != 0) {
             output << R"(\requirementsbegintable)" << std::endl;
@@ -37,7 +26,7 @@ namespace requirements {
             }
             output << R"(\requirementsendtable)" << std::endl;
           }
-        }
+        });
       }
     }
   }

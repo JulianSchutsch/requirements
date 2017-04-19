@@ -106,14 +106,12 @@ namespace requirements {
     
     void SectionsBuilder::addElement(::requirements::Id id) {
       if (currentScope == nullptr) {
-        throw Exception(Exception::Kind::Internal, "Cannot add element without active SectionsBuilderScope");
+        throw Exception(Exception::Kind::Internal, "Camannot add element without active SectionsBuilderScope");
       }
       currentScope->addElement(id);
     }
     
-    std::unique_ptr<Section> Section::filter(std::function<bool(::requirements::Id)> filterFunction) {
-      // Is this element worthy of copying at all?
-      // Check the elements
+    std::unique_ptr<Section> Section::filter(std::function<bool(::requirements::Id)> filterFunction) const {
       std::list<::requirements::Id> newElements;
       for (auto &element: elements) {
         if (filterFunction(element)) {
@@ -148,7 +146,7 @@ namespace requirements {
       return std::move(result);
     }
     
-    Sections Sections::filter(std::function<bool(::requirements::Id)> filterFunction) {
+    Sections Sections::filter(std::function<bool(::requirements::Id)> filterFunction) const {
       Sections result;
       auto it = firstSection.get();
       Section *previousSection = nullptr;

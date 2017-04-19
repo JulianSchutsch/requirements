@@ -47,7 +47,7 @@ namespace requirements {
       
       const Elements &getElements() const { return elements; }
       
-      std::unique_ptr<Section> filter(std::function<bool(::requirements::Id)>);
+      std::unique_ptr<Section> filter(std::function<bool(::requirements::Id)>) const;
     };
     
     class Sections {
@@ -74,11 +74,11 @@ namespace requirements {
         const Section &operator*() const { return *iterator; }
       };
       
-      Iterator begin() { return Iterator(firstSection.get()); }
+      Iterator begin() const { return Iterator(firstSection.get()); }
       
-      Iterator end() { return Iterator(nullptr); }
+      Iterator end() const { return Iterator(nullptr); }
       
-      Sections filter(std::function<bool(::requirements::Id)>);
+      Sections filter(std::function<bool(::requirements::Id)>) const;
     };
     
     class SectionsBuilderScope;

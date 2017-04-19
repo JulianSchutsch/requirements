@@ -109,6 +109,7 @@ namespace requirements {
         text<<line;
       }
       AcceptancesBuilderScope scope(builders.acceptances, node->getId(), text.str(), std::move(accepts));
+      builders.sections.addElement(node->getId());
       builders.shortcuts.set(node->getId(), scope.getKey());
 
       return iterChildren<parseAcceptance>(node, result, builders);
@@ -172,6 +173,7 @@ namespace requirements {
         text<<line;
       }
       ScenesBuilderScope scope(builders.scenes, node->getId(), text.str(), std::move(risks), hasProbability, probability);
+      builders.sections.addElement(node->getId());
       builders.shortcuts.set(node->getId(), scope.getKey());
 
       return iterChildren<parseScene>(node, result, builders);
@@ -181,7 +183,7 @@ namespace requirements {
                                        util::LineParser& parser, const std::string& parameters) {
       return shortcutSectionHelper(node, builders, parameters,
         [&](const std::string& title, const std::string& shortcut) {
-          builders.acceptances.setMajorPrefix(shortcut);
+          builders.scenes.setMajorPrefix(shortcut);
           SectionsBuilderScope section(builders.sections, title, parser.consumeAll(), ""  );
           return iterChildren<parseScene>(node, result, builders);
         });

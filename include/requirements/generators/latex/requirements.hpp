@@ -7,8 +7,8 @@
 namespace requirements{
   namespace generators {
     namespace latex {
-      void printRequirements(annotations::Sections &sections,
-                             annotations::Requirements &requirements,
+      void printRequirements(const annotations::Sections &sections,
+                             const annotations::Requirements &requirements,
                              IPhaseFiles& files);
     }
   }

@@ -6,6 +6,7 @@
 #include "requirements/exception.hpp"
 #include "requirements/annotations/parser.hpp"
 #include "requirements/generators/latex/requirements.hpp"
+#include "requirements/generators/latex/scenes.hpp"
 #include "requirements/generators/latex/labels.hpp"
 #include "requirements/commands/parser.hpp"
 #include "requirements/internal/path.hpp"
@@ -52,14 +53,18 @@ namespace requirements {
     }
 
     void Print::execute(Status &status) {
-      auto storage = status.openStorage();
       annotations::ParserResult parsed;
+      auto storage = status.openStorage();
       if(!annotations::parse(*storage, parsed)) {
         throw Exception(Exception::Kind::User, "Issues during parsing, cannot print");
       }
       {
         PhaseFiles files(status.folder+"/latex", "requirements.tex", *parsed.phases);
         generators::latex::printRequirements(*parsed.sections, *parsed.requirements, files);
+      }
+      {
+        PhaseFiles files(status.folder+"/latex", "scenes.tex", *parsed.phases);
+        generators::latex::printScenes(*parsed.sections, *parsed.scenes, files);
       }
       {
         std::string printFile = status.folder + "/latex/labels.tex";
