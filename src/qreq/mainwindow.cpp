@@ -146,28 +146,28 @@ namespace qreq {
       bottombuttonbox->addWidget(buttonmap[keyname]);
     }
 
-    QPushButton *newblob_button = new QPushButton(tr("New Blob"));
-    connect(newblob_button, SIGNAL(clicked()), this, SLOT(on_newblobbutton_clicked()));
-    newblob_button->setFocusPolicy(Qt::NoFocus);
-    QPushButton *linkblob_button = new QPushButton(tr("Link Blob"));
-    connect(linkblob_button, SIGNAL(clicked()), this, SLOT(on_linkblobbutton_clicked()));
-    linkblob_button->setFocusPolicy(Qt::NoFocus);
+//    QPushButton *newblob_button = new QPushButton(tr("New Blob"));
+//    connect(newblob_button, SIGNAL(clicked()), this, SLOT(on_newblobbutton_clicked()));
+//    newblob_button->setFocusPolicy(Qt::NoFocus);
+//    QPushButton *linkblob_button = new QPushButton(tr("Link Blob"));
+//    connect(linkblob_button, SIGNAL(clicked()), this, SLOT(on_linkblobbutton_clicked()));
+//    linkblob_button->setFocusPolicy(Qt::NoFocus);
 
-    QVBoxLayout *leftbuttonbox = new QVBoxLayout();
-    leftbuttonbox->addWidget(newblob_button);
-    leftbuttonbox->addWidget(linkblob_button);
-    leftbuttonbox->addStretch();
+//    QVBoxLayout *leftbuttonbox = new QVBoxLayout();
+//    leftbuttonbox->addWidget(newblob_button);
+//    leftbuttonbox->addWidget(linkblob_button);
+//    leftbuttonbox->addStretch();
 
     QVBoxLayout *rightbox = new QVBoxLayout();
     rightbox->addWidget(_reqtree);
     rightbox->addWidget(_messageList);
     rightbox->addWidget(_commandline);
-    QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->addLayout(leftbuttonbox);
-    hbox->addLayout(rightbox);
+    //QHBoxLayout *hbox = new QHBoxLayout();
+    //hbox->addLayout(leftbuttonbox);
+    //hbox->addLayout(rightbox);
 
     QVBoxLayout *vbox = new QVBoxLayout();
-    vbox->addLayout(hbox);
+    vbox->addLayout(rightbox);
     vbox->addLayout(bottombuttonbox);
     QWidget *mainwidget = new QWidget();
     mainwidget->setLayout(vbox);
