@@ -1,0 +1,18 @@
+Installing the requirements tool:
+
+After running the build process (see BUILD), type
+
+sudo make install
+
+Usually this will install:
+
+/usr/local/bin/req
+/usr/local/bin/qreq
+/usr/local/lib/requirements.so
+/usr/local/include/requirements/
+
+Please run
+
+sudo ldconfig
+
+before executing either req or qreq, this will ensure the libraries are found.
