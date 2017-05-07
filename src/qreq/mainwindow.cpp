@@ -56,7 +56,6 @@ namespace qreq {
     _messageList->scrollToBottom();
   }
 
-
   void MainWindow::updateTimer() {
     model.checkResponses();
     auto newMessages = model.consumeMessages();
@@ -146,25 +145,10 @@ namespace qreq {
       bottombuttonbox->addWidget(buttonmap[keyname]);
     }
 
-//    QPushButton *newblob_button = new QPushButton(tr("New Blob"));
-//    connect(newblob_button, SIGNAL(clicked()), this, SLOT(on_newblobbutton_clicked()));
-//    newblob_button->setFocusPolicy(Qt::NoFocus);
-//    QPushButton *linkblob_button = new QPushButton(tr("Link Blob"));
-//    connect(linkblob_button, SIGNAL(clicked()), this, SLOT(on_linkblobbutton_clicked()));
-//    linkblob_button->setFocusPolicy(Qt::NoFocus);
-
-//    QVBoxLayout *leftbuttonbox = new QVBoxLayout();
-//    leftbuttonbox->addWidget(newblob_button);
-//    leftbuttonbox->addWidget(linkblob_button);
-//    leftbuttonbox->addStretch();
-
     QVBoxLayout *rightbox = new QVBoxLayout();
     rightbox->addWidget(_reqtree);
     rightbox->addWidget(_messageList);
     rightbox->addWidget(_commandline);
-    //QHBoxLayout *hbox = new QHBoxLayout();
-    //hbox->addLayout(leftbuttonbox);
-    //hbox->addLayout(rightbox);
 
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addLayout(rightbox);
@@ -196,8 +180,6 @@ namespace qreq {
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(on_openact_triggered(QString const&)));
     menubar->addMenu(recentmenu);
     setMenuBar(menubar);
-    //Und jetzt gleich das letzte Projekt laden
-    //if (Settings::getInstance().current_project != "") load_current_project();
   }
 
   void MainWindow::set_current_project(std::string const &filename) {

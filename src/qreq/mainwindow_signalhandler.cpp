@@ -116,18 +116,6 @@ void MainWindow::on_f10button_clicked(){
   }
 }
 
-//Adds a new blob to storage.
-void MainWindow::on_newblobbutton_clicked(){
-  QString filename=QFileDialog::getOpenFileName(this,tr("Select file to be a blob"));
-  if(!filename.isEmpty()){
-    //std::string trblob=newblob(filename.toStdString());
-    manipulator.newBlob(filename.toStdString());
-  }
-}
-
-void MainWindow::on_linkblobbutton_clicked(){
-}
-
 void MainWindow::keyPressEvent(QKeyEvent *event){
   if((event->modifiers()==(Qt::AltModifier|Qt::ControlModifier))){
     switch(event->key()){

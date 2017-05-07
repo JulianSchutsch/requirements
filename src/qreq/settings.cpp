@@ -4,8 +4,6 @@
 #include <set>
 #include <exception>
 #include <iostream>
-#include <unistd.h>
-#include <sys/types.h>
 #include <pwd.h>
 #include <array>
 
@@ -26,52 +24,45 @@ Settings& Settings::getInstance(){
   return myInstance;
 }
 
-Settings::Settings() :
-  _last_projects(std::list<std::string>())
-{
-}
-
-Settings::~Settings(){
-}
-
 void Settings::load(){
   _last_projects.clear();
   pt::ptree tree;
-  try{
+  try {
     pt::read_info(settings_filename(), tree);
+  } catch(pt::info_parser_error& exc) {
+    std::cout<<"Could not read config file: "<<exc.message()<<" : "<<exc.filename()<<std::endl;
+  }
 
-    //Load Project list
-    for(auto &val:tree.get_child("qreq.projects")){
+  //Load Project list
+  for(auto &val:tree.get_child("qreq.projects")){
+    _last_projects.push_back(val.second.data());
+  }
 
-      //std::cout << "Push: " << val.second.data() << std::endl;
-      _last_projects.push_back(val.second.data());
-    }
-    //TODO: Das muss konfigurierbar sein
-    if(_last_projects.size()>0) current_project=_last_projects.back();
-    //Load command list
-    for(auto &val:tree.get_child("qreq.commands")){
+  if(_last_projects.size()>0) current_project=_last_projects.back();
 
-      //std::cout << "Push: " << val.second.data() << std::endl;
+  //Load command list
+  {
+    auto commands = tree.get_child("qreq.commands", {});
+    for (auto &val:commands) {
       _last_commands.push_back(val.second.data());
     }
-
-    for(auto &val:tree.get_child("qreq.keycodes")){
-      //val.second ist ein Baum
-      pt::ptree keytree=val.second;
-      F_code keydata;
-      for(auto &va:keytree){
-        std::cout << va.first << " " << va.second.data() << std::endl;
-        if(va.first=="keyname") keydata.key=va.second.data();
-        else if(va.first=="caption") keydata.caption=va.second.data();
-        else if(va.first=="command") keydata.command=va.second.data();
-        else if(va.first=="params") keydata.params=(va.second.data()=="true"?true:false);
-      }
-      key_overrides[keydata.key]=keydata;
-    }
   }
-  catch(std::exception& e){
-    std::cout << "Hm?" << std::endl;
-    //Nothing read, data stay with default values
+
+  {
+    auto keycodes = tree.get_child("qreq.keycodes", {});
+    for (auto &val:keycodes) {
+      //val.second ist ein Baum
+      pt::ptree keytree = val.second;
+      F_code keydata;
+      for (auto &va:keytree) {
+        std::cout << va.first << " " << va.second.data() << std::endl;
+        if (va.first == "keyname") keydata.key = va.second.data();
+        else if (va.first == "caption") keydata.caption = va.second.data();
+        else if (va.first == "command") keydata.command = va.second.data();
+        else if (va.first == "params") keydata.params = (va.second.data() == "true" ? true : false);
+      }
+      key_overrides[keydata.key] = keydata;
+    }
   }
 }
 
@@ -94,30 +85,12 @@ void Settings::store(){
     tree.add_child("qreq.keycodes.override",keytree);
   }
 
-/*
-  //Test: Speichern von structs
-  pt::ptree f1tree;
-
-  f1tree.add("keyname","F1");
-  f1tree.add("caption","F1 commit");
-  f1tree.add("command","git commit -a -m");
-  f1tree.add("params",true);
-
-  pt::ptree f2tree;
-  f2tree.add("keyname","F2");
-  f2tree.add("caption","F2 push");
-  f2tree.add("command","git push");
-  f2tree.add("params",false);
-
-  tree.add_child("qreq.keycodes.override",f1tree);
-  tree.add_child("qreq.keycodes.override",f2tree);
-*/
   pt::write_info(settings_filename(), tree);
 }
 
 std::string Settings::settings_filename(){
-  const char *homedir;
-  if ((homedir = getenv("HOME")) == NULL) {
+  const char *homedir = getenv("HOME");
+  if (homedir == NULL) {
     homedir = getpwuid(getuid())->pw_dir;
   }
   return (std::string)homedir+"/.qreqrc";
@@ -160,7 +133,5 @@ const std::vector<std::string>& Settings::last_commands() const{
 void Settings::last_commands(std::vector<std::string> const& commands){
   _last_commands=commands;
 }
-
-
 
 }

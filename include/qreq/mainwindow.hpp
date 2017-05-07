@@ -58,8 +58,6 @@ namespace qreq {
     void on_f8button_clicked();
     void on_f9button_clicked();
     void on_f10button_clicked();
-    void on_newblobbutton_clicked();
-    void on_linkblobbutton_clicked();
     void on_openact_triggered(QString const &filename);
     void on_reqtree_expanded(const QModelIndex &i);
     void on_reqtree_ctrl_left(const QModelIndex &i);

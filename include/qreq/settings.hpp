@@ -7,6 +7,7 @@
 #include "qreq/f_code.hpp"
 
 namespace qreq{
+
   class Settings{
     std::list<std::string> _last_projects;
     std::vector<std::string> _last_commands;
@@ -33,7 +34,6 @@ namespace qreq{
     //Key overrides
     std::unordered_map<std::string,F_code> key_overrides;
   protected:
-    Settings();
-    ~Settings();
+    Settings() = default;
   };
 }
