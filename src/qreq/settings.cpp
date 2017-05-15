@@ -48,22 +48,6 @@ void Settings::load(){
     }
   }
 
-  {
-    auto keycodes = tree.get_child("qreq.keycodes", {});
-    for (auto &val:keycodes) {
-      //val.second ist ein Baum
-      pt::ptree keytree = val.second;
-      F_code keydata;
-      for (auto &va:keytree) {
-        std::cout << va.first << " " << va.second.data() << std::endl;
-        if (va.first == "keyname") keydata.key = va.second.data();
-        else if (va.first == "caption") keydata.caption = va.second.data();
-        else if (va.first == "command") keydata.command = va.second.data();
-        else if (va.first == "params") keydata.params = (va.second.data() == "true" ? true : false);
-      }
-      key_overrides[keydata.key] = keydata;
-    }
-  }
 }
 
 void Settings::store(){
@@ -74,15 +58,6 @@ void Settings::store(){
   }
   for(auto &name:_last_commands){
     tree.add("qreq.commands.command", name);
-  }
-  //Speichern der Key-Overrides
-  for(auto& overkey:key_overrides){
-    pt::ptree keytree;
-    keytree.add("keyname",overkey.second.key);
-    keytree.add("caption",overkey.second.caption);
-    keytree.add("command",overkey.second.command);
-    keytree.add("params",overkey.second.params);
-    tree.add_child("qreq.keycodes.override",keytree);
   }
 
   pt::write_info(settings_filename(), tree);

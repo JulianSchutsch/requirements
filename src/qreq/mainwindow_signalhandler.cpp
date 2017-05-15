@@ -9,38 +9,10 @@
 #include <QInputDialog>
 #include <QClipboard>
 
-#include <iostream>
-
 namespace qreq{
 
-///
-/// Versucht, das Kommando aus der Override-Liste an der Stelle commandkey
-/// auszuführen. Gibt false zurück, wenn es kein solches Kommando gibt, sonst true.
-///
-bool MainWindow::run_external_command(std::string commandkey){
-  bool retval=true;
-  try {
-    auto command=Settings::getInstance().key_overrides.at(commandkey).command;
-    bool use_params=Settings::getInstance().key_overrides.at(commandkey).params;
-    if(use_params==true){
-      QString text = QInputDialog::getText(this, tr("Add command parameters"),
-                                         command.c_str(), QLineEdit::Normal);
-      if(!text.isEmpty()){
-        command+=" ";
-        command+=text.toStdString();
-      }
-    }
-    system(command.c_str());
-  }
-  catch (const std::out_of_range& oor) {
-    //kein override gefunden, also nehmen wir die Standardbehandlung
-    retval=false;
-  }
-  return retval;
-}
-
 void MainWindow::on_f1button_clicked(){
-  if(run_external_command("F1") == false){
+  {
     //Standardbehandlung: Keycodes anzeigen
     KeyCodeWindow kcw(this);
     kcw.exec();
@@ -48,14 +20,14 @@ void MainWindow::on_f1button_clicked(){
 }
 
 void MainWindow::on_f2button_clicked(){
-  if(run_external_command("F2") == false){
+  {
     //Standardbehandlung: versetzen des aktuellen Knotens in den Edit-Mode
     _reqtree->edit(_reqtree->currentIndex());
   }
 }
 
 void MainWindow::on_f3button_clicked(){
-  if(run_external_command("F3") == false){
+  {
     //Standardbehandlung: Open Directory
     QString dirname=QFileDialog::getExistingDirectory(this,tr("Select project"));
     if(!(dirname.isEmpty())){
@@ -67,27 +39,27 @@ void MainWindow::on_f3button_clicked(){
 }
 
 void MainWindow::on_f4button_clicked(){
-  if(run_external_command("F4") == false){
+  {
     //Standardbehandlung: erstmal nichts
   }
 }
 
 void MainWindow::on_f5button_clicked(){
-  if(run_external_command("F5") == false){
+  {
     //Create new node as sibling and copy content of old node into new node
     manipulator.newTwin(_reqtree->currentIndex());
   }
 }
 
 void MainWindow::on_f6button_clicked(){
-  if(run_external_command("F6") == false){
+  {
     //Standardbehandlung: New Sibling
     manipulator.newSibling(_reqtree->currentIndex());
   }
 }
 
 void MainWindow::on_f7button_clicked(){
-  if(run_external_command("F7") == false){
+  {
     //Standardbehandlung: New Child
     const auto index=_reqtree->currentIndex();
     manipulator.newChild(index);
@@ -96,21 +68,21 @@ void MainWindow::on_f7button_clicked(){
 }
 
 void MainWindow::on_f8button_clicked(){
-  if(run_external_command("F8") == false){
+  {
     //Standardbehandlung: delete
     manipulator.deleteNode(_reqtree->currentIndex());
   }
 }
 
 void MainWindow::on_f9button_clicked(){
-  if(run_external_command("F9") == false){
+  {
     //Standardbehandlung: About
     QMessageBox::about(this,"QReq","Authors:\nJulian Schutsch\nDirk Neumann\nWebsite: https://github.com/JulianSchutsch/requirements");
   }
 }
 
 void MainWindow::on_f10button_clicked(){
-  if(run_external_command("F10") == false){
+  {
     //Standardbehandlung: Beenden
     QApplication::exit(0);
   }
@@ -147,40 +119,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
   }
   else{
     //Hier muss noch auf die Buttonmap gewechselt werden
-    switch(event->key()){
-    case Qt::Key_F1:
-      on_f1button_clicked();
-      break;
-    case Qt::Key_F2:
-      on_f2button_clicked();
-      break;
-    case Qt::Key_F3:
-      on_f3button_clicked();
-      break;
-    case Qt::Key_F4:
-      on_f4button_clicked();
-      break;
-    case Qt::Key_F5:
-      on_f5button_clicked();
-      break;
-    case Qt::Key_F6:
-      on_f6button_clicked();
-      break;
-    case Qt::Key_F7:
-      on_f7button_clicked();
-      break;
-    case Qt::Key_F8:
-      on_f8button_clicked();
-      break;
-    case Qt::Key_F9:
-      on_f9button_clicked();
-      break;
-    case Qt::Key_F10:
-      on_f10button_clicked();
-      break;
-    default:
-      break;
-    }
+    //
   }
 }
 

@@ -17,11 +17,16 @@
 #include <QAction>
 #include <QSignalMapper>
 #include <QMenuBar>
+#include <QShortcut>
 
 #include <iostream>
 #include <functional>
 
 namespace qreq {
+
+  void MainWindow::action_quit() {
+    QApplication::exit(0);
+  }
 
   MainWindow::MainWindow()
     : manipulator(model) {
@@ -31,6 +36,10 @@ namespace qreq {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateTimer()));
     timer->start(1000);
+    {
+      QShortcut* shortcut = new QShortcut(QKeySequence("F10"), this);
+      connect(shortcut, SIGNAL(activated()), this, SLOT(action_quit()));
+    }
   }
 
   MainWindow::~MainWindow() {
@@ -102,6 +111,7 @@ namespace qreq {
   }
 
   void MainWindow::generate_view() {
+
     //Default-Tasten
     std::array<std::string,10> keynames={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"};
     std::unordered_map<std::string,QString> fkey_texts={
@@ -116,10 +126,6 @@ namespace qreq {
         {keynames[8],tr("F9 About")},
         {keynames[9],tr("F10 Exit")}
     };
-    //Tastencodeoverrides mit den Default-Tasten mergen
-    for(auto& fcode:Settings::getInstance().key_overrides){
-      fkey_texts[fcode.first]=fcode.second.caption.c_str();
-    }
     //Tasten-Handler
     std::unordered_map<std::string,std::function<void()> > fkey_handler={
         {keynames[0],std::bind(&MainWindow::on_f1button_clicked,this)},

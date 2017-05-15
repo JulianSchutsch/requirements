@@ -4,8 +4,6 @@
 #include <list>
 #include <unordered_map>
 
-#include "qreq/f_code.hpp"
-
 namespace qreq{
 
   class Settings{
@@ -31,8 +29,6 @@ namespace qreq{
     const std::vector<std::string>& last_commands() const;
     void last_commands(std::vector<std::string> const& commands);
 
-    //Key overrides
-    std::unordered_map<std::string,F_code> key_overrides;
   protected:
     Settings() = default;
   };

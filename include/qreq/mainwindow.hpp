@@ -47,6 +47,7 @@ namespace qreq {
 
   private slots:
 
+    void action_quit();
     void updateTimer();
     void on_f1button_clicked();
     void on_f2button_clicked();
