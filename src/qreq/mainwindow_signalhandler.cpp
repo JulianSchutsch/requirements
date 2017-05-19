@@ -31,8 +31,7 @@ void MainWindow::on_f3button_clicked(){
     //Standardbehandlung: Open Directory
     QString dirname=QFileDialog::getExistingDirectory(this,tr("Select project"));
     if(!(dirname.isEmpty())){
-      Settings::getInstance().add_project(dirname.toStdString());
-      set_current_project(dirname.toStdString());
+      load_current_project(dirname.toStdString());
       generate_menu_recent();
     }
   }
@@ -124,8 +123,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 }
 
 void MainWindow::on_openact_triggered(QString const& filename){
-  //std::cout << "triggered: " << filename.toStdString() << std::endl;
-  set_current_project(filename.toStdString());
+  load_current_project(filename.toStdString());
 }
 
 void MainWindow::on_reqtree_expanded(const QModelIndex& i){

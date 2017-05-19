@@ -11,11 +11,18 @@
 
 namespace qreq {
 
+  enum class ModelChange {
+    Common,
+    Folder
+  };
+
   class Model : public QAbstractItemModel {
     Q_OBJECT
   private:
     ThreadConnector connector;
     ::requirements::batch::Response model;
+
+    std::string currentFolder;
 
     friend class ModelManipulator;
 
@@ -29,6 +36,7 @@ namespace qreq {
     quintptr currentEdited;
 
   public:
+    const std::string& getFolder();
     int rootRowCount() const;
     bool isEditing(const QModelIndex& index);
     QString editorContent();
@@ -40,7 +48,7 @@ namespace qreq {
     const::requirements::batch::Response& getModel() const { return model; }
 
     // This function is supposed to the connection between the batch thread and the main thread. It must be called in regular intervals to collect changes in the model.
-    void checkResponses();
+    ModelChange checkResponses();
     std::list<BatchMessage> consumeMessages() { return std::move(connector.consumeMessages()); }
 
     static Model& getModel(const QModelIndex& index);

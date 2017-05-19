@@ -18,6 +18,8 @@
 #include "qreq/model.hpp"
 #include "qreq/modelmanipulator.hpp"
 
+#include "qreq/settings.hpp"
+
 namespace qreq {
 
   const int COLUMN_COUNT = 2;
@@ -30,13 +32,13 @@ namespace qreq {
     CommandLine *_commandline;
     QTimer *timer;
     QListWidget *_messageList;
+    Settings settings;
 
     void generate_elements();
     void generate_view();
     void generate_menu();
     void generate_menu_recent();
-    void set_current_project(std::string const &filename);
-    void load_current_project();
+    void load_current_project(std::string const&);
     bool run_external_command(std::string commandkey);
 
     Model model;

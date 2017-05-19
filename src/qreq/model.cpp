@@ -82,7 +82,11 @@ namespace qreq {
     return it->second;
   }
 
-  void Model::checkResponses() {
+  const std::string& Model::getFolder() {
+    return model.status->folder;
+  }
+
+  ModelChange Model::checkResponses() {
     ::requirements::batch::Response intermediate;
     if(connector.consumeResponse(intermediate)) {
       if(!model.nodeCollection || *intermediate.nodeCollection!=*model.nodeCollection) {
@@ -101,8 +105,11 @@ namespace qreq {
         emit dataChanged(QModelIndex(), QModelIndex());
       }
       //So, damit kommts in die Liste der jüngsten Projekte
-      Settings::getInstance().add_project(model.status->folder);
+      if(model.status->folder!=currentFolder) {
+        return ModelChange::Folder;
+      }
     }
+    return ModelChange::Common;
   }
 
   quintptr Model::insertLookup(const ::requirements::NodePtr& node) const {

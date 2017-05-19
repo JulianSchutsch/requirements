@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <vector>
 #include <list>
 #include <unordered_map>
@@ -7,11 +8,15 @@
 namespace qreq{
 
   class Settings{
+  public:
+    using Sequence = std::list<std::string>;
+    using Sequences = std::map<std::string, Sequence>;
+  private:
     std::list<std::string> _last_projects;
     std::vector<std::string> _last_commands;
     std::string settings_filename();
+    Sequences _sequences;
   public:
-    static Settings& getInstance();
 
     Settings(Settings const&) = delete;             // Copy construct
     Settings(Settings&&) = delete;                  // Move construct
@@ -28,8 +33,9 @@ namespace qreq{
     std::string current_project;
     const std::vector<std::string>& last_commands() const;
     void last_commands(std::vector<std::string> const& commands);
+    const Sequences& sequences() const;
+    void setSequences(Sequences& sequences);
 
-  protected:
     Settings() = default;
   };
 }

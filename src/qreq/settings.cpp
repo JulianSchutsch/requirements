@@ -13,17 +13,6 @@ namespace pt = boost::property_tree;
 
 namespace qreq{
 
-Settings& Settings::getInstance(){
-  // Since it's a static variable, if the class has already been created,
-  // It won't be created again.
-  // And it **is** thread-safe in C++11.
-
-  static Settings myInstance;
-
-  // Return a reference to our instance.
-  return myInstance;
-}
-
 void Settings::load(){
   _last_projects.clear();
   pt::ptree tree;
@@ -47,7 +36,6 @@ void Settings::load(){
       _last_commands.push_back(val.second.data());
     }
   }
-
 }
 
 void Settings::store(){
@@ -107,6 +95,14 @@ const std::vector<std::string>& Settings::last_commands() const{
 
 void Settings::last_commands(std::vector<std::string> const& commands){
   _last_commands=commands;
+}
+
+void Settings::setSequences(Sequences& sequences) {
+  _sequences = sequences;
+}
+
+const Settings::Sequences& Settings::sequences() const {
+  return _sequences;
 }
 
 }

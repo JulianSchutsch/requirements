@@ -45,9 +45,9 @@ namespace qreq {
   MainWindow::~MainWindow() {
     //Copy Last commands to Settings
     strvec last_commands=_commandline->getLastCommands(20);  //TODO Diese Zahl könnte man konfigurierbar machen
-    Settings::getInstance().last_commands(last_commands);
+    settings.last_commands(last_commands);
     //Store Settings
-    Settings::getInstance().store();
+    settings.store();
   }
 
   void MainWindow::printMessage(const BatchMessage &message) {
@@ -66,7 +66,10 @@ namespace qreq {
   }
 
   void MainWindow::updateTimer() {
-    model.checkResponses();
+    auto change = model.checkResponses();
+    if(change==ModelChange::Folder) {
+      settings.add_project(model.getFolder());
+    }
     auto newMessages = model.consumeMessages();
     for (auto &message:newMessages) {
       printMessage(message);
@@ -74,17 +77,17 @@ namespace qreq {
   }
 
   void MainWindow::generate_elements() {
-    Settings::getInstance().load();
+    settings.load();
     //Vorgeschlagene Standardgröße für das Hauptfenster: 800x600
     setMinimumWidth(800);
     setMinimumHeight(600);
     _reqtree = new ReqTree(this);
+    _reqtree->setModel(&model);
     _reqtree->setHeaderHidden(true);
     _reqtree->setItemDelegate(new ReqTextDelegate(_reqtree));
     _reqtree->setAlternatingRowColors(false);
     _reqtree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     _reqtree->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    _reqtree->setModel(&model);
     _reqtree->setUniformRowHeights(false);
     _reqtree->header()->setStretchLastSection(false);
     _reqtree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -99,7 +102,7 @@ namespace qreq {
     connect(_reqtree,SIGNAL(ctrl_alt_return_pressed(QModelIndex)),this,SLOT(on_reqtree_ctrl_alt_return(QModelIndex)));
     connect(&model,SIGNAL(modelReset()),this,SLOT(on_model_reset()));
 
-    _commandline = new CommandLine(this,Settings::getInstance().last_commands());
+    _commandline = new CommandLine(this, settings.last_commands());
     connect(_commandline, SIGNAL(fire_command(std::string)), this, SLOT(on_commandline_return(std::string)));
 
     _messageList = new QListWidget(this);
@@ -177,7 +180,7 @@ namespace qreq {
     QMenu *recentmenu = new QMenu("Recent");
     QMenuBar *menubar = new QMenuBar();
     QSignalMapper *signalMapper = new QSignalMapper(this);
-    for (auto filename : Settings::getInstance().last_projects()) {
+    for (auto filename : settings.last_projects()) {
       QAction *openact = new QAction(filename.c_str(), this);
       connect(openact, SIGNAL(triggered()), signalMapper, SLOT(map()));
       signalMapper->setMapping(openact, filename.c_str());
@@ -188,14 +191,9 @@ namespace qreq {
     setMenuBar(menubar);
   }
 
-  void MainWindow::set_current_project(std::string const &filename) {
-    Settings::getInstance().add_project(filename);
-    load_current_project();
-  }
-
-  void MainWindow::load_current_project() {
+  void MainWindow::load_current_project(std::string const &filename) {
     //Schade, dass ich draußen bleiben muss. Naja, schreib ich halt nen Brief:
-    auto command="folder "+Settings::getInstance().current_project;
+    auto command="folder "+filename;
     manipulator.send_command(command);
   }
 
