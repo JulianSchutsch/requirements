@@ -3,7 +3,7 @@ Building the requirements tools:
 You need:
 
  cmake, at least version 3
- g++, at least version 4.9 (aquivalent clang may also work)
+ g++, at least version 4.9 (equivalent clang may also work)
  libxml
  qt5-default (for the graphical tool)
  googletest (very recent version, best is from source)
