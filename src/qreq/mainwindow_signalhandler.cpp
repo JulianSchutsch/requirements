@@ -117,6 +117,22 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     }
   }
   else{
+    static std::map<int, void (MainWindow::*)()> keys = {
+      {Qt::Key_F1, &MainWindow::on_f1button_clicked},
+      {Qt::Key_F2, &MainWindow::on_f2button_clicked},
+      {Qt::Key_F3, &MainWindow::on_f3button_clicked},
+      {Qt::Key_F4, &MainWindow::on_f4button_clicked},
+      {Qt::Key_F5, &MainWindow::on_f5button_clicked},
+      {Qt::Key_F6, &MainWindow::on_f6button_clicked},
+      {Qt::Key_F7, &MainWindow::on_f7button_clicked},
+      {Qt::Key_F8, &MainWindow::on_f8button_clicked},
+      {Qt::Key_F9, &MainWindow::on_f9button_clicked},
+      {Qt::Key_F10, &MainWindow::on_f10button_clicked}
+    };
+    auto it = keys.find(event->key());
+    if(it!=keys.end()) {
+      (this->*it->second)();
+    }
     //Hier muss noch auf die Buttonmap gewechselt werden
     //
   }
