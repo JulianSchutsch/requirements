@@ -66,5 +66,5 @@ if("${DISABLE_GTEST}" STREQUAL "")
   target_link_libraries(t "requirements" ${LIB_TINYXML} ${CMAKE_THREAD_LIBS_INIT} ${GTEST_BOTH_LIBRARIES})
 endif()
 
-#install(TARGETS req qreq requirements RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
-#install(DIRECTORY include/requirements DESTINATION include/requirements)
+install(TARGETS req qreq requirements RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+install(DIRECTORY include/requirements DESTINATION include/requirements)
