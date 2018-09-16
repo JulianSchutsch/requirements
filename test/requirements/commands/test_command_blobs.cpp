@@ -30,7 +30,7 @@ static BlobListResult listBlobs(::test::BatchThread& b) {
   };
   b.batch->enqueue(commands::assembleFromString("listblobs"));
   b.wait();
-  return std::move(listResult);
+  return listResult;
 }
 
 TEST(Commands, NewBlob) {

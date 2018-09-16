@@ -28,11 +28,11 @@ namespace qreq {
 
   class MainWindow : public QMainWindow {
   Q_OBJECT
-    ReqTree *_reqtree;
-    CommandLine *_commandline;
-    QTimer *timer;
-    QListWidget *_messageList;
-    Settings settings;
+    ReqTree *_reqtree = nullptr;
+    CommandLine *_commandline = nullptr;
+    QTimer *timer = nullptr;
+    QListWidget *_messageList = nullptr;
+    Settings settings {};
 
     void generate_elements();
     void generate_view();
@@ -41,7 +41,7 @@ namespace qreq {
     void load_current_project(std::string const&);
     bool run_external_command(std::string commandkey);
 
-    Model model;
+    Model model{};
     ModelManipulator manipulator;
 
     void printMessage(const BatchMessage& message);
@@ -79,6 +79,8 @@ namespace qreq {
   public:
     MainWindow();
     ~MainWindow();
+    MainWindow(const MainWindow&) = delete;
+    MainWindow& operator = (const MainWindow&) = delete;
   };
 
 }

@@ -21,10 +21,10 @@ namespace requirements {
     
     class Text final : public IStorage {
     private:
-      NodeCollection collection;
+      NodeCollection collection{};
       std::string folder;
       std::unique_ptr<boost::interprocess::file_lock> fileLock;
-      std::map<std::string, std::string> blobAliases;
+      std::map<std::string, std::string> blobAliases{};
 
       bool autosave;
 
@@ -46,6 +46,8 @@ namespace requirements {
       NodeCollection& getNodeCollection() override { return collection; }
       Text(const std::string& folder, bool a_autosave);
       ~Text();
+      Text(const Text&) = delete;
+      Text& operator = (const Text&) = delete;
     };
     
   }

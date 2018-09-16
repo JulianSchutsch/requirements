@@ -20,11 +20,11 @@ namespace qreq{
 class ThreadConnector final {
 public:
 private:
-  std::mutex _conn_mutex;
+  std::mutex _conn_mutex{};
   // The response contains all possible results from the batch thread
   bool newResponse = false;
-  batch::Response _response;
-  std::list<BatchMessage> messages;
+  batch::Response _response{};
+  std::list<BatchMessage> messages{};
 
   void batch_ret(batch::Response&& bres);
   void batch_message(Status::MessageKind kind, std::string const& message, const std::vector<std::string>& parameters);

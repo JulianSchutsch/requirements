@@ -52,7 +52,7 @@ std::list<BatchMessage> ThreadConnector::consumeMessages() {
     std::lock_guard<std::mutex> guard(_conn_mutex);
     result = std::move(messages);
   }
-  return std::move(result);
+  return result;
 }
 
 }

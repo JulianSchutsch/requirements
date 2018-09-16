@@ -12,8 +12,8 @@ namespace qreq{
 
 class CommandLine : public QLineEdit{
   Q_OBJECT
-  strvec _commandstack;
-  strvec::size_type _commandpointer;
+  strvec _commandstack{};
+  strvec::size_type _commandpointer{};
 protected:
   void keyPressEvent(QKeyEvent *event);
 signals:

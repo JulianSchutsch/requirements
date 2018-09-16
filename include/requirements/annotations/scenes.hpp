@@ -28,9 +28,9 @@ namespace requirements {
       std::string key;
       std::string text;
       std::vector<Risk> risks;
+    public:
       bool hasProbability;
       float probability;
-    public:
       const std::string& getKey() const { return key; }
       const std::string& getText() const { return text; }
       const std::vector<Risk>& getRisks() const { return risks; }

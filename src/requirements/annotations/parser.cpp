@@ -15,7 +15,7 @@ namespace requirements {
     
     namespace {
       struct Builders {
-        MajorPrefix majorPrefix;
+        MajorPrefix majorPrefix{};
         SectionsBuilder sections;
         ErrorsBuilder errors;
         ShortcutsBuilder shortcuts;

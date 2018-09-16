@@ -10,8 +10,8 @@ namespace qreq{
 
 class BlobSelector : public QDialog{
   Q_OBJECT
-  QTreeView* _blobtree;
-  QStandardItemModel *_blobmodel;
+  QTreeView* _blobtree = nullptr;
+  QStandardItemModel *_blobmodel = nullptr;
 private slots:
   void on_okbutton_clicked();
   void on_cancelbutton_clicked();
@@ -21,6 +21,8 @@ public:
   ~BlobSelector();
   std::string get_selected_blob();
   void append(std::string const& blob);
+  BlobSelector(const BlobSelector&) = delete;
+  BlobSelector& operator = (const BlobSelector&) = delete;
 };
 
 }

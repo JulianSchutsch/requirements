@@ -12,21 +12,20 @@ namespace requirements {
     class Section final {
     private:
       using Elements = std::list<::requirements::Id>;
-      Elements elements;
+      Elements elements{};
       
       int depth = 0;
       std::string title;
       std::string description;
       
       Section *parent = nullptr;
-      std::unique_ptr<Section> firstChild;
-      std::unique_ptr<Section> nextSibling;
+      std::unique_ptr<Section> firstChild{};
+      std::unique_ptr<Section> nextSibling{};
 
       std::string phaseIdentifier;
       bool phaseSection = false;
       
       friend class SectionsBuilderScope;
-      
       friend class Sections;
     
     public:
@@ -53,7 +52,7 @@ namespace requirements {
     
     class Sections {
     private:
-      std::unique_ptr<Section> firstSection;
+      std::unique_ptr<Section> firstSection{};
       
       friend class SectionsBuilderScope;
     
@@ -67,18 +66,13 @@ namespace requirements {
         Iterator(Section *a_iterator);
         Iterator &operator++();
         bool operator==(const Iterator &other) const { return iterator == other.iterator; }
-        
         bool operator!=(const Iterator &other) const { return iterator != other.iterator; }
-        
         const Section *operator->() const { return iterator; }
-        
         const Section &operator*() const { return *iterator; }
       };
       
       Iterator begin() const { return Iterator(firstSection.get()); }
-      
       Iterator end() const { return Iterator(nullptr); }
-      
       Sections filter(std::function<bool(::requirements::Id)>) const;
     };
     
@@ -91,7 +85,6 @@ namespace requirements {
       SectionsBuilderScope *currentScope = nullptr;
       
       friend class SectionsBuilderScope;
-    
     public:
       SectionsBuilder(Sections &a_sections)
         : sections(a_sections) {}
@@ -102,16 +95,17 @@ namespace requirements {
     class SectionsBuilderScope final {
     private:
       bool hasElements = false;
-      Section *section;
+      Section *section = nullptr;
       Section *latestChild = nullptr;
-      SectionsBuilderScope *previousScope;
+      SectionsBuilderScope *previousScope = nullptr;
       SectionsBuilder &builder;
     public:
       void addElement(::requirements::Id id);
       
       SectionsBuilderScope(SectionsBuilder &a_builder, const std::string &title, const std::string &description, const std::string& phaseIdentifier);
-      
       ~SectionsBuilderScope();
+      SectionsBuilderScope(const SectionsBuilderScope&) = delete;
+      SectionsBuilderScope& operator = (const SectionsBuilderScope&) = delete;
     };
     
   }

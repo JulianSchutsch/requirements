@@ -16,7 +16,7 @@ namespace requirements {
     std::unique_ptr<Status> s(new Status);
     s->folder = folder;
     s->selections = selections;
-    return std::move(s);
+    return s;
   }
   
   std::unique_ptr<::requirements::IStorage> Status::openStorage() {

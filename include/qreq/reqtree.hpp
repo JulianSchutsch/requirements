@@ -8,7 +8,7 @@ namespace qreq{
 class ReqTree : public QTreeView{
   Q_OBJECT
 protected:
-  void keyPressEvent(QKeyEvent *event);
+  void keyPressEvent(QKeyEvent *event) override;
 
   int sizeHintForColumn(int column) const override {
     int viewWidth = viewport()->width();

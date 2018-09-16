@@ -7,9 +7,9 @@
 
 namespace qreq {
   struct BatchMessage {
-    ::requirements::Status::MessageKind kind;
-    std::string message;
-    std::vector<std::string> parameters;
+    ::requirements::Status::MessageKind kind{};
+    std::string message{};
+    std::vector<std::string> parameters{};
     BatchMessage(::requirements::Status::MessageKind a_kind, const std::string& a_message, const std::vector<std::string>& a_parameters)
       : kind(a_kind)
       , message(a_message)

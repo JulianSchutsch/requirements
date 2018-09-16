@@ -11,7 +11,7 @@ namespace requirements {
 
   namespace batch {
     
-    class Response;
+    struct Response;
     
     class Thread final {
     private:

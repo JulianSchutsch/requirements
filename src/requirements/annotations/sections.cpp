@@ -143,7 +143,7 @@ namespace requirements {
         it->parent = result.get();
         it = it->nextSibling.get();
       }
-      return std::move(result);
+      return result;
     }
     
     Sections Sections::filter(std::function<bool(::requirements::Id)> filterFunction) const {
@@ -164,7 +164,7 @@ namespace requirements {
         it = it->nextSibling.get();
       }
       it = firstSection.get();
-      return std::move(result);
+      return result;
     }
     
   }

@@ -16,7 +16,7 @@ namespace requirements {
 
     class PhaseFiles : public ::requirements::generators::IPhaseFiles {
     private:
-      std::map<std::string, std::fstream*> files;
+      std::map<std::string, std::fstream*> files{};
     public:
       std::ostream& getOStream(const std::string& phase) override;
       PhaseFiles(const std::string& prefix, const std::string& postfix, annotations::Phases& phases);

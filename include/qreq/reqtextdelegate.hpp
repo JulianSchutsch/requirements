@@ -12,7 +12,7 @@ namespace qreq{
 
   class Model;
 
-  class ReqTextDelegate : public QAbstractItemDelegate{
+  class ReqTextDelegate final : public QAbstractItemDelegate{
     Q_OBJECT
   private:
     class CellGeometry;
@@ -38,12 +38,16 @@ namespace qreq{
 
     void paint(QPainter *painter,const QStyleOptionViewItem &option, QModelIndex const& index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
-    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
 
-    void updateEditorGeometry(QWidget *editor,const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void updateEditorGeometry(QWidget *editor,const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+    ReqTextDelegate(const ReqTextDelegate&) = delete;
+    ReqTextDelegate& operator = (const ReqTextDelegate&) = delete;
+
   private slots:
     void editorDestroyed(QObject *obj);
     void cursorPositionChanged();

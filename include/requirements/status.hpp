@@ -30,12 +30,12 @@ namespace requirements {
     };
     using MessageFunction = std::function<void(MessageKind, const std::string&, const std::vector<std::string>& parameters)>;
     using EditFunction = std::function<void(NodePtr)>;
-    MessageFunction messageFunction;
-    EditFunction editFunction;
+    MessageFunction messageFunction{};
+    EditFunction editFunction{};
     std::unique_ptr<::requirements::IStorage> openStorage();
     using Selection = std::vector<requirements::Id>;
-    std::string folder;
-    std::map<int, Selection> selections;
+    std::string folder{};
+    std::map<int, Selection> selections{};
     bool load(const std::string& filename="");
     bool save(const std::string& filename="");
     std::unique_ptr<Status> clone();

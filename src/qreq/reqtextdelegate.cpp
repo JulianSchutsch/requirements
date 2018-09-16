@@ -23,16 +23,17 @@ namespace qreq {
   static const int innerBorder = 5;
   static const int gap = 5;
 
-  struct ReqTextDelegate::CellGeometry {
-    int textHeight;
-    QRect frameRect;
-    QRect headerRect;
-    QRect bodyRect;
-    QRect bodyTextRect;
-    QSize fullSize;
+  class ReqTextDelegate::CellGeometry {
+  public:
+    int textHeight = 0;
+    QRect frameRect{};
+    QRect headerRect{};
+    QRect bodyRect{};
+    QRect bodyTextRect{};
+    QSize fullSize{};
     QFontMetrics fm;
-    bool selected;
-    int headerTextPos;
+    bool selected = false;
+    int headerTextPos = 0;
     CellGeometry(const QStyleOptionViewItem& option)
       : fm(option.font) {
       selected = option.state & QStyle::State_Selected;
@@ -192,8 +193,6 @@ namespace qreq {
 
     CellGeometry geometry(option);
     paintFrame(painter, geometry);
-
-    auto& imodel = model.getModel();
 
     paintRequirementAcceptance(painter, geometry, model.getModel(), node->getId());
     paintTrashbin(painter, geometry, model.getModel(), node->getId());

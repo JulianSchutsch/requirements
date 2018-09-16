@@ -19,10 +19,10 @@ namespace test {
 
   class BatchThread final {
   private:
-    std::queue<batch::Response> responseQueue;
-    std::mutex responseMutex;
-    std::condition_variable responseCondition;
-    std::string statusFile;
+    std::queue<batch::Response> responseQueue{};
+    std::mutex responseMutex{};
+    std::condition_variable responseCondition{};
+    std::string statusFile{};
     void responseFunction(batch::Response&& r) {
       std::lock_guard<std::mutex> guard(responseMutex);
       responseQueue.emplace(std::move(r));
@@ -38,10 +38,10 @@ namespace test {
       }
     }
   public:
-    ::test::UniqueFolder folder;
-    std::function<void(const std::string& content, const std::vector<std::string>& parameters)> msg_content;
-    std::function<void(::requirements::NodePtr node)> msg_edit;
-    std::unique_ptr<batch::Thread> batch;
+    ::test::UniqueFolder folder{};
+    std::function<void(const std::string& content, const std::vector<std::string>& parameters)> msg_content{};
+    std::function<void(::requirements::NodePtr node)> msg_edit{};
+    std::unique_ptr<batch::Thread> batch{};
     BatchThread() {
       statusFile = folder.getName() + "_status.xml";
       {
@@ -68,7 +68,7 @@ namespace test {
         }
         auto result = std::move(responseQueue.front());
         responseQueue.pop();
-        return std::move(result);
+        return result;
       }
       do {
         responseCondition.wait(guard);
@@ -78,7 +78,7 @@ namespace test {
       }
       auto result = std::move(responseQueue.front());
       responseQueue.pop();
-      return std::move(result);
+      return result;
     }
   };
 }

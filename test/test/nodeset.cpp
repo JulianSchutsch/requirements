@@ -6,6 +6,6 @@ namespace test {
     for(auto& node: collection) {
       result.emplace_back(node);
     }
-    return std::move(result);
+    return result;
   }
 }

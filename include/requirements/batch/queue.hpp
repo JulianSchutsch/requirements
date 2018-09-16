@@ -19,18 +19,18 @@ namespace requirements {
   
   namespace batch {
     
-    class Response;
+    struct Response;
     
     class Queue final {
     public:
       using ResponseFunction = std::function<void(Response&&)>;
     private:
       ResponseFunction responseFunction;
-      Status status;
+      Status status{};
       std::string statusFilename;
-      std::mutex queueMutex;
-      std::condition_variable queueCondition;
-      std::queue<std::unique_ptr<ICommand>> queue;
+      std::mutex queueMutex{};
+      std::condition_variable queueCondition{};
+      std::queue<std::unique_ptr<ICommand>> queue{};
       
       void parse(Status &status);
       

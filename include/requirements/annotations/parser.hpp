@@ -17,13 +17,13 @@ namespace requirements {
   namespace annotations {
     
     struct ParserResult {
-      std::unique_ptr<Errors> errors;
-      std::unique_ptr<Sections> sections;
-      std::unique_ptr<Shortcuts> shortcuts;
-      std::unique_ptr<Requirements> requirements;
-      std::unique_ptr<Acceptances> acceptances;
-      std::unique_ptr<Scenes> scenes;
-      std::unique_ptr<Phases> phases;
+      std::unique_ptr<Errors> errors{};
+      std::unique_ptr<Sections> sections{};
+      std::unique_ptr<Shortcuts> shortcuts{};
+      std::unique_ptr<Requirements> requirements{};
+      std::unique_ptr<Acceptances> acceptances{};
+      std::unique_ptr<Scenes> scenes{};
+      std::unique_ptr<Phases> phases{};
     };
     
     bool parse(::requirements::IStorage &storage, ParserResult &result);

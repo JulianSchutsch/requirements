@@ -10,7 +10,7 @@ namespace requirements {
     class Parser;
     class Help : public ICommand {
     private:
-      std::string specificCommand;
+      std::string specificCommand{};
     public:
       void execute(Status& status);
       Help(Parser& parser);

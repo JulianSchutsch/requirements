@@ -11,9 +11,9 @@ namespace requirements {
   private:
     
     using Nodes = std::map<Id, NodePtr>;
-    Nodes nodes;
+    Nodes nodes{};
     NodePtr rootNode; // Root-Node always exists
-    NodePtr trashNode; // A trash node may exist, it is used as a trash bin
+    NodePtr trashNode=nullptr; // A trash node may exist, it is used as a trash bin
     friend class Node;
   public:
     class Iterator {

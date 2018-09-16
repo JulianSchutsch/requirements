@@ -28,7 +28,7 @@ namespace requirements {
         auto id = path.filename().native();
         result.emplace_back(std::move(id));
       }
-      return std::move(result);
+      return result;
     }
     
     std::string Text::createBlob(const std::string& suffix) {
@@ -123,6 +123,7 @@ namespace requirements {
 
     Text::Text(const std::string& a_folder, bool a_autosave)
       : folder(util::ensureTrailingSlash(a_folder))
+      , fileLock()
       , autosave(a_autosave) {
 
       text_ensureFolder(folder);

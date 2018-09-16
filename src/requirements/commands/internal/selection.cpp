@@ -61,7 +61,7 @@ namespace requirements {
         for (auto e:selected) {
           result.emplace_back(e->getId());
         }
-        return std::move(result);
+        return result;
       }
       
       std::vector<::requirements::NodePtr> Selection::extractNodes(::requirements::IStorage &storage) const {
@@ -70,7 +70,7 @@ namespace requirements {
         }
         std::vector<::requirements::NodePtr> result;
         ::requirements::selectFromIds(storage.getNodeCollection(), ids, result);
-        return std::move(result);
+        return result;
       }
     }
   }

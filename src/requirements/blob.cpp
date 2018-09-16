@@ -31,7 +31,7 @@ namespace requirements {
         result.emplace_back(pair.first);
       }
     }
-    return std::move(result);
+    return result;
   }
 
   std::string importBlob(IStorage& storage, const std::string& sourceFile) {

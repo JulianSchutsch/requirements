@@ -12,7 +12,7 @@ namespace requirements {
     if(trashNode) {
       collection->trashNode = collection->getNodeById(trashNode->getId());
     }
-    return std::move(collection);
+    return collection;
   }
 
   void NodeCollection::deleteNode(NodePtr node) {

@@ -17,7 +17,7 @@ namespace requirements {
     private:
       Kind kind;
       std::string reason;
-      std::vector<std::string> parameters;
+      std::vector<std::string> parameters {};
     public:
       Kind getKind() const { return kind; }
       const std::string& getReason() const { return reason; }

@@ -16,13 +16,11 @@ namespace requirements {
     private:
       std::string string;
       std::string::const_iterator pos;
-      std::string::const_iterator tokenStart;
+      std::string::const_iterator tokenStart{};
       TokenType tokenType = TokenType::Unknown;
       
       void consumeSpace();
-      
       bool nextSymbol();
-      
       bool nextInteger();
     
     public:
@@ -36,9 +34,7 @@ namespace requirements {
       }
       
       bool nextSimple();
-      
       Parser(const std::string &str);
-      
       bool next();
     };
   }

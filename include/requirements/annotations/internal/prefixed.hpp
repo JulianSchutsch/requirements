@@ -43,8 +43,8 @@ namespace requirements {
       class PrefixedBuilderScope final {
       private:
         int number = 0;
-        std::string prefix;
-        PrefixedBuilderScope<BaseType> *previousScope;
+        std::string prefix{};
+        PrefixedBuilderScope<BaseType> *previousScope=nullptr;
         PrefixedBuilder<BaseType> &builder;
       public:
         template<typename... BaseTypeParams>

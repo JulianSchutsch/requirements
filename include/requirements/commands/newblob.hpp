@@ -8,7 +8,7 @@ namespace requirements {
     class Parser;
     class NewBlob : public ICommand {
     private:
-      std::string filename;
+      std::string filename{};
     public:
       void execute(Status& status) override;
       NewBlob(const std::string& a_filename);

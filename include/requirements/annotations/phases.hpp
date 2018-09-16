@@ -11,7 +11,7 @@ namespace requirements {
 
     class PhasesBuilder {
     private:
-      std::set<std::string> used;
+      std::set<std::string> used{};
       Phases& phases;
     public:
       PhasesBuilder(Phases& a_phases);

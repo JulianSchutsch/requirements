@@ -12,10 +12,10 @@ namespace qreq{
     using Sequence = std::list<std::string>;
     using Sequences = std::map<std::string, Sequence>;
   private:
-    std::list<std::string> _last_projects;
-    std::vector<std::string> _last_commands;
+    std::list<std::string> _last_projects{};
+    std::vector<std::string> _last_commands{};
     std::string settings_filename();
-    Sequences _sequences;
+    Sequences _sequences{};
   public:
 
     Settings(Settings const&) = delete;             // Copy construct
@@ -30,7 +30,7 @@ namespace qreq{
     const std::list<std::string>& last_projects() const;
 
     //The current selected project
-    std::string current_project;
+    std::string current_project{};
     const std::vector<std::string>& last_commands() const;
     void last_commands(std::vector<std::string> const& commands);
     const Sequences& sequences() const;

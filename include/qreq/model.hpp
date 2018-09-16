@@ -19,21 +19,20 @@ namespace qreq {
   class Model : public QAbstractItemModel {
     Q_OBJECT
   private:
-    ThreadConnector connector;
-    ::requirements::batch::Response model;
-
-    std::string currentFolder;
+    ThreadConnector connector{};
+    ::requirements::batch::Response model{};
+    std::string currentFolder{};
 
     friend class ModelManipulator;
 
-    mutable quintptr lookupIndex;
-    mutable std::map<quintptr, Node*> lookup;
-    mutable std::map<Node*, quintptr> reverseLookup;
+    mutable quintptr lookupIndex=0;
+    mutable std::map<quintptr, Node*> lookup{};
+    mutable std::map<Node*, quintptr> reverseLookup{};
 
     quintptr insertLookup(const ::requirements::NodePtr& node) const;
 
     QTextEdit* currentEditor = nullptr;
-    quintptr currentEdited;
+    quintptr currentEdited = 0;
 
   public:
     const std::string& getFolder();
@@ -49,7 +48,7 @@ namespace qreq {
 
     // This function is supposed to the connection between the batch thread and the main thread. It must be called in regular intervals to collect changes in the model.
     ModelChange checkResponses();
-    std::list<BatchMessage> consumeMessages() { return std::move(connector.consumeMessages()); }
+    std::list<BatchMessage> consumeMessages() { return connector.consumeMessages(); }
 
     static Model& getModel(const QModelIndex& index);
     ::requirements::NodePtr getNodeFromModelIndex(const QModelIndex& index) const;
@@ -59,7 +58,7 @@ namespace qreq {
     int rowCount(const QModelIndex& nodeModelIndex) const override;
     int columnCount(const QModelIndex&) const override;
     QVariant data(const QModelIndex&, int) const override;
-    Qt::ItemFlags flags(const QModelIndex& index) const;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
 
     void updateContent(const QModelIndex& index, const std::string& content);
   };

@@ -18,9 +18,9 @@ namespace requirements {
           ByIds,
           ByPatterns
         };
-        SelectionKind selectionKind;
-        std::vector<::requirements::Id> ids;
-        std::vector<std::string> patterns;
+        SelectionKind selectionKind{};
+        std::vector<::requirements::Id> ids{};
+        std::vector<std::string> patterns{};
       public:
         Selection();
     

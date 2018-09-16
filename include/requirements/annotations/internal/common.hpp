@@ -15,8 +15,8 @@ namespace requirements {
       protected:
         using EntryMap = std::map<::requirements::Id, Entry>;
         using RootEntryList = std::list<::requirements::Id>;
-        EntryMap entries;
-        RootEntryList rootEntries;
+        EntryMap entries{};
+        RootEntryList rootEntries{};
   
       public:
         typename EntryMap::const_iterator begin() { return entries.cbegin(); }

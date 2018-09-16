@@ -14,12 +14,11 @@ namespace requirements {
     
     class Folder : public ICommand {
     private:
-      std::string folder;
+      std::string folder{};
     public:
       void execute(Status &status) override;
       
       Folder(const std::string &a_folder);
-      
       Folder(Parser &parser);
     };
     

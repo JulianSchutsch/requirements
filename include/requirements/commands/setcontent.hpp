@@ -11,8 +11,8 @@ namespace requirements {
     class Parser;
     class SetContent : public ICommand {
     private:
-      internal::Selection selection;
-      std::string content;
+      internal::Selection selection{};
+      std::string content{};
     public:
       void execute(Status& status) override;
       SetContent(::requirements::Id id, const std::string& a_content);

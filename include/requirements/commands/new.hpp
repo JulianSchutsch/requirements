@@ -11,7 +11,7 @@ namespace requirements {
     class New final : public ICommand {
     private:
       bool idProvided = false;
-      ::requirements::Id id;
+      ::requirements::Id id{};
     public:
       void execute(Status &status) override;
       

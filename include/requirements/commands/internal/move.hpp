@@ -36,8 +36,8 @@ namespace requirements {
       template<void operation(::requirements::NodePtr, ::requirements::NodePtr)>
       class AnchoredMove : public ICommand {
       private:
-        Selection selectionElement;
-        Selection selectionAnchor;
+        Selection selectionElement{};
+        Selection selectionAnchor{};
       public:
         void execute(Status &status) override {
           auto storage = status.openStorage();
